@@ -1,0 +1,11 @@
+{
+  "saal": "Testraum",
+  "kameras": [
+    { "name": "PTZ Mitte", "adresse": "192.168.1.50:52381", "kanal": 1 }
+  ],
+  "plaetze": [
+    { "nummer": 1, "name": "Vorsitz",  "kamera": "PTZ Mitte", "preset": 1 },
+    { "nummer": 2, "name": "Platz 2",  "kamera": "PTZ Mitte", "preset": 2 },
+    { "nummer": 3, "name": "Platz 3",  "kamera": "PTZ Mitte", "preset": 3 }
+  ]
+}

@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sprechstelle</title>
+<style>
+  /* Keine externe Schrift, kein CDN: der Saal hängt von nichts ab. */
+  :root {
+    color-scheme: light dark;
+    --grund: #f4f4f5;
+    --karte: #ffffff;
+    --rand: #d4d4d8;
+    --schrift: #18181b;
+    --leise: #71717a;
+    --an: #dc2626;
+    --frei: #16a34a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --grund: #09090b; --karte: #18181b; --rand: #3f3f46;
+      --schrift: #fafafa; --leise: #a1a1aa;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 1.5rem;
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--grund); color: var(--schrift);
+  }
+  header { display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; margin-bottom: 1.25rem; }
+  h1 { font-size: 1.25rem; margin: 0; font-weight: 600; }
+  .leise { color: var(--leise); font-size: .875rem; }
+  .zeile { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-bottom: 1rem; }
+  .marke { display: inline-flex; align-items: center; gap: .4rem; }
+  .punkt { width: .6rem; height: .6rem; border-radius: 50%; background: var(--leise); }
+  .punkt.gut { background: var(--frei); }
+  .punkt.schlecht { background: var(--an); }
+
+  .plaetze { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+  .platz {
+    background: var(--karte); border: 1px solid var(--rand); border-radius: .75rem;
+    padding: 1rem; display: flex; flex-direction: column; gap: .75rem;
+  }
+  .platz.meiner { border-color: var(--schrift); }
+  .platz.offen { border-color: var(--an); box-shadow: inset 0 0 0 1px var(--an); }
+  .kopf { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+  .nummer { font-variant-numeric: tabular-nums; font-weight: 600; }
+  .knoepfe { display: flex; gap: .5rem; }
+  button {
+    font: inherit; padding: .5rem .9rem; border-radius: .5rem; cursor: pointer;
+    border: 1px solid var(--rand); background: var(--karte); color: var(--schrift);
+    flex: 1;
+  }
+  button:hover:not(:disabled) { border-color: var(--schrift); }
+  button:disabled { opacity: .45; cursor: default; }
+  button.aktiv { background: var(--an); border-color: var(--an); color: #fff; }
+
+  #fehler {
+    margin-bottom: 1rem; padding: .75rem 1rem; border-radius: .5rem;
+    background: var(--an); color: #fff; display: none;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Sprechstelle</h1>
+  <span class="leise" id="saalzeile">Verbindung wird aufgebaut …</span>
+</header>
+
+<div id="fehler" role="alert"></div>
+
+<div class="zeile">
+  <span class="marke"><span class="punkt" id="netzpunkt"></span><span id="netztext">getrennt</span></span>
+  <span class="marke leise" id="offenzeile">— von — Mikrofonen offen</span>
+  <span class="marke leise" id="kamerazeile">Kamera: noch keine Bewegung</span>
+</div>
+
+<div class="plaetze" id="plaetze"></div>
+
+<script>
+"use strict";
+
+// Kein Browser-Speicher: der gewählte Platz lebt nur in dieser Seite.
+let meinPlatz = 0;
+let letzterStand = -1;
+let sitz = null;
+let wiederholung = null;
+
+const knoten = {
+  plaetze: document.getElementById("plaetze"),
+  fehler: document.getElementById("fehler"),
+  netzpunkt: document.getElementById("netzpunkt"),
+  netztext: document.getElementById("netztext"),
+  offen: document.getElementById("offenzeile"),
+  kamera: document.getElementById("kamerazeile"),
+  saal: document.getElementById("saalzeile")
+};
+
+function verbinden() {
+  const schema = location.protocol === "https:" ? "wss:" : "ws:";
+  sitz = new WebSocket(schema + "//" + location.host + "/ws");
+
+  sitz.onopen = function () {
+    netz(true);
+    if (meinPlatz !== 0) senden({ typ: "anmelden", platz: meinPlatz });
+  };
+  sitz.onclose = function () {
+    netz(false);
+    letzterStand = -1;
+    if (wiederholung === null) wiederholung = setTimeout(function () {
+      wiederholung = null;
+      verbinden();
+    }, 1000);
+  };
+  sitz.onerror = function () { sitz.close(); };
+  sitz.onmessage = function (e) {
+    let n;
+    try { n = JSON.parse(e.data); } catch (_) { return; }
+    if (n.typ === "zustand") zustand(n);
+    else if (n.typ === "fehler") fehlerZeigen(n.text || n.code);
+  };
+}
+
+function netz(verbunden) {
+  knoten.netzpunkt.className = "punkt " + (verbunden ? "gut" : "schlecht");
+  knoten.netztext.textContent = verbunden ? "verbunden" : "getrennt";
+  knoten.saal.textContent = verbunden ? "Platz wählen, dann Mikrofon schalten" : "Verbindung wird aufgebaut …";
+}
+
+function senden(nachricht) {
+  if (sitz && sitz.readyState === WebSocket.OPEN) sitz.send(JSON.stringify(nachricht));
+}
+
+function fehlerZeigen(text) {
+  knoten.fehler.textContent = text;
+  knoten.fehler.style.display = "block";
+  clearTimeout(fehlerZeigen.uhr);
+  fehlerZeigen.uhr = setTimeout(function () {
+    knoten.fehler.style.display = "none";
+  }, 4000);
+}
+
+function zustand(n) {
+  // Ältere Nachrichten verwerfen: der Server zählt stand monoton hoch.
+  if (n.stand < letzterStand) return;
+  letzterStand = n.stand;
+
+  let offen = 0;
+  for (let i = 0; i < n.plaetze.length; i++) if (n.plaetze[i].mikro) offen++;
+  knoten.offen.textContent = offen + " von " + n.max_offen + " Mikrofonen offen";
+
+  if (n.kamera) {
+    knoten.kamera.textContent = "Kamera: " + n.kamera.name + ", Preset " + n.kamera.preset +
+      (n.kamera.erreichbar ? "" : " — nicht erreichbar");
+  }
+
+  zeichnen(n, offen);
+}
+
+function zeichnen(n, offen) {
+  const neu = document.createDocumentFragment();
+
+  for (let i = 0; i < n.plaetze.length; i++) {
+    const p = n.plaetze[i];
+
+    const karte = document.createElement("div");
+    karte.className = "platz" + (p.mikro ? " offen" : "") + (p.nummer === meinPlatz ? " meiner" : "");
+
+    const kopf = document.createElement("div");
+    kopf.className = "kopf";
+    const name = document.createElement("span");
+    name.innerHTML = "<span class='nummer'>" + p.nummer + "</span> · ";
+    name.appendChild(document.createTextNode(p.name));
+    const lage = document.createElement("span");
+    lage.className = "leise";
+    lage.textContent = p.belegt ? "belegt" : "frei";
+    kopf.appendChild(name);
+    kopf.appendChild(lage);
+
+    const knoepfe = document.createElement("div");
+    knoepfe.className = "knoepfe";
+
+    const waehlen = document.createElement("button");
+    waehlen.textContent = p.nummer === meinPlatz ? "mein Platz" : "hier sitzen";
+    waehlen.disabled = p.nummer === meinPlatz || (p.belegt && p.nummer !== meinPlatz);
+    waehlen.onclick = function () {
+      meinPlatz = p.nummer;
+      senden({ typ: "anmelden", platz: p.nummer });
+    };
+
+    const mikro = document.createElement("button");
+    mikro.textContent = p.mikro ? "Mikrofon aus" : "Mikrofon an";
+    mikro.className = p.mikro ? "aktiv" : "";
+    mikro.disabled = !p.mikro && offen >= n.max_offen;
+    mikro.onclick = function () {
+      senden({ typ: p.mikro ? "mikro_aus" : "mikro_an", platz: p.nummer });
+    };
+
+    knoepfe.appendChild(waehlen);
+    knoepfe.appendChild(mikro);
+    karte.appendChild(kopf);
+    karte.appendChild(knoepfe);
+    neu.appendChild(karte);
+  }
+
+  knoten.plaetze.replaceChildren(neu);
+}
+
+verbinden();
+</script>
+</body>
+</html>
