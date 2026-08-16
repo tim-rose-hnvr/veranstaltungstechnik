@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Saalwerk — Sitzungssystem für Gremien</title>
+<meta name="description" content="Konferenz-, Abstimmungs- und Protokollsystem für Gremiensitzungen, Aufsichtsräte und Hauptversammlungen. Betrieben auf eigener Hardware, ohne Cloud-Zwang.">
+<style>
+  /* Keine externe Schrift, kein CDN, kein Analytics — dieselbe Regel wie im Saal. */
+  :root {
+    color-scheme: dark;
+    --grund: #08080a;
+    --karte: #131316;
+    --rand: #26262c;
+    --schrift: #f7f7f8;
+    --leise: #9a9aa4;
+    --akzent: #c8102e;
+    --breite: 68rem;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--grund); color: var(--schrift);
+    -webkit-font-smoothing: antialiased;
+  }
+  .bahn { width: 100%; max-width: var(--breite); margin: 0 auto; padding: 0 1.5rem; }
+  section { padding: 4.5rem 0; border-top: 1px solid var(--rand); }
+  section:first-of-type { border-top: 0; }
+  h1, h2, h3 { line-height: 1.15; letter-spacing: -.02em; margin: 0 0 .75rem; }
+  h1 { font-size: clamp(2.1rem, 6vw, 3.6rem); font-weight: 700; }
+  h2 { font-size: clamp(1.5rem, 3.4vw, 2.1rem); font-weight: 650; }
+  h3 { font-size: 1.05rem; font-weight: 600; }
+  p { margin: 0 0 1rem; }
+  .leise { color: var(--leise); }
+  .gross { font-size: clamp(1.05rem, 2vw, 1.25rem); color: var(--leise); max-width: 46rem; }
+  .marke { display: inline-block; font-size: .74rem; letter-spacing: .14em; text-transform: uppercase;
+           color: var(--leise); margin-bottom: 1rem; }
+
+  header { position: sticky; top: 0; z-index: 10; background: rgba(8,8,10,.86);
+           backdrop-filter: blur(12px); border-bottom: 1px solid var(--rand); }
+  header .bahn { display: flex; align-items: center; gap: 1.5rem; height: 3.6rem; }
+  .wort { font-weight: 700; letter-spacing: -.01em; }
+  nav { margin-left: auto; display: flex; gap: 1.25rem; flex-wrap: wrap; }
+  nav a { color: var(--leise); text-decoration: none; font-size: .9rem; }
+  nav a:hover { color: var(--schrift); }
+  @media (max-width: 46rem) { nav { display: none; } }
+
+  .kopf { padding: 5.5rem 0 4rem; }
+  .knopf {
+    display: inline-block; padding: .8rem 1.4rem; border-radius: .6rem; text-decoration: none;
+    background: var(--schrift); color: #08080a; font-weight: 600; font-size: .95rem;
+  }
+  .knopf.leiser { background: transparent; color: var(--schrift); border: 1px solid var(--rand); }
+  .knoepfe { display: flex; gap: .75rem; flex-wrap: wrap; margin-top: 1.75rem; }
+
+  .gitter { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+  .karte { background: var(--karte); border: 1px solid var(--rand); border-radius: .9rem; padding: 1.25rem; }
+  .karte p:last-child { margin-bottom: 0; }
+  .karte .leise { font-size: .93rem; }
+
+  table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+  .rollbar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  th, td { text-align: left; padding: .7rem .8rem; border-bottom: 1px solid var(--rand); vertical-align: top; }
+  th { font-weight: 600; font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--leise); }
+  td:first-child { font-weight: 600; white-space: nowrap; }
+
+  ul.strich { list-style: none; padding: 0; margin: 0; }
+  ul.strich li { padding: .55rem 0 .55rem 1.4rem; position: relative; border-bottom: 1px solid var(--rand); }
+  ul.strich li:before { content: "—"; position: absolute; left: 0; color: var(--akzent); }
+  ul.strich li:last-child { border-bottom: 0; }
+
+  .hinweis { border-left: 3px solid var(--akzent); padding: .25rem 0 .25rem 1.1rem; }
+
+  footer { border-top: 1px solid var(--rand); padding: 2.5rem 0 3.5rem; color: var(--leise); font-size: .88rem; }
+  footer a { color: var(--schrift); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="bahn">
+    <span class="wort">Saalwerk</span>
+    <nav>
+      <a href="#system">System</a>
+      <a href="#einsatz">Einsatz</a>
+      <a href="#stufen">Ausbaustufen</a>
+      <a href="#sicherheit">Sicherheit</a>
+      <a href="#stand">Stand</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+  </div>
+</header>
+
+<div class="bahn kopf">
+  <span class="marke">Sitzungssystem für Gremien</span>
+  <h1>Die Sitzung führen,<br>nicht die Technik.</h1>
+  <p class="gross">Sprechstelle, Kameranachführung, Abstimmung und Protokoll in einem System —
+    betrieben auf Ihrer eigenen Hardware, im Saal, ohne Cloud-Zwang.</p>
+  <div class="knoepfe">
+    <a class="knopf" href="#kontakt">Vorführung anfragen</a>
+    <a class="knopf leiser" href="#system">Wie es arbeitet</a>
+  </div>
+</div>
+
+<section id="luecke">
+  <div class="bahn">
+    <span class="marke">Warum es das gibt</span>
+    <h2>Drei Produktwelten — keine deckt beides ab</h2>
+    <p class="gross">Wer heute eine Gremiensitzung ausstattet, kauft zwei Systeme, die nichts
+      voneinander wissen. Die Naht dazwischen bleibt Handarbeit.</p>
+    <div class="gitter" style="margin-top:2rem">
+      <div class="karte">
+        <h3>Saaltechnik</h3>
+        <p class="leise">Stark bei Ton und Kamera. Kennt weder Beschluss noch Protokoll
+          noch Sitzungsmappe.</p>
+      </div>
+      <div class="karte">
+        <h3>Board-Portale</h3>
+        <p class="leise">Stark bei Unterlagen und Governance. Haben keinerlei Bezug
+          zum Raum, zum Mikrofon, zur Kamera.</p>
+      </div>
+      <div class="karte">
+        <h3>Videokonferenz</h3>
+        <p class="leise">Kann Zuschaltung. Keine rechtssichere Abstimmung, kein Protokoll,
+          keine Anwesenheit, kein Saalton.</p>
+      </div>
+    </div>
+    <p class="hinweis" style="margin-top:2rem">Wir ersetzen weder Ihre Videokonferenz noch Ihr
+      Ratsinformationssystem. Wir schließen die Naht dazwischen.</p>
+  </div>
+</section>
+
+<section id="system">
+  <div class="bahn">
+    <span class="marke">Was das System macht</span>
+    <h2>Ein Platz, eine Identität, alles verknüpft</h2>
+    <p class="gross">Der Sitzplatz trägt Nummer, Funktion, Stimmrecht und Kamerapreset.
+      Personen werden je Sitzung zugeordnet, Geräte sind austauschbar. Ein defektes Gerät
+      wird ersetzt, ohne dass etwas neu eingerichtet wird.</p>
+    <div class="gitter" style="margin-top:2rem">
+      <div class="karte">
+        <h3>Sprechstelle</h3>
+        <p class="leise">Wortmeldung, Mikrofon, Redeliste. Die Zahl gleichzeitig offener
+          Mikrofone folgt aus der Einmessung des Saals, nicht aus einer Einstellung.</p>
+      </div>
+      <div class="karte">
+        <h3>Kameranachführung</h3>
+        <p class="leise">Offenes Mikrofon fährt die PTZ-Kamera auf den gelernten Preset des
+          Platzes. Mit Mindeststandzeit, damit das Bild bei Zwischenrufen ruhig bleibt.</p>
+      </div>
+      <div class="karte">
+        <h3>Abstimmung</h3>
+        <p class="leise">Beschlussfähigkeit wird beim Start geprüft und eingefroren.
+          Bei geheimer Wahl existiert die Zuordnung Stimme zu Person nirgends — auch nicht im Log.</p>
+      </div>
+      <div class="karte">
+        <h3>Protokoll</h3>
+        <p class="leise">Jede Wortmeldung, jede Stimme, jeder Technikeingriff als Kette,
+          nur anfügbar. Der Protokollentwurf fällt am Ende der Sitzung von selbst an.</p>
+      </div>
+      <div class="karte">
+        <h3>Sitzungsmappe</h3>
+        <p class="leise">Unterlagen je Tagesordnungspunkt, mit Vertraulichkeitsstufe,
+          persönlichem Wasserzeichen und Zugriffsprotokoll.</p>
+      </div>
+      <div class="karte">
+        <h3>Zuschaltung</h3>
+        <p class="leise">Externe Teilnehmer über den Browser, mit persönlichem Zugang
+          statt geteiltem Link. Der Saal läuft weiter, wenn die Leitung ausfällt.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="einsatz">
+  <div class="bahn">
+    <span class="marke">Einsatz</span>
+    <h2>Sechs Räume, ein System</h2>
+    <div class="rollbar" style="margin-top:1.5rem">
+      <table>
+        <thead>
+          <tr><th>Raum</th><th>Was zählt</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Vorstandssitzung</td><td>Zwölf Plätze, ein Raum, vertrauliche Unterlagen. Keine Kamera, kein Streaming — dafür lückenloses Protokoll.</td></tr>
+          <tr><td>Aufsichtsrat</td><td>Insiderinformationen, Umlaufbeschlüsse zwischen den Sitzungen, Nachweis, wer welche Unterlage wann geöffnet hat.</td></tr>
+          <tr><td>Ratssaal</td><td>Öffentliche und nicht öffentliche Punkte, Livestream mit automatischer Pause, Anbindung an das Ratsinformationssystem.</td></tr>
+          <tr><td>Universität</td><td>Hörunterstützung und Untertitel als Barrierefreiheit — fällt aus der vorhandenen Technik ab statt als eigenes System.</td></tr>
+          <tr><td>Hauptversammlung</td><td>Gewichtetes Stimmrecht, Vollmachten, Teilnehmerverzeichnis mit minutengenauen Zu- und Abgängen, Widerspruch zur Niederschrift.</td></tr>
+          <tr><td>Nachrüstung</td><td>Vorhandene Anlage bleibt, wo sie ist. Ton über Dante oder AES67, Sitzungsführung und Protokoll kommen dazu.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section id="stufen">
+  <div class="bahn">
+    <span class="marke">Ausbaustufen</span>
+    <h2>Die Grenzen folgen der Physik, nicht der Preisliste</h2>
+    <p class="gross">Ohne Einmessung keine Saalbeschallung — das lässt sich nicht per Software
+      wegzaubern. Deshalb ist die kleinste Stufe für Räume, in denen man sich ohne
+      Verstärkung hört.</p>
+    <div class="rollbar" style="margin-top:1.5rem">
+      <table>
+        <thead>
+          <tr><th>Stufe</th><th>Geräte und Netz</th><th>Ton</th><th>Bild</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Lite</td><td>eigene Geräte, vorhandenes WLAN</td><td>nur Kopfhörer</td><td>Gerätekameras</td></tr>
+          <tr><td>Normal</td><td>feste Geräte, eigener Access Point</td><td>eingemessene Anlage</td><td>eine PTZ mit Nachführung</td></tr>
+          <tr><td>Premium</td><td>ein Kabel je Platz, PoE</td><td>mehrkanalig, Dolmetschen</td><td>mehrere PTZ, Regie</td></tr>
+          <tr><td>Enterprise</td><td>zwei Server, redundant</td><td>Anlagentechnik über Dante</td><td>Regie, Zuschaltung, Aufzeichnung</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hinweis" style="margin-top:2rem">Rechtssicherheit ist in keiner Stufe reduziert.
+      Ereigniskette, geheime Wahl und Beschlussfähigkeit gehören auch in die kleinste.
+      Gestaffelt wird nur Souveränität.</p>
+  </div>
+</section>
+
+<section id="sicherheit">
+  <div class="bahn">
+    <span class="marke">Sicherheit und Betrieb</span>
+    <h2>Der Saal hängt von nichts ab</h2>
+    <p class="gross">Fällt während der Sitzung das Internet aus, läuft alles weiter:
+      Mikrofone, Kameras, Abstimmung, Protokoll. Kein Lizenzabruf im Netz, kein CDN,
+      keine externe Schriftart.</p>
+    <ul class="strich" style="margin-top:1.5rem">
+      <li><b>Betrieb im eigenen Haus.</b> Server im Rack oder im Flightcase für einzelne
+        Veranstaltungen. Keine Cloud im Pfad, wenn Sie das nicht wollen.</li>
+      <li><b>Ereigniskette.</b> Jeder Eintrag hängt am Hash des vorherigen. Nur anfügbar,
+        kein Ändern, kein Löschen — Manipulation fällt beim Prüfen auf.</li>
+      <li><b>Verschlüsselung zwischen allen Diensten.</b> Eigene Zertifizierungsstelle,
+        gegenseitige Authentisierung. Funktioniert auch im abgeschotteten Netz.</li>
+      <li><b>Löschen durch Schlüsselvernichtung.</b> Wirkt auch auf Kopien und auf Geräten,
+        die gerade offline sind.</li>
+      <li><b>Keine Hintertür.</b> Wo der Kunde den Schlüssel hält, kann der Hersteller nicht
+        entschlüsseln. Das ist eine Zusage, kein Schalter.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="stand">
+  <div class="bahn">
+    <span class="marke">Stand</span>
+    <h2>In Entwicklung — Pilotpartner gesucht</h2>
+    <p class="gross">Ehrlich gesagt, wo wir stehen: Konzept und Datenmodell sind fertig,
+      der Kern wird gebaut. Der erste Meilenstein läuft — ein Gerät meldet „Mikrofon an",
+      der Server fährt die Kamera auf den Platz.</p>
+    <p>Was jetzt hilft, ist kein weiteres Merkmal, sondern ein echter Raum. Wenn Sie ein
+      Gremium haben, das regelmäßig tagt, und bereit sind, ein System im Schattenbetrieb
+      mitlaufen zu lassen — ohne dass etwas davon abhängt — sprechen wir.</p>
+    <p class="leise">Pilotpartner bekommen Einfluss auf die Reihenfolge und Konditionen,
+      die es später nicht mehr gibt.</p>
+  </div>
+</section>
+
+<section id="kontakt">
+  <div class="bahn">
+    <span class="marke">Kontakt</span>
+    <h2>Zwanzig Minuten reichen für die Vorführung</h2>
+    <p class="gross">Drei Geräte auf den Tisch, Server im Rucksack — Sitzung mit Redeliste,
+      Abstimmung und Kameranachführung. Kein Referenzsaal nötig, wir kommen zu Ihnen.</p>
+    <div class="knoepfe">
+      <a class="knopf" href="mailto:kontakt@example.com?subject=Saalwerk%20%E2%80%93%20Vorf%C3%BChrung">Vorführung anfragen</a>
+    </div>
+    <p class="leise" style="margin-top:1.5rem">Bitte nennen Sie Gremium, Raumgröße und
+      ungefähre Platzzahl — dann bringen wir den passenden Aufbau mit.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="bahn">
+    <p><b>Saalwerk</b> ist ein Arbeitstitel; der endgültige Produktname steht noch nicht fest.</p>
+    <p>Impressum und Datenschutzerklärung fehlen noch und sind vor der Veröffentlichung
+      zu ergänzen.</p>
+  </div>
+</footer>
+
+</body>
+</html>
