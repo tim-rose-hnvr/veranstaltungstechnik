@@ -21,7 +21,7 @@ import (
 
 const (
 	migrationsDatei = "migrationen/001_grundlage.sql"
-	indexDatei      = "web/index.html"
+	webVerzeichnis  = "web"
 )
 
 func main() {
@@ -85,7 +85,7 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 
 	dienst := &http.Server{
 		Addr:              konfiguration.Adresse,
-		Handler:           web.Neu(sitzung, indexDatei, protokoll).Handler(),
+		Handler:           web.Neu(sitzung, webVerzeichnis, protokoll).Handler(),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 

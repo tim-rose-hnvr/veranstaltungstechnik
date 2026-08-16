@@ -7,6 +7,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"path/filepath"
 	"sync"
 	"time"
 
@@ -30,9 +31,9 @@ type Fehlernachricht struct {
 
 // Server verbindet den Kern mit HTTP.
 type Server struct {
-	kern      *kern.Kern
-	indexPfad string
-	protokoll *slog.Logger
+	kern        *kern.Kern
+	verzeichnis string
+	protokoll   *slog.Logger
 
 	mu           sync.Mutex
 	verbindungen map[*verbindung]struct{}
@@ -45,14 +46,14 @@ type verbindung struct {
 	server *Server
 }
 
-// Neu baut den HTTP-Server. indexPfad zeigt auf web/index.html.
-func Neu(k *kern.Kern, indexPfad string, protokoll *slog.Logger) *Server {
+// Neu baut den HTTP-Server. verzeichnis ist der Ordner web/ mit den Seiten.
+func Neu(k *kern.Kern, verzeichnis string, protokoll *slog.Logger) *Server {
 	if protokoll == nil {
 		protokoll = slog.Default()
 	}
 	s := &Server{
 		kern:         k,
-		indexPfad:    indexPfad,
+		verzeichnis:  verzeichnis,
 		protokoll:    protokoll,
 		verbindungen: make(map[*verbindung]struct{}),
 	}
@@ -60,20 +61,27 @@ func Neu(k *kern.Kern, indexPfad string, protokoll *slog.Logger) *Server {
 	return s
 }
 
-// Handler liefert die Routen.
+// Handler liefert die Routen. Jede Rolle ist eine eigene Seite am selben
+// Zustand — Namensschild und Dolmetscherplatz lesen nur mit, sie melden
+// keinen Platz an und belegen ihn deshalb nicht.
 func (s *Server) Handler() http.Handler {
 	weiche := http.NewServeMux()
 	weiche.HandleFunc("GET /ws", s.ws)
-	weiche.HandleFunc("GET /{$}", s.index)
+	weiche.Handle("GET /{$}", s.seite("index.html"))
+	weiche.Handle("GET /namensschild", s.seite("namensschild.html"))
+	weiche.Handle("GET /dolmetscher", s.seite("dolmetscher.html"))
+	weiche.Handle("GET /testumgebung", s.seite("testumgebung.html"))
 	return weiche
 }
 
-// index liefert die Oberfläche. Sie wird bei jedem Abruf von der Platte
+// seite liefert eine Oberfläche. Sie wird bei jedem Abruf von der Platte
 // gelesen — Änderungen wirken ohne Neustart.
-func (s *Server) index(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.Header().Set("Cache-Control", "no-store")
-	http.ServeFile(w, r, s.indexPfad)
+func (s *Server) seite(datei string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Cache-Control", "no-store")
+		http.ServeFile(w, r, filepath.Join(s.verzeichnis, datei))
+	})
 }
 
 // Verteilen schickt den vollständigen Zustand an alle Clients.

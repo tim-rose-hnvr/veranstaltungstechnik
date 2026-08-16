@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Testumgebung</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --grund: #08080a;
+    --karte: #141417;
+    --rand: #2a2a30;
+    --schrift: #fafafa;
+    --leise: #8b8b95;
+    --gehaeuse: #1d1d20;
+    --s: .5;      /* Grundmaßstab, wird beim Einpassen überschrieben */
+    --telefon: .82; /* 160 mm iPhone gegen 250 mm iPad */
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font: 15px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--grund); color: var(--schrift);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+
+  header {
+    display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; align-items: center;
+    padding: .85rem 1.25rem; border-bottom: 1px solid var(--rand); background: var(--karte);
+    flex: none;
+  }
+  h1 { font-size: .95rem; margin: 0; font-weight: 600; }
+  .leise { color: var(--leise); font-size: .82rem; }
+  label { display: inline-flex; align-items: center; gap: .5rem; font-size: .82rem; color: var(--leise); }
+  select, header button {
+    font: inherit; font-size: .82rem; padding: .35rem .6rem; border-radius: .45rem;
+    border: 1px solid var(--rand); background: #202027; color: var(--schrift);
+  }
+  header button { cursor: pointer; }
+  header button:hover { border-color: var(--schrift); }
+  .marke { display: inline-flex; align-items: center; gap: .4rem; font-size: .82rem; color: var(--leise); }
+  .punkt { width: .55rem; height: .55rem; border-radius: 50%; background: #71717a; }
+  .punkt.gut { background: #16a34a; }
+  .punkt.schlecht { background: #dc2626; }
+
+  main { flex: 1; min-height: 0; display: grid; place-items: center; padding: 1.25rem; }
+
+  /* Anordnung: Namensschild über dem iPad, Dolmetscherplatz rechts daneben. */
+  .buehne {
+    display: grid; gap: 2rem;
+    grid-template-columns: auto auto; grid-template-rows: auto auto;
+    align-items: end;
+  }
+  .platz-schild      { grid-column: 1; grid-row: 1; justify-self: center; }
+  .platz-sprechstelle{ grid-column: 1; grid-row: 2; }
+  .platz-dolmetscher { grid-column: 2; grid-row: 2; }
+
+  .saeule { display: flex; flex-direction: column; align-items: center; gap: .6rem; }
+  .beschriftung { text-align: center; font-size: .78rem; color: var(--leise); }
+  .beschriftung b { display: block; color: var(--schrift); font-weight: 600; font-size: .85rem; }
+
+  /* Gerät: Innenmaße sind die echte Bildschirmauflösung, damit die Seiten
+     genauso umbrechen wie auf dem Gerät. Der Maßstab bildet zusätzlich das
+     Größenverhältnis ab: ein iPhone ist 160 mm lang, ein iPad 250 mm breit.
+     Ohne das steht ein zu großes Telefon neben dem iPad. */
+  .rahmen { width: calc(var(--b) * var(--s) * 1px); height: calc(var(--h) * var(--s) * 1px); }
+  .geraet {
+    width: calc(var(--b) * 1px); height: calc(var(--h) * 1px);
+    transform: scale(var(--s)); transform-origin: top left;
+    background: var(--gehaeuse); border: 1px solid #37373d;
+    box-shadow: 0 24px 60px rgba(0,0,0,.55);
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+  }
+  .geraet.ipad   { border-radius: 44px; padding: 33px; }
+  .geraet.iphone { border-radius: 58px; padding: 15px; }
+  .geraet.iphone, .rahmen.telefon { --s: calc(var(--grund-s) * var(--telefon)); }
+  .schirm { width: 100%; height: 100%; overflow: hidden; background: #000; border-radius: 20px; }
+  .geraet.iphone .schirm { border-radius: 40px; }
+  iframe { width: 100%; height: 100%; border: 0; display: block; }
+
+  /* Kamera und Bedienspur, damit die Geräte als solche erkennbar sind. */
+  .linse {
+    position: absolute; width: 9px; height: 9px; border-radius: 50%;
+    background: #050506; box-shadow: inset 0 0 0 2px #2c2c31;
+  }
+  .ipad .linse   { top: 50%; left: 9px; transform: translateY(-50%); }
+  .quer  .linse  { top: 50%; left: 4px; transform: translateY(-50%); }
+  .hoch  .linse  { top: 4px; left: 50%; transform: translateX(-50%); }
+  .spur {
+    position: absolute; background: #3a3a41; border-radius: 3px;
+  }
+  .ipad .spur, .quer .spur { right: 8px; top: 35%; width: 4px; height: 30%; }
+  .hoch .spur { bottom: 6px; left: 35%; height: 4px; width: 30%; }
+
+  footer {
+    flex: none; padding: .7rem 1.25rem; border-top: 1px solid var(--rand);
+    background: var(--karte); font-size: .78rem; color: var(--leise);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Testumgebung</h1>
+  <span class="marke"><span class="punkt" id="netzpunkt"></span><span id="netztext">getrennt</span></span>
+  <label>Namensschild zeigt
+    <select id="schildplatz"></select>
+  </label>
+  <span class="leise" id="stand">Stand —</span>
+  <button id="neu">Alle neu laden</button>
+</header>
+
+<main>
+  <div class="buehne" id="buehne">
+
+    <div class="saeule platz-schild">
+      <div class="rahmen telefon" style="--b:962; --h:460;">
+        <div class="geraet iphone quer">
+          <span class="linse"></span><span class="spur"></span>
+          <div class="schirm"><iframe id="schild" src="/namensschild?platz=1" title="Namensschild"></iframe></div>
+        </div>
+      </div>
+      <div class="beschriftung"><b>iPhone quer · Namensschild</b>liest mit, belegt keinen Platz</div>
+    </div>
+
+    <div class="saeule platz-sprechstelle">
+      <div class="rahmen" style="--b:1260; --h:900;">
+        <div class="geraet ipad">
+          <span class="linse"></span><span class="spur"></span>
+          <div class="schirm"><iframe id="sprechstelle" src="/" title="Sprechstelle"></iframe></div>
+        </div>
+      </div>
+      <div class="beschriftung"><b>iPad · Sprechstelle</b>Platz wählen, Mikrofon schalten, Kamera folgt</div>
+    </div>
+
+    <div class="saeule platz-dolmetscher">
+      <div class="rahmen telefon" style="--b:460; --h:962;">
+        <div class="geraet iphone hoch">
+          <span class="linse"></span><span class="spur"></span>
+          <div class="schirm"><iframe id="dolmetscher" src="/dolmetscher" title="Dolmetscherplatz"></iframe></div>
+        </div>
+      </div>
+      <div class="beschriftung"><b>iPhone hoch · Dolmetscherplatz</b>ohne Ton — der kommt mit Meilenstein 2</div>
+    </div>
+
+  </div>
+</main>
+
+<footer id="fuss">
+  Alle drei Geräte hängen am selben Serverzustand. Jede Seite läuft auch
+  einzeln auf echter Hardware: <b>/</b> · <b>/namensschild?platz=1</b> · <b>/dolmetscher</b>
+</footer>
+
+<script>
+"use strict";
+
+// Die Bühne wird auf das Fenster eingepasst, damit die Seitenverhältnisse
+// der Geräte stimmen — gestreckte Geräte wären eine Lüge über die Ansicht.
+const TELEFON = 0.82;
+const GERAETE_BREITE = 1260 + 460 * TELEFON;  // iPad neben Dolmetscherplatz
+const GERAETE_HOEHE = 460 * TELEFON + 900;    // Namensschild über dem iPad
+
+function setze(mass) {
+  document.documentElement.style.setProperty("--grund-s", mass.toFixed(4));
+  document.documentElement.style.setProperty("--s", mass.toFixed(4));
+}
+
+function innenmass(knoten) {
+  const stil = getComputedStyle(knoten);
+  return {
+    breite: knoten.clientWidth - parseFloat(stil.paddingLeft) - parseFloat(stil.paddingRight),
+    hoehe: knoten.clientHeight - parseFloat(stil.paddingTop) - parseFloat(stil.paddingBottom)
+  };
+}
+
+function einpassen() {
+  const flaeche = document.querySelector("main");
+  const buehne = document.getElementById("buehne");
+
+  // Erster Wurf nur über die Gerätemaße …
+  const raum = innenmass(flaeche);
+  let mass = Math.min(raum.breite / GERAETE_BREITE, raum.hoehe / GERAETE_HOEHE);
+  mass = Math.max(0.12, Math.min(1, mass));
+  setze(mass);
+
+  // … dann nachmessen. Abstände und Beschriftungen skalieren nicht mit, sie
+  // lassen sich nicht vorausrechnen — also wird die gestellte Bühne gemessen
+  // und der Maßstab korrigiert, bis sie hineinpasst.
+  for (let i = 0; i < 5; i++) {
+    const jetzt = innenmass(flaeche);
+    const gross = buehne.getBoundingClientRect();
+    const faktor = Math.min(jetzt.breite / gross.width, jetzt.hoehe / gross.height);
+    if (faktor > 0.995 && faktor <= 1.005) break;
+    mass = Math.max(0.12, Math.min(1, mass * faktor * 0.998));
+    setze(mass);
+  }
+}
+addEventListener("resize", einpassen);
+einpassen();
+
+// Eigene Leitung, nur um die Platzliste zu füllen und den Stand zu zeigen.
+// Auch dieser Client meldet keinen Platz an.
+const knoten = {
+  auswahl: document.getElementById("schildplatz"),
+  punkt: document.getElementById("netzpunkt"),
+  text: document.getElementById("netztext"),
+  stand: document.getElementById("stand")
+};
+let plaetzeGesetzt = false;
+
+function verbinden() {
+  const schema = location.protocol === "https:" ? "wss:" : "ws:";
+  const sitz = new WebSocket(schema + "//" + location.host + "/ws");
+
+  sitz.onopen = function () {
+    knoten.punkt.className = "punkt gut";
+    knoten.text.textContent = "verbunden";
+  };
+  sitz.onclose = function () {
+    knoten.punkt.className = "punkt schlecht";
+    knoten.text.textContent = "getrennt";
+    setTimeout(verbinden, 1000);
+  };
+  sitz.onerror = function () { sitz.close(); };
+  sitz.onmessage = function (e) {
+    let n;
+    try { n = JSON.parse(e.data); } catch (_) { return; }
+    if (n.typ !== "zustand") return;
+
+    knoten.stand.textContent = "Stand " + n.stand;
+    if (plaetzeGesetzt) return;
+    plaetzeGesetzt = true;
+
+    const bruch = document.createDocumentFragment();
+    for (let i = 0; i < n.plaetze.length; i++) {
+      const p = n.plaetze[i];
+      const eintrag = document.createElement("option");
+      eintrag.value = String(p.nummer);
+      eintrag.textContent = p.nummer + " · " + p.name;
+      bruch.appendChild(eintrag);
+    }
+    knoten.auswahl.replaceChildren(bruch);
+    knoten.auswahl.value = "1";
+  };
+}
+
+knoten.auswahl.onchange = function () {
+  document.getElementById("schild").src = "/namensschild?platz=" + knoten.auswahl.value;
+};
+
+document.getElementById("neu").onclick = function () {
+  const seiten = ["schild", "sprechstelle", "dolmetscher"];
+  for (let i = 0; i < seiten.length; i++) {
+    const rahmen = document.getElementById(seiten[i]);
+    rahmen.src = rahmen.src;
+  }
+};
+
+verbinden();
+</script>
+</body>
+</html>

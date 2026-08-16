@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Namensschild</title>
+<style>
+  /* Weiß auf Schwarz wie beim E-Paper, dem Zielgerät. Auf dem iPhone quer
+     ist das nur die Zwischenlösung. */
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font: 16px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #ffffff; color: #000000;
+    display: flex; flex-direction: column;
+    padding: 4vh 5vw;
+    overflow: hidden;
+  }
+  .kopf { display: flex; justify-content: space-between; align-items: center; font-size: 3.2vh; letter-spacing: .08em; text-transform: uppercase; }
+  .kopf .platz { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .kopf .saal { color: #666; }
+
+  .mitte { flex: 1; display: flex; align-items: center; }
+  #name { font-size: 13vh; font-weight: 700; line-height: 1; letter-spacing: -.02em; }
+
+  .fuss { height: 9vh; display: flex; align-items: center; gap: 2vw; }
+  .lampe {
+    width: 4.5vh; height: 4.5vh; border-radius: 50%;
+    border: .5vh solid #000; background: #fff; flex: none;
+  }
+  #zustandstext { font-size: 4.5vh; font-weight: 600; letter-spacing: .02em; }
+
+  /* Spricht: das ganze Schild kehrt sich um — quer durch den Saal sichtbar. */
+  body.spricht { background: #c8102e; color: #fff; }
+  body.spricht .kopf .saal { color: rgba(255,255,255,.75); }
+  body.spricht .lampe { border-color: #fff; background: #fff; }
+
+  body.getrennt { background: #fff; color: #999; }
+  body.getrennt .lampe { border-color: #999; background: #fff; }
+</style>
+</head>
+<body class="getrennt">
+
+<div class="kopf">
+  <span class="platz" id="platznummer">Platz —</span>
+  <span class="saal" id="lage">getrennt</span>
+</div>
+
+<div class="mitte"><div id="name">—</div></div>
+
+<div class="fuss">
+  <span class="lampe" id="lampe"></span>
+  <span id="zustandstext">keine Verbindung</span>
+</div>
+
+<script>
+"use strict";
+
+// Der Platz steht in der Adresse: /namensschild?platz=2
+// Das Schild meldet keinen Platz an — es liest nur mit und belegt nichts.
+const meinPlatz = Number(new URLSearchParams(location.search).get("platz") || 1);
+
+let letzterStand = -1;
+let sitz = null;
+
+const knoten = {
+  name: document.getElementById("name"),
+  platz: document.getElementById("platznummer"),
+  lage: document.getElementById("lage"),
+  text: document.getElementById("zustandstext")
+};
+knoten.platz.textContent = "Platz " + meinPlatz;
+
+function verbinden() {
+  const schema = location.protocol === "https:" ? "wss:" : "ws:";
+  sitz = new WebSocket(schema + "//" + location.host + "/ws");
+
+  sitz.onopen = function () { knoten.lage.textContent = ""; };
+  sitz.onclose = function () {
+    letzterStand = -1;
+    document.body.className = "getrennt";
+    knoten.lage.textContent = "getrennt";
+    knoten.text.textContent = "keine Verbindung";
+    setTimeout(verbinden, 1000);
+  };
+  sitz.onerror = function () { sitz.close(); };
+  sitz.onmessage = function (e) {
+    let n;
+    try { n = JSON.parse(e.data); } catch (_) { return; }
+    if (n.typ !== "zustand") return;
+    if (n.stand < letzterStand) return;
+    letzterStand = n.stand;
+    zeichnen(n);
+  };
+}
+
+function zeichnen(n) {
+  let meiner = null;
+  for (let i = 0; i < n.plaetze.length; i++) {
+    if (n.plaetze[i].nummer === meinPlatz) meiner = n.plaetze[i];
+  }
+
+  if (meiner === null) {
+    document.body.className = "getrennt";
+    knoten.name.textContent = "Platz " + meinPlatz + " gibt es nicht";
+    knoten.text.textContent = "nicht im Saalplan";
+    return;
+  }
+
+  // In Meilenstein 1 trägt der Platz den Namen. Eine Person wird ihm erst
+  // zugeordnet, wenn es die Teilnahme gibt.
+  knoten.name.textContent = meiner.name;
+  document.body.className = meiner.mikro ? "spricht" : "";
+  knoten.text.textContent = meiner.mikro ? "spricht" : (meiner.belegt ? "am Platz" : "frei");
+}
+
+verbinden();
+</script>
+</body>
+</html>

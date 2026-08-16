@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dolmetscherplatz</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font: 15px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: #0b0b0d; color: #fafafa;
+    display: flex; flex-direction: column; gap: .75rem;
+    padding: 3.5vh 1.25rem 2.5vh;
+    overflow: hidden;
+  }
+  h1 { font-size: 1rem; margin: 0; font-weight: 600; letter-spacing: .02em; }
+  .kopf { display: flex; justify-content: space-between; align-items: center; }
+  .marke { display: inline-flex; align-items: center; gap: .4rem; font-size: .8rem; color: #a1a1aa; }
+  .punkt { width: .55rem; height: .55rem; border-radius: 50%; background: #71717a; }
+  .punkt.gut { background: #16a34a; }
+  .punkt.schlecht { background: #dc2626; }
+
+  .karte { background: #18181b; border: 1px solid #3f3f46; border-radius: .9rem; padding: .9rem 1rem; }
+  .titel { font-size: .72rem; text-transform: uppercase; letter-spacing: .1em; color: #a1a1aa; margin-bottom: .5rem; }
+
+  #redner { font-size: 1.75rem; font-weight: 700; line-height: 1.1; }
+  #rednerplatz { color: #a1a1aa; font-size: .85rem; margin-top: .25rem; }
+  .karte.aktiv { border-color: #c8102e; box-shadow: inset 0 0 0 1px #c8102e; }
+
+  .weitere { flex: 1; min-height: 0; overflow-y: auto; }
+  .zeile { display: flex; justify-content: space-between; padding: .45rem 0; border-bottom: 1px solid #27272a; font-size: .9rem; }
+  .zeile:last-child { border-bottom: 0; }
+  .zeile .an { color: #f87171; font-weight: 600; }
+  .zeile .aus { color: #71717a; }
+
+  /* Der Kanalbereich steht hier, damit die Anordnung stimmt. Er ist
+     abgeschaltet, weil Meilenstein 1 keinen Ton führt. */
+  .gesperrt { opacity: .45; }
+  .kanaele { display: flex; gap: .5rem; }
+  .kanaele button {
+    flex: 1; font: inherit; padding: .55rem 0; border-radius: .5rem;
+    border: 1px solid #3f3f46; background: #27272a; color: #fafafa;
+  }
+  .hinweis { margin-top: .6rem; font-size: .75rem; color: #a1a1aa; }
+</style>
+</head>
+<body>
+
+<div class="kopf">
+  <h1>Dolmetscherplatz</h1>
+  <span class="marke"><span class="punkt" id="netzpunkt"></span><span id="netztext">getrennt</span></span>
+</div>
+
+<div class="karte" id="rednerkarte">
+  <div class="titel">Original</div>
+  <div id="redner">niemand spricht</div>
+  <div id="rednerplatz">—</div>
+</div>
+
+<div class="karte weitere">
+  <div class="titel">Saal</div>
+  <div id="liste"></div>
+</div>
+
+<div class="karte gesperrt">
+  <div class="titel">Ausgabekanal</div>
+  <div class="kanaele">
+    <button disabled>DE</button>
+    <button disabled>EN</button>
+    <button disabled>Relais</button>
+  </div>
+  <div class="hinweis">Ohne Funktion: Meilenstein 1 führt keinen Ton. Kanäle,
+    Hustentaste und Relais kommen mit dem Audioteil.</div>
+</div>
+
+<script>
+"use strict";
+
+// Der Dolmetscherplatz liest nur mit: kein anmelden, kein Mikrofon.
+let letzterStand = -1;
+let sitz = null;
+
+const knoten = {
+  redner: document.getElementById("redner"),
+  rednerplatz: document.getElementById("rednerplatz"),
+  rednerkarte: document.getElementById("rednerkarte"),
+  liste: document.getElementById("liste"),
+  netzpunkt: document.getElementById("netzpunkt"),
+  netztext: document.getElementById("netztext")
+};
+
+function verbinden() {
+  const schema = location.protocol === "https:" ? "wss:" : "ws:";
+  sitz = new WebSocket(schema + "//" + location.host + "/ws");
+
+  sitz.onopen = function () { netz(true); };
+  sitz.onclose = function () {
+    netz(false);
+    letzterStand = -1;
+    setTimeout(verbinden, 1000);
+  };
+  sitz.onerror = function () { sitz.close(); };
+  sitz.onmessage = function (e) {
+    let n;
+    try { n = JSON.parse(e.data); } catch (_) { return; }
+    if (n.typ !== "zustand") return;
+    if (n.stand < letzterStand) return;
+    letzterStand = n.stand;
+    zeichnen(n);
+  };
+}
+
+function netz(verbunden) {
+  knoten.netzpunkt.className = "punkt " + (verbunden ? "gut" : "schlecht");
+  knoten.netztext.textContent = verbunden ? "verbunden" : "getrennt";
+}
+
+function zeichnen(n) {
+  const offene = [];
+  for (let i = 0; i < n.plaetze.length; i++) {
+    if (n.plaetze[i].mikro) offene.push(n.plaetze[i]);
+  }
+
+  if (offene.length === 0) {
+    knoten.redner.textContent = "niemand spricht";
+    knoten.rednerplatz.textContent = "—";
+    knoten.rednerkarte.className = "karte";
+  } else {
+    knoten.redner.textContent = offene[0].name;
+    knoten.rednerplatz.textContent = offene.length === 1
+      ? "Platz " + offene[0].nummer
+      : "Platz " + offene[0].nummer + " · " + offene.length + " Mikrofone offen";
+    knoten.rednerkarte.className = "karte aktiv";
+  }
+
+  const neu = document.createDocumentFragment();
+  for (let i = 0; i < n.plaetze.length; i++) {
+    const p = n.plaetze[i];
+    const zeile = document.createElement("div");
+    zeile.className = "zeile";
+
+    const links = document.createElement("span");
+    links.textContent = p.nummer + " · " + p.name;
+
+    const rechts = document.createElement("span");
+    rechts.className = p.mikro ? "an" : "aus";
+    rechts.textContent = p.mikro ? "spricht" : (p.belegt ? "am Platz" : "frei");
+
+    zeile.appendChild(links);
+    zeile.appendChild(rechts);
+    neu.appendChild(zeile);
+  }
+  knoten.liste.replaceChildren(neu);
+}
+
+verbinden();
+</script>
+</body>
+</html>
