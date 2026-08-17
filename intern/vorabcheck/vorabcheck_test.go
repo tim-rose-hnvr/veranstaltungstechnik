@@ -1,0 +1,160 @@
+package vorabcheck_test
+
+import (
+	"context"
+	"errors"
+	"strings"
+	"testing"
+	"time"
+
+	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kern"
+	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/speicher"
+	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/vorabcheck"
+)
+
+type stilleKamera struct{ antwort error }
+
+func (s *stilleKamera) PresetAbrufen(ctx context.Context, adresse string, kanal, preset uint8) error {
+	return s.antwort
+}
+
+// aufbauen stellt Saal, Sitzung und Kern über die Ablage im Arbeitsspeicher auf.
+func aufbauen(t *testing.T, teilnahmen []speicher.Teilnahmedaten, kameraFehler error) (*vorabcheck.Pruefer, *kern.Kern) {
+	t.Helper()
+	ctx := context.Background()
+	ablage := speicher.NeuGedaechtnis()
+
+	saal := speicher.Saaldaten{
+		Saal:    "Testraum",
+		Kameras: []speicher.Kameradaten{{Name: "PTZ Mitte", Adresse: "192.168.1.50:52381", Kanal: 1}},
+		Plaetze: []speicher.Platzdaten{
+			{Nummer: 1, Name: "Vorsitz", Kamera: "PTZ Mitte", Preset: 1},
+			{Nummer: 2, Name: "Platz 2", Kamera: "PTZ Mitte", Preset: 2},
+		},
+	}
+	saalID, plaetze, err := ablage.SaalImportieren(ctx, saal)
+	if err != nil {
+		t.Fatalf("saal einlesen: %v", err)
+	}
+	stand, err := ablage.SitzungImportieren(ctx, saalID,
+		speicher.Sitzungsdaten{Titel: "Probesitzung", Teilnahmen: teilnahmen})
+	if err != nil {
+		t.Fatalf("sitzung einlesen: %v", err)
+	}
+
+	aufbau := kern.Aufbau{
+		SaalID:         saalID,
+		SitzungID:      stand.SitzungID,
+		Titel:          stand.Titel,
+		SitzungZustand: stand.Zustand,
+		Plaetze:        plaetze,
+		Teilnahmen:     stand.Teilnahmen,
+		MaxOffen:       2,
+		Zeitlimit:      50 * time.Millisecond,
+	}
+	steuerung := &stilleKamera{antwort: kameraFehler}
+	k, err := kern.Neu(aufbau, steuerung, ablage, nil)
+	if err != nil {
+		t.Fatalf("kern nicht aufgebaut: %v", err)
+	}
+	return vorabcheck.Neu(aufbau, k, steuerung, ablage, 50*time.Millisecond), k
+}
+
+func vollbesetzt() []speicher.Teilnahmedaten {
+	return []speicher.Teilnahmedaten{
+		{Platz: 1, Person: "Anke Bergmann", Rolle: "leitung", Pin: "1111"},
+		{Platz: 2, Person: "Jonas Öztürk", Rolle: "delegierter", Pin: "2222"},
+	}
+}
+
+// finde sucht einen Punkt anhand von Bereich und Titel.
+func finde(t *testing.T, b vorabcheck.Bericht, bereich, titel string) vorabcheck.Punkt {
+	t.Helper()
+	for _, p := range b.Punkte {
+		if p.Bereich == bereich && p.Titel == titel {
+			return p
+		}
+	}
+	t.Fatalf("punkt %q/%q fehlt im bericht", bereich, titel)
+	return vorabcheck.Punkt{}
+}
+
+// TestVorabcheckMeldetBereit: ist alles besetzt und die Kamera antwortet,
+// meldet der Bericht bereit.
+func TestVorabcheckMeldetBereit(t *testing.T) {
+	pruefer, _ := aufbauen(t, vollbesetzt(), nil)
+
+	bericht, err := pruefer.Laufen(context.Background())
+	if err != nil {
+		t.Fatalf("vorabcheck: %v", err)
+	}
+	if !bericht.Bereit || bericht.Fehler != 0 {
+		t.Fatalf("bereit erwartet, %d fehler bekommen: %+v", bericht.Fehler, bericht.Punkte)
+	}
+	if p := finde(t, bericht, "Platz 1", "Kamera"); p.Ergebnis != vorabcheck.Ok {
+		t.Errorf("kamera sollte in ordnung sein, ist %s: %s", p.Ergebnis, p.Text)
+	}
+	if p := finde(t, bericht, "Protokoll", "Ereigniskette"); p.Ergebnis != vorabcheck.Ok {
+		t.Errorf("kette sollte in ordnung sein, ist %s: %s", p.Ergebnis, p.Text)
+	}
+}
+
+// TestVorabcheckMeldetStummeKamera: antwortet die Kamera nicht, ist der Saal
+// nicht bereit — und der Text sagt, was zu tun ist.
+func TestVorabcheckMeldetStummeKamera(t *testing.T) {
+	pruefer, _ := aufbauen(t, vollbesetzt(), errors.New("keine antwort"))
+
+	bericht, err := pruefer.Laufen(context.Background())
+	if err != nil {
+		t.Fatalf("vorabcheck: %v", err)
+	}
+	if bericht.Bereit {
+		t.Error("mit stummer kamera darf nicht bereit gemeldet werden")
+	}
+	p := finde(t, bericht, "Platz 2", "Kamera")
+	if p.Ergebnis != vorabcheck.Fehler {
+		t.Fatalf("fehler erwartet, %s bekommen", p.Ergebnis)
+	}
+	// Klartext statt Messwert: der Text nennt die Adresse und was zu prüfen ist.
+	if !strings.Contains(p.Text, "192.168.1.50:52381") || !strings.Contains(p.Text, "Kabel") {
+		t.Errorf("der text hilft dem techniker nicht weiter: %q", p.Text)
+	}
+}
+
+// TestVorabcheckMeldetLeerenPlatz: ein Platz ohne Person ist ein Hinweis,
+// kein Fehler — die Sitzung kann trotzdem stattfinden.
+func TestVorabcheckMeldetLeerenPlatz(t *testing.T) {
+	nurEiner := []speicher.Teilnahmedaten{
+		{Platz: 1, Person: "Anke Bergmann", Rolle: "leitung", Pin: "1111"},
+	}
+	pruefer, _ := aufbauen(t, nurEiner, nil)
+
+	bericht, err := pruefer.Laufen(context.Background())
+	if err != nil {
+		t.Fatalf("vorabcheck: %v", err)
+	}
+	p := finde(t, bericht, "Platz 2", "Besetzung")
+	if p.Ergebnis != vorabcheck.Hinweis {
+		t.Errorf("hinweis erwartet, %s bekommen", p.Ergebnis)
+	}
+	if !bericht.Bereit {
+		t.Error("ein unbesetzter platz darf die sitzung nicht verhindern")
+	}
+	// Nur eine Person darf leiten — darauf weist der Bericht hin.
+	if p := finde(t, bericht, "Sitzung", "Sitzungsleitung"); p.Ergebnis != vorabcheck.Hinweis {
+		t.Errorf("hinweis zur leitung erwartet, %s bekommen", p.Ergebnis)
+	}
+}
+
+// TestVorabcheckGesperrtWaehrendDerSitzung: der Check fährt Kameras und ist
+// deshalb während einer laufenden Sitzung gesperrt.
+func TestVorabcheckGesperrtWaehrendDerSitzung(t *testing.T) {
+	pruefer, k := aufbauen(t, vollbesetzt(), nil)
+	if err := k.SitzungEroeffnen(context.Background(), 1); err != nil {
+		t.Fatalf("sitzung nicht eröffnet: %v", err)
+	}
+
+	if _, err := pruefer.Laufen(context.Background()); !errors.Is(err, vorabcheck.ErrSitzungLaeuft) {
+		t.Fatalf("ablehnung erwartet, %v bekommen", err)
+	}
+}

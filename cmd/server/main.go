@@ -16,6 +16,7 @@ import (
 	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kamera"
 	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kern"
 	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/speicher"
+	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/vorabcheck"
 	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/web"
 )
 
@@ -78,13 +79,13 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 		}
 	}
 
-	saalID, aufbau, err := ablage.SaalImportieren(anlaufCtx, saaldaten)
+	saalID, plaetze, err := ablage.SaalImportieren(anlaufCtx, saaldaten)
 	if err != nil {
 		return err
 	}
 	protokoll.Info("saal eingelesen",
 		"saal", saaldaten.Saal, "saal_id", saalID,
-		"plaetze", len(aufbau), "kameras", len(saaldaten.Kameras))
+		"plaetze", len(plaetze), "kameras", len(saaldaten.Kameras))
 
 	stand, err := ablage.SitzungImportieren(anlaufCtx, saalID, sitzungsdaten)
 	if err != nil {
@@ -99,25 +100,30 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 		"teilnahmen", len(stand.Teilnahmen), "redeliste", len(stand.Wortmeldungen))
 
 	steuerung := kamera.NeuViscaIP(konfiguration.KameraZeitlimit())
-	sitzung, err := kern.Neu(kern.Aufbau{
+	aufbau := kern.Aufbau{
 		SaalID:         saalID,
 		SitzungID:      stand.SitzungID,
 		Titel:          stand.Titel,
 		SitzungZustand: stand.Zustand,
-		Plaetze:        aufbau,
+		Plaetze:        plaetze,
 		Teilnahmen:     stand.Teilnahmen,
 		Wortmeldungen:  stand.Wortmeldungen,
 		LeitungPlatz:   leitungPlatz,
 		MaxOffen:       konfiguration.MaxOffeneMikrofone,
 		Zeitlimit:      konfiguration.KameraZeitlimit(),
-	}, steuerung, ablage, protokoll)
+	}
+	sitzung, err := kern.Neu(aufbau, steuerung, ablage, protokoll)
 	if err != nil {
 		return err
 	}
 
+	oberflaeche := web.Neu(sitzung, webVerzeichnis, protokoll)
+	oberflaeche.SetzeVorabcheck(
+		vorabcheck.Neu(aufbau, sitzung, steuerung, ablage, konfiguration.KameraZeitlimit()))
+
 	dienst := &http.Server{
 		Addr:              konfiguration.Adresse,
-		Handler:           web.Neu(sitzung, webVerzeichnis, protokoll).Handler(),
+		Handler:           oberflaeche.Handler(),
 		ReadHeaderTimeout: 10 * time.Second,
 	}
 

@@ -25,6 +25,7 @@ Andere Konfiguration: `-konfiguration pfad.yaml`.
 | `/namensschild?platz=1` | Namensschild eines Platzes |
 | `/dolmetscher` | Dolmetscherplatz, zeigt den Redner (ohne Ton) |
 | `/testumgebung` | die drei Geräte nebeneinander in einem Fenster |
+| `/vorabcheck` | Selbsttest vor der Sitzung: Kette, Besetzung, jede Kamera |
 
 Namensschild und Dolmetscherplatz lesen nur mit — sie melden keinen Platz an.
 
@@ -74,4 +75,9 @@ Achtung: Die Testdatenbank wird dabei geleert.
   `sitzung.json` eintragen.
 - **Übergabe der Leitung** braucht eine zweite Teilnahme mit der Rolle
   `leitung`; in `sitzung.json` steht bewusst nur eine.
+- **Vorabcheck.** `POST /vorabcheck` fährt jeden Platz an und prüft Kette und
+  Besetzung. Während einer laufenden Sitzung ist er gesperrt — er bewegt
+  Kameras. Antwort 409, wenn es trotzdem jemand versucht.
+- **Prüfung bei jedem Push.** `.github/workflows/pruefung.yml` baut, prüft die
+  Formatierung und lässt die Tests laufen, auch gegen eine echte PostgreSQL.
 - **Kein Ton.** Der Dolmetscherplatz zeigt nur, wer spricht.

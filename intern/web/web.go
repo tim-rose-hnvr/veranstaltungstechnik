@@ -14,6 +14,7 @@ import (
 	"github.com/coder/websocket"
 
 	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kern"
+	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/vorabcheck"
 )
 
 // Nachricht ist das, was der Client schickt. Das Feld typ entscheidet.
@@ -43,6 +44,7 @@ type Server struct {
 	kern        *kern.Kern
 	verzeichnis string
 	protokoll   *slog.Logger
+	pruefer     *vorabcheck.Pruefer
 
 	mu           sync.Mutex
 	verbindungen map[*verbindung]struct{}
@@ -80,7 +82,49 @@ func (s *Server) Handler() http.Handler {
 	weiche.Handle("GET /namensschild", s.seite("namensschild.html"))
 	weiche.Handle("GET /dolmetscher", s.seite("dolmetscher.html"))
 	weiche.Handle("GET /testumgebung", s.seite("testumgebung.html"))
+	weiche.Handle("GET /vorabcheck", s.seite("vorabcheck.html"))
+	weiche.HandleFunc("POST /vorabcheck", s.vorabcheck)
 	return weiche
+}
+
+// SetzeVorabcheck hinterlegt den Prüfer. Ohne ihn antwortet die Seite, dass
+// der Vorabcheck nicht eingerichtet ist.
+func (s *Server) SetzeVorabcheck(p *vorabcheck.Pruefer) { s.pruefer = p }
+
+// vorabcheck führt den Selbsttest aus und liefert den Bericht als JSON.
+// Er fährt dabei die Kameras an — deshalb ein POST und nicht ein GET.
+func (s *Server) vorabcheck(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-store")
+
+	if s.pruefer == nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		json.NewEncoder(w).Encode(map[string]string{ //nolint:errcheck
+			"fehler": "Der Vorabcheck ist nicht eingerichtet.",
+		})
+		return
+	}
+
+	bericht, err := s.pruefer.Laufen(r.Context())
+	if errors.Is(err, vorabcheck.ErrSitzungLaeuft) {
+		w.WriteHeader(http.StatusConflict)
+		json.NewEncoder(w).Encode(map[string]string{ //nolint:errcheck
+			"fehler": "Die Sitzung läuft. Der Vorabcheck fährt Kameras und ist deshalb gesperrt.",
+		})
+		return
+	}
+	if err != nil {
+		s.protokoll.Error("vorabcheck fehlgeschlagen", "grund", err)
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"fehler": err.Error()}) //nolint:errcheck
+		return
+	}
+
+	s.protokoll.Info("vorabcheck gelaufen",
+		"ok", bericht.Ok, "hinweise", bericht.Hinweise, "fehler", bericht.Fehler)
+	if err := json.NewEncoder(w).Encode(bericht); err != nil {
+		s.protokoll.Error("bericht nicht verpackbar", "grund", err)
+	}
 }
 
 // seite liefert eine Oberfläche. Sie wird bei jedem Abruf von der Platte

@@ -1,0 +1,63 @@
+name: Prüfung
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+
+jobs:
+  pruefen:
+    name: Bauen und testen
+    runs-on: ubuntu-latest
+
+    # Die Tests laufen auch ohne Datenbank grün. Hier steht trotzdem eine
+    # echte PostgreSQL bereit, damit Ereigniskette und Import gegen das
+    # wirkliche SQL geprüft werden und nicht nur gegen die Ablage im Speicher.
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: sitzung
+          POSTGRES_PASSWORD: geheim
+          POSTGRES_DB: sitzung_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U sitzung"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.24"
+          cache: true
+
+      - name: Formatierung
+        run: |
+          ungeformt=$(gofmt -l .)
+          if [ -n "$ungeformt" ]; then
+            echo "Nicht mit gofmt formatiert:"
+            echo "$ungeformt"
+            exit 1
+          fi
+
+      - name: go vet
+        run: go vet ./...
+
+      - name: Bauen
+        run: go build ./...
+
+      - name: Tests ohne Datenbank
+        run: go test ./...
+
+      - name: Tests gegen PostgreSQL
+        env:
+          SITZUNG_TEST_DB: postgres://sitzung:geheim@localhost:5432/sitzung_test?sslmode=disable
+        run: go test ./... -count=1
+
+      - name: Tests mit Wettlaufprüfung
+        run: go test -race ./... -count=1

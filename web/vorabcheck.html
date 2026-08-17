@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vorabcheck</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --grund: #f4f4f5; --karte: #ffffff; --rand: #d4d4d8;
+    --schrift: #18181b; --leise: #71717a;
+    --ok: #16a34a; --hinweis: #ca8a04; --fehler: #dc2626;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --grund: #09090b; --karte: #18181b; --rand: #3f3f46; --schrift: #fafafa; --leise: #a1a1aa; }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 1.5rem;
+    font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--grund); color: var(--schrift);
+  }
+  .bahn { max-width: 46rem; margin: 0 auto; }
+  header { display: flex; flex-wrap: wrap; gap: .75rem 1rem; align-items: baseline; margin-bottom: 1rem; }
+  h1 { font-size: 1.25rem; margin: 0; font-weight: 600; }
+  .leise { color: var(--leise); font-size: .875rem; }
+
+  button {
+    font: inherit; font-weight: 600; padding: .7rem 1.2rem; border-radius: .6rem; cursor: pointer;
+    border: 1px solid var(--rand); background: var(--schrift); color: var(--grund);
+  }
+  button:disabled { opacity: .5; cursor: default; }
+
+  .fazit { border-radius: .75rem; padding: 1rem 1.15rem; margin: 1rem 0; display: none;
+           border: 1px solid var(--rand); background: var(--karte); }
+  .fazit.bereit { border-color: var(--ok); }
+  .fazit.nichtbereit { border-color: var(--fehler); }
+  .fazit b { display: block; font-size: 1.05rem; margin-bottom: .2rem; }
+
+  .gruppe { margin-top: 1.25rem; }
+  .gruppe h2 { font-size: .78rem; margin: 0 0 .5rem; font-weight: 600;
+               letter-spacing: .09em; text-transform: uppercase; color: var(--leise); }
+  .punkt { background: var(--karte); border: 1px solid var(--rand); border-left-width: 3px;
+           border-radius: .5rem; padding: .7rem .9rem; margin-bottom: .5rem; }
+  .punkt.ok { border-left-color: var(--ok); }
+  .punkt.hinweis { border-left-color: var(--hinweis); }
+  .punkt.fehler { border-left-color: var(--fehler); }
+  .punkt .titel { font-weight: 600; font-size: .92rem; }
+  .punkt .text { font-size: .9rem; color: var(--leise); margin-top: .15rem; }
+</style>
+</head>
+<body>
+<div class="bahn">
+
+<header>
+  <h1>Vorabcheck</h1>
+  <span class="leise">Prüft Kette, Besetzung und jede Kamera — vor der Sitzung, nicht währenddessen.</span>
+</header>
+
+<button id="starten">Vorabcheck starten</button>
+<span class="leise" id="lage" style="margin-left:.75rem"></span>
+
+<div class="fazit" id="fazit"></div>
+<div id="bericht"></div>
+
+</div>
+<script>
+"use strict";
+
+const knoten = {
+  starten: document.getElementById("starten"),
+  lage: document.getElementById("lage"),
+  fazit: document.getElementById("fazit"),
+  bericht: document.getElementById("bericht")
+};
+
+knoten.starten.onclick = async function () {
+  knoten.starten.disabled = true;
+  knoten.lage.textContent = "läuft … die Kameras fahren jetzt jeden Platz an";
+  knoten.fazit.style.display = "none";
+  knoten.bericht.replaceChildren();
+
+  let antwort, daten;
+  try {
+    antwort = await fetch("/vorabcheck", { method: "POST" });
+    daten = await antwort.json();
+  } catch (e) {
+    knoten.lage.textContent = "";
+    zeigeFazit(false, "Der Server antwortet nicht", String(e));
+    knoten.starten.disabled = false;
+    return;
+  }
+
+  knoten.starten.disabled = false;
+  knoten.lage.textContent = "";
+
+  if (!antwort.ok) {
+    zeigeFazit(false, "Nicht gelaufen", daten.fehler || "Unbekannter Fehler");
+    return;
+  }
+
+  zeigeFazit(daten.bereit,
+    daten.bereit ? "Der Saal ist bereit" : "Der Saal ist noch nicht bereit",
+    daten.ok + " in Ordnung · " + daten.hinweise + " Hinweise · " + daten.fehler +
+    " Fehler · " + daten.dauer_ms + " ms");
+
+  // Nach Bereich gruppieren, in der Reihenfolge des Berichts.
+  const gruppen = [];
+  const nach = {};
+  for (const punkt of daten.punkte) {
+    if (!nach[punkt.bereich]) {
+      nach[punkt.bereich] = [];
+      gruppen.push(punkt.bereich);
+    }
+    nach[punkt.bereich].push(punkt);
+  }
+
+  const alles = document.createDocumentFragment();
+  for (const name of gruppen) {
+    const gruppe = document.createElement("div");
+    gruppe.className = "gruppe";
+    const titel = document.createElement("h2");
+    titel.textContent = name;
+    gruppe.appendChild(titel);
+
+    for (const punkt of nach[name]) {
+      const kasten = document.createElement("div");
+      kasten.className = "punkt " + punkt.ergebnis;
+      const kopf = document.createElement("div");
+      kopf.className = "titel";
+      kopf.textContent = punkt.titel;
+      const text = document.createElement("div");
+      text.className = "text";
+      text.textContent = punkt.text;
+      kasten.appendChild(kopf);
+      kasten.appendChild(text);
+      gruppe.appendChild(kasten);
+    }
+    alles.appendChild(gruppe);
+  }
+  knoten.bericht.replaceChildren(alles);
+};
+
+function zeigeFazit(gut, titel, text) {
+  knoten.fazit.className = "fazit " + (gut ? "bereit" : "nichtbereit");
+  knoten.fazit.style.display = "block";
+  knoten.fazit.replaceChildren();
+  const b = document.createElement("b");
+  b.textContent = titel;
+  const p = document.createElement("div");
+  p.className = "leise";
+  p.textContent = text;
+  knoten.fazit.appendChild(b);
+  knoten.fazit.appendChild(p);
+}
+</script>
+</body>
+</html>
