@@ -30,6 +30,7 @@ type Kamerasteuerung interface {
 
 // Ablage ist alles, was der Kern dauerhaft festhalten muss.
 type Ablage interface {
+	Abstimmungsablage
 	EreignisAnfuegen(ctx context.Context, saalID, art string, nutzlast map[string]any) (Ereignis, error)
 	SitzungZustandSetzen(ctx context.Context, sitzungID string, zustand Sitzungszustand, zeit time.Time) error
 	TeilnahmeZustandSetzen(ctx context.Context, teilnahmeID string, zustand Teilnahmezustand) error
@@ -57,13 +58,14 @@ type Kamerazustand struct {
 // Zustand ist der gemeinsame Zustand des Saals. Der Server sendet immer
 // alles, nie Teiländerungen — dann heilen sich Aussetzer von selbst.
 type Zustand struct {
-	Typ       string             `json:"typ"`
-	Stand     uint64             `json:"stand"`
-	MaxOffen  int                `json:"max_offen"`
-	Sitzung   SitzungZustand     `json:"sitzung"`
-	Plaetze   []PlatzZustand     `json:"plaetze"`
-	Redeliste []RedelisteEintrag `json:"redeliste"`
-	Kamera    *Kamerazustand     `json:"kamera"`
+	Typ        string             `json:"typ"`
+	Stand      uint64             `json:"stand"`
+	MaxOffen   int                `json:"max_offen"`
+	Sitzung    SitzungZustand     `json:"sitzung"`
+	Plaetze    []PlatzZustand     `json:"plaetze"`
+	Redeliste  []RedelisteEintrag `json:"redeliste"`
+	Abstimmung *AbstimmungZustand `json:"abstimmung"`
+	Kamera     *Kamerazustand     `json:"kamera"`
 }
 
 type platz struct {
@@ -83,6 +85,7 @@ type Aufbau struct {
 	Plaetze        []Platzaufbau
 	Teilnahmen     []Teilnahmeaufbau
 	Wortmeldungen  []Wortmeldung // offene aus der Datenbank
+	Abstimmung     *Abstimmung   // laufende oder zuletzt beendete
 	LeitungPlatz   int           // 0: aus der Rolle ableiten
 	MaxOffen       int
 	Zeitlimit      time.Duration
@@ -107,6 +110,7 @@ type Kern struct {
 	nach         map[int]*platz
 	leitungPlatz int
 	redeliste    []*Wortmeldung
+	abstimmung   *Abstimmung
 	stand        uint64
 	kamera       *Kamerazustand
 
@@ -175,6 +179,7 @@ func Neu(a Aufbau, steuerung Kamerasteuerung, ablage Ablage, protokoll *slog.Log
 		}
 	}
 	sort.Slice(k.redeliste, func(i, j int) bool { return k.redeliste[i].FolgeNr < k.redeliste[j].FolgeNr })
+	k.abstimmung = a.Abstimmung
 
 	// Der Staffelstab kommt aus dem Ereignisprotokoll. Steht dort nichts,
 	// führt die Teilnahme mit der Rolle leitung.
@@ -507,9 +512,17 @@ func (k *Kern) MikroAn(ctx context.Context, absender, ziel int) error {
 	}
 	k.stand++
 	aufbau := p.aufbau
+	// Während einer laufenden Abstimmung sind automatische Technikeingriffe
+	// gesperrt. Das Mikrofon geht auf, die Kamera bleibt stehen.
+	abstimmungLaeuft := k.abstimmung.Laeuft()
 	k.mu.Unlock()
 
 	k.melder()
+
+	if abstimmungLaeuft {
+		k.protokoll.Info("kamera bleibt stehen, es wird abgestimmt", "platz", ziel)
+		return nil
+	}
 
 	// Der Kamerabefehl läuft nebenher: ein stummes Gerät darf die Antwort an
 	// die Clients nicht um das Zeitlimit verzögern.
@@ -622,6 +635,38 @@ func (k *Kern) darfIntern(p *platz, aktion string) *Fehler {
 			return fehler(CodeNichtBerechtigt, "Die Sitzungsleitung liegt gerade bei einem anderen Platz")
 		}
 		return fehler(CodeNichtBerechtigt, fmt.Sprintf("Die Rolle %s darf das nicht", p.teilnahme.Rolle))
+	}
+
+	// Was der Abstimmungszustand zusätzlich erlaubt oder verbietet. Damit ist
+	// das Feld "darf" im Zustand genau — der Client muss nichts ableiten.
+	switch aktion {
+	case AktionSitzungEroeffnen:
+		// Eröffnen geht nur aus einem Zustand heraus, der es zulässt — sonst
+		// böte die Oberfläche einen Knopf an, der immer fehlschlägt.
+		if k.sitzung != SitzungVorbereitet && k.sitzung != SitzungBereit &&
+			k.sitzung != SitzungUnterbrochen {
+			return fehler(CodeSitzungLaeuftNicht,
+				fmt.Sprintf("Die Sitzung ist %s", k.sitzung))
+		}
+	case AktionAbstimmungStarten:
+		if k.abstimmung.Laeuft() {
+			return fehler(CodeAbstimmungLaeuft, "Es läuft bereits eine Abstimmung")
+		}
+	case AktionAbstimmungBeenden, AktionAbstimmungAbbrechen:
+		if !k.abstimmung.Laeuft() {
+			return fehler(CodeKeineAbstimmung, "Es läuft keine Abstimmung")
+		}
+	case AktionAbstimmungFeststellen:
+		if k.abstimmung == nil || k.abstimmung.Zustand != AbstimmungAusgezaehlt {
+			return fehler(CodeKeineAbstimmung, "Es gibt kein ausgezähltes Ergebnis")
+		}
+	case AktionStimmeAbgeben:
+		if !k.abstimmung.Laeuft() {
+			return fehler(CodeKeineAbstimmung, "Es läuft keine Abstimmung")
+		}
+		if k.abstimmung.Abgegeben[p.aufbau.Nummer] {
+			return fehler(CodeSchonAbgestimmt, "Für diesen Platz ist bereits eine Stimme abgegeben")
+		}
 	}
 	return nil
 }
@@ -777,9 +822,10 @@ func (k *Kern) zustandIntern() Zustand {
 			Zustand:      k.sitzung,
 			LeitungPlatz: k.leitungPlatz,
 		},
-		Plaetze:   make([]PlatzZustand, 0, len(k.plaetze)),
-		Redeliste: make([]RedelisteEintrag, 0, len(k.redeliste)),
-		Kamera:    k.kamera,
+		Plaetze:    make([]PlatzZustand, 0, len(k.plaetze)),
+		Redeliste:  make([]RedelisteEintrag, 0, len(k.redeliste)),
+		Abstimmung: k.abstimmungZustandIntern(),
+		Kamera:     k.kamera,
 	}
 	for _, p := range k.plaetze {
 		pz := PlatzZustand{

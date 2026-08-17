@@ -37,6 +37,12 @@ const (
 	AktionSitzungSchliessen = "sitzung_schliessen"
 	AktionMikroAn           = "mikro_an"
 	AktionMikroAus          = "mikro_aus"
+
+	AktionAbstimmungStarten     = "abstimmung_starten"
+	AktionAbstimmungBeenden     = "abstimmung_beenden"
+	AktionAbstimmungFeststellen = "abstimmung_feststellen"
+	AktionAbstimmungAbbrechen   = "abstimmung_abbrechen"
+	AktionStimmeAbgeben         = "stimme_abgeben"
 )
 
 // alleAktionen ist die Reihenfolge, in der "darf" aufgebaut wird.
@@ -46,6 +52,9 @@ var alleAktionen = []string{
 	AktionWortErteilen, AktionWortEntziehen,
 	AktionLeitungUebergeben,
 	AktionMikroAn, AktionMikroAus,
+	AktionAbstimmungStarten, AktionAbstimmungBeenden,
+	AktionAbstimmungFeststellen, AktionAbstimmungAbbrechen,
+	AktionStimmeAbgeben,
 }
 
 // rolleDarf beantwortet die Frage der Rolle allein: Ist diese Aktion für
@@ -58,8 +67,15 @@ var alleAktionen = []string{
 func rolleDarf(rolle Rolle, leitungAktiv bool, aktion string) bool {
 	switch aktion {
 	case AktionSitzungEroeffnen, AktionSitzungSchliessen,
-		AktionWortErteilen, AktionWortEntziehen, AktionLeitungUebergeben:
+		AktionWortErteilen, AktionWortEntziehen, AktionLeitungUebergeben,
+		AktionAbstimmungStarten, AktionAbstimmungBeenden,
+		AktionAbstimmungFeststellen, AktionAbstimmungAbbrechen:
 		return rolle == RolleLeitung && leitungAktiv
+
+	case AktionStimmeAbgeben:
+		// Stimmrecht hat, wer leitet oder delegiert ist — nicht die
+		// Schriftführung und kein Gast.
+		return rolle.Stimmrecht()
 
 	case AktionWortMelden, AktionWortZurueckziehen:
 		return rolle == RolleLeitung || rolle == RolleDelegierter

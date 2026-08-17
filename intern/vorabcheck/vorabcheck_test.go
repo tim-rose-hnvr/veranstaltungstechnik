@@ -7,9 +7,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kern"
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/speicher"
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/vorabcheck"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/speicher"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/vorabcheck"
 )
 
 type stilleKamera struct{ antwort error }

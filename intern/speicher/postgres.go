@@ -10,7 +10,7 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kern"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
 )
 
 // StandardOrganisation ist der Mandant, unter dem ein importierter Saal
@@ -244,6 +244,7 @@ func (p *Postgres) Zaehlen(ctx context.Context, tabelle string) (int, error) {
 		"organisation": true, "saal": true, "kamera": true,
 		"platz": true, "preset": true, "ereignis": true,
 		"person": true, "sitzung": true, "teilnahme": true, "wortmeldung": true,
+		"abstimmung": true, "stimme": true, "stimmabgabe": true,
 	}
 	if !erlaubt[tabelle] {
 		return 0, fmt.Errorf("unbekannte tabelle %q", tabelle)

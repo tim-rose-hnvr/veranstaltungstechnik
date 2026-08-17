@@ -10,8 +10,8 @@ import (
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kern"
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/speicher"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/speicher"
 )
 
 // Die Tests laufen gegen die Ablage im Arbeitsspeicher und, wenn

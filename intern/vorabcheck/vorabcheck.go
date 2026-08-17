@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kern"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
 )
 
 // ErrSitzungLaeuft meldet, dass der Vorabcheck abgelehnt wurde. Er fährt die

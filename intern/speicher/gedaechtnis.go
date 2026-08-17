@@ -7,7 +7,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kern"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
 )
 
 // Ablage ist das, was der Server vom Speicher braucht. Postgres ist die
@@ -15,6 +15,7 @@ import (
 type Ablage interface {
 	SaalImportieren(ctx context.Context, d Saaldaten) (string, []kern.Platzaufbau, error)
 	SitzungImportieren(ctx context.Context, saalID string, d Sitzungsdaten) (Sitzungsstand, error)
+	LetzteAbstimmung(ctx context.Context, sitzungID string) (*kern.Abstimmung, error)
 	EreignisAnfuegen(ctx context.Context, saalID, art string, nutzlast map[string]any) (kern.Ereignis, error)
 	Ereignisse(ctx context.Context, saalID string) ([]kern.Ereignis, error)
 	OffeneWortmeldungen(ctx context.Context, sitzungID string) ([]kern.Wortmeldung, error)
@@ -22,6 +23,10 @@ type Ablage interface {
 	Zaehlen(ctx context.Context, tabelle string) (int, error)
 
 	// Schreibwege des Kerns.
+	AbstimmungAnlegen(ctx context.Context, sitzungID, titel string, art kern.Abstimmungsart) (string, int64, error)
+	AbstimmungStarten(ctx context.Context, abstimmungID string, stimmberechtigt, anwesend, quorum int, zeit time.Time) error
+	AbstimmungZustandSetzen(ctx context.Context, abstimmungID string, zustand kern.Abstimmungszustand, zeit time.Time) error
+	StimmeAbgeben(ctx context.Context, abstimmungID, teilnahmeID string, wahl kern.Wahl, geheim bool) error
 	SitzungZustandSetzen(ctx context.Context, sitzungID string, zustand kern.Sitzungszustand, zeit time.Time) error
 	TeilnahmeZustandSetzen(ctx context.Context, teilnahmeID string, zustand kern.Teilnahmezustand) error
 	WortmeldungAnlegen(ctx context.Context, sitzungID, teilnahmeID string) (string, int64, error)
@@ -48,6 +53,7 @@ type Gedaechtnis struct {
 	naechsteID     int
 
 	personen      map[string]string // organisation_id|name -> id
+	abstimmungen  []*gAbstimmung
 	sitzungen     map[string]*gSitzung
 	teilnahmen    map[string]*gTeilnahme // sitzung_id|platz_id -> Teilnahme
 	wortmeldungen []*gWortmeldung
@@ -191,6 +197,14 @@ func (g *Gedaechtnis) Zaehlen(ctx context.Context, tabelle string) (int, error) 
 		return len(g.teilnahmen), nil
 	case "wortmeldung":
 		return len(g.wortmeldungen), nil
+	case "abstimmung":
+		return len(g.abstimmungen), nil
+	case "stimme":
+		anzahl := 0
+		for _, a := range g.abstimmungen {
+			anzahl += len(a.stimmen)
+		}
+		return anzahl, nil
 	default:
 		return 0, fmt.Errorf("unbekannte tabelle %q", tabelle)
 	}

@@ -1,8 +1,8 @@
 {
   "titel": "Vorstandssitzung",
   "teilnahmen": [
-    { "platz": 1, "person": "Anke Bergmann", "rolle": "leitung",         "pin": "1234" },
-    { "platz": 2, "person": "Jonas Öztürk",  "rolle": "delegierter",     "pin": "2345" },
-    { "platz": 3, "person": "Rita Falk",     "rolle": "schriftfuehrung", "pin": "3456" }
+    { "platz": 1, "person": "Anke Bergmann", "rolle": "leitung",     "pin": "1234" },
+    { "platz": 2, "person": "Jonas Öztürk",  "rolle": "delegierter", "pin": "2345" },
+    { "platz": 3, "person": "Rita Falk",     "rolle": "delegierter", "pin": "3456" }
   ]
 }

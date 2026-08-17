@@ -72,6 +72,22 @@
   ol li .lage { color: var(--leise); font-size: .8rem; }
   ol li .lage.erteilt, ol li .lage.laufend { color: var(--wort); font-weight: 600; }
 
+  .stimme { display: flex; gap: .4rem; margin-top: .6rem; }
+  .stimme button.ja    { border-color: var(--frei); }
+  .stimme button.nein  { border-color: var(--an); }
+  .balken { display: flex; height: .5rem; border-radius: .25rem; overflow: hidden; margin: .6rem 0 .3rem; background: var(--rand); }
+  .balken i { display: block; height: 100%; }
+  .balken .ja { background: var(--frei); }
+  .balken .nein { background: var(--an); }
+  .balken .enth { background: var(--leise); }
+  .ergebnis { font-weight: 600; margin-top: .4rem; }
+  .ergebnis.angenommen { color: var(--frei); }
+  .ergebnis.abgelehnt { color: var(--an); }
+  aside input, aside select {
+    font: inherit; font-size: .875rem; width: 100%; padding: .4rem .5rem; margin-bottom: .4rem;
+    border-radius: .5rem; border: 1px solid var(--rand); background: var(--grund); color: var(--schrift);
+  }
+
   #fehler { margin-bottom: 1rem; padding: .75rem 1rem; border-radius: .5rem;
             background: var(--an); color: #fff; display: none; }
 
@@ -110,9 +126,15 @@
       <ol id="redeliste"></ol>
     </aside>
     <aside>
+      <h2>Abstimmung</h2>
+      <div id="abstimmung"></div>
+    </aside>
+    <aside>
       <h2>Sitzung</h2>
       <div class="knoepfe" id="sitzungsknoepfe"></div>
       <p class="leise" id="meinezeile" style="margin:.75rem 0 0">nicht angemeldet</p>
+      <p style="margin:.5rem 0 0"><a class="leise" href="/protokoll.md" target="_blank">Protokoll ansehen</a>
+        · <a class="leise" href="/vorabcheck" target="_blank">Vorabcheck</a></p>
     </aside>
   </div>
 </div>
@@ -144,6 +166,7 @@ const knoten = {
   plaetze: document.getElementById("plaetze"),
   redeliste: document.getElementById("redeliste"),
   sitzungsknoepfe: document.getElementById("sitzungsknoepfe"),
+  abstimmung: document.getElementById("abstimmung"),
   fehler: document.getElementById("fehler"),
   netzpunkt: document.getElementById("netzpunkt"),
   netztext: document.getElementById("netztext"),
@@ -233,6 +256,117 @@ function zustand(n) {
   zeichnen(n, offen);
   redeliste(n);
   sitzungsknoepfe(n);
+  abstimmung(n);
+}
+
+function abstimmung(n) {
+  const neu = document.createDocumentFragment();
+  const a = n.abstimmung;
+
+  if (!a || a.zustand === "abgebrochen") {
+    if (darf("abstimmung_starten")) {
+      const titel = document.createElement("input");
+      titel.placeholder = "Beschlusstext";
+      const art = document.createElement("select");
+      for (const [wert, beschriftung] of [["offen", "offen"], ["namentlich", "namentlich"], ["geheim", "geheim"]]) {
+        const eintrag = document.createElement("option");
+        eintrag.value = wert;
+        eintrag.textContent = beschriftung;
+        art.appendChild(eintrag);
+      }
+      const knopf = document.createElement("button");
+      knopf.textContent = "Abstimmung eröffnen";
+      knopf.onclick = function () {
+        if (!titel.value.trim()) return;
+        senden({ typ: "abstimmung_starten", titel: titel.value.trim(), art: art.value });
+      };
+      neu.appendChild(titel);
+      neu.appendChild(art);
+      neu.appendChild(knopf);
+    } else {
+      const leer = document.createElement("span");
+      leer.className = "leise";
+      leer.textContent = "keine Abstimmung";
+      neu.appendChild(leer);
+    }
+    knoten.abstimmung.replaceChildren(neu);
+    return;
+  }
+
+  const titel = document.createElement("div");
+  titel.style.fontWeight = "600";
+  titel.textContent = a.titel;
+  const lage = document.createElement("div");
+  lage.className = "leise";
+  lage.textContent = a.art + " · " + a.zustand + " · " + a.abgegeben + " von " +
+    a.anwesend + " Stimmen (Quorum " + a.quorum + ")";
+  neu.appendChild(titel);
+  neu.appendChild(lage);
+
+  if (a.zustand === "laufend" && darf("stimme_abgeben")) {
+    const reihe = document.createElement("div");
+    reihe.className = "stimme";
+    for (const [wert, beschriftung, klasse] of [["ja", "Ja", "ja"], ["nein", "Nein", "nein"], ["enthaltung", "Enthaltung", ""]]) {
+      const knopf = document.createElement("button");
+      knopf.textContent = beschriftung;
+      knopf.className = klasse;
+      knopf.onclick = function () { senden({ typ: "stimme_abgeben", wahl: wert }); };
+      reihe.appendChild(knopf);
+    }
+    neu.appendChild(reihe);
+  }
+
+  if (a.ergebnis) {
+    const gesamt = Math.max(1, a.ergebnis.ja + a.ergebnis.nein + a.ergebnis.enthaltung);
+    const balken = document.createElement("div");
+    balken.className = "balken";
+    for (const [anzahl, klasse] of [[a.ergebnis.ja, "ja"], [a.ergebnis.nein, "nein"], [a.ergebnis.enthaltung, "enth"]]) {
+      const teil = document.createElement("i");
+      teil.className = klasse;
+      teil.style.width = (100 * anzahl / gesamt) + "%";
+      balken.appendChild(teil);
+    }
+    const zahlen = document.createElement("div");
+    zahlen.className = "leise";
+    zahlen.textContent = a.ergebnis.ja + " Ja · " + a.ergebnis.nein + " Nein · " +
+      a.ergebnis.enthaltung + " Enthaltungen";
+    const spruch = document.createElement("div");
+    spruch.className = "ergebnis " + (a.ergebnis.angenommen ? "angenommen" : "abgelehnt");
+    spruch.textContent = a.ergebnis.angenommen ? "angenommen" : "abgelehnt";
+    neu.appendChild(balken);
+    neu.appendChild(zahlen);
+    neu.appendChild(spruch);
+
+    if (a.art === "namentlich" && a.ergebnis.namentlich) {
+      const liste = document.createElement("div");
+      liste.className = "leise";
+      liste.style.marginTop = ".4rem";
+      const teile = [];
+      for (const platz of Object.keys(a.ergebnis.namentlich)) {
+        teile.push("Platz " + platz + ": " + a.ergebnis.namentlich[platz]);
+      }
+      liste.textContent = teile.join(" · ");
+      neu.appendChild(liste);
+    }
+  }
+
+  const knoepfe = document.createElement("div");
+  knoepfe.className = "knoepfe";
+  knoepfe.style.marginTop = ".6rem";
+  for (const [aktion, beschriftung] of [
+    ["abstimmung_beenden", "auszählen"],
+    ["abstimmung_feststellen", "feststellen"],
+    ["abstimmung_abbrechen", "abbrechen"]
+  ]) {
+    if (!darf(aktion)) continue;
+    const knopf = document.createElement("button");
+    knopf.textContent = beschriftung;
+    knopf.onclick = function () { senden({ typ: aktion }); };
+    knoepfe.appendChild(knopf);
+  }
+  if (knoepfe.hasChildNodes()) neu.appendChild(knoepfe);
+
+  knoten.abstimmung.replaceChildren(neu);
 }
 
 function zeichnen(n, offen) {
@@ -366,7 +500,7 @@ function sitzungsknoepfe(n) {
   }
   if (darf("leitung_uebergeben")) {
     const auswahl = document.createElement("select");
-    auswahl.style.flex = "1";
+    auswahl.style.flexBasis = "100%";
     const kopf = document.createElement("option");
     kopf.textContent = "Leitung übergeben an …";
     kopf.value = "";

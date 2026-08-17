@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kamera"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kamera"
 )
 
 // TestViscaRahmen: der Rahmen für Kanal 1, Preset 5 muss Byte für Byte der

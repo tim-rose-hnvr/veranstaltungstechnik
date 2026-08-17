@@ -11,10 +11,10 @@ import (
 
 	"github.com/coder/websocket"
 
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kern"
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/speicher"
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/vorabcheck"
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/web"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/speicher"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/vorabcheck"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/web"
 )
 
 // Diese Tests fahren das WebSocket-Protokoll über eine echte HTTP-Verbindung.

@@ -13,11 +13,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kamera"
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kern"
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/speicher"
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/vorabcheck"
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/web"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kamera"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
+	protokollpaket "github.com/tim-rose-hnvr/veranstaltungstechnik/intern/protokoll"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/speicher"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/vorabcheck"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/web"
 )
 
 // Migrationen in dieser Reihenfolge. Die Wächtertabelle ist die letzte, die
@@ -25,6 +26,7 @@ import (
 var migrationen = []struct{ Datei, Waechter string }{
 	{"migrationen/001_grundlage.sql", "ereignis"},
 	{"migrationen/002_sitzung.sql", "wortmeldung"},
+	{"migrationen/003_abstimmung.sql", "stimmabgabe"},
 }
 
 const webVerzeichnis = "web"
@@ -95,6 +97,10 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 	if err != nil {
 		return err
 	}
+	abstimmung, err := ablage.LetzteAbstimmung(anlaufCtx, stand.SitzungID)
+	if err != nil {
+		return err
+	}
 	protokoll.Info("sitzung eingelesen",
 		"titel", stand.Titel, "zustand", stand.Zustand,
 		"teilnahmen", len(stand.Teilnahmen), "redeliste", len(stand.Wortmeldungen))
@@ -109,6 +115,7 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 		Plaetze:        plaetze,
 		Teilnahmen:     stand.Teilnahmen,
 		Wortmeldungen:  stand.Wortmeldungen,
+		Abstimmung:     abstimmung,
 		LeitungPlatz:   leitungPlatz,
 		MaxOffen:       konfiguration.MaxOffeneMikrofone,
 		Zeitlimit:      konfiguration.KameraZeitlimit(),
@@ -119,6 +126,8 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 	}
 
 	oberflaeche := web.Neu(sitzung, webVerzeichnis, protokoll)
+	oberflaeche.SetzeProtokoll(
+		protokollpaket.Neu(saalID, saaldaten.Saal, ablage, stand.Teilnahmen), stand.SitzungID)
 	oberflaeche.SetzeVorabcheck(
 		vorabcheck.Neu(aufbau, sitzung, steuerung, ablage, konfiguration.KameraZeitlimit()))
 

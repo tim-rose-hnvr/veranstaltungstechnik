@@ -26,6 +26,7 @@ Andere Konfiguration: `-konfiguration pfad.yaml`.
 | `/dolmetscher` | Dolmetscherplatz, zeigt den Redner (ohne Ton) |
 | `/testumgebung` | die drei Geräte nebeneinander in einem Fenster |
 | `/vorabcheck` | Selbsttest vor der Sitzung: Kette, Besetzung, jede Kamera |
+| `/protokoll.md` | Sitzungsprotokoll aus der Ereigniskette, als Markdown |
 
 Namensschild und Dolmetscherplatz lesen nur mit — sie melden keinen Platz an.
 
@@ -46,7 +47,20 @@ bcrypt-Hash und geht nie an einen Client.
 | `leitung` (aktiv) | Sitzung führen, Wort erteilen und entziehen, Leitung übergeben, jedes Mikrofon |
 | `leitung` (nicht aktiv) | wie ein Delegierter — berechtigt sind viele, aktiv ist genau eine |
 | `delegierter` | Wort melden, eigenes Mikrofon nach erteiltem Wort |
-| `schriftfuehrung`, `gast` | nur zusehen |
+| `schriftfuehrung`, `gast` | nur zusehen, kein Stimmrecht |
+
+## Abstimmung
+
+Offen, namentlich oder geheim. Beschlussfähigkeit wird beim Start geprüft und
+eingefroren — wer später kommt, ändert sie nicht mehr. Quorum ist die einfache
+Mehrheit der Stimmberechtigten. Solange abgestimmt wird, bleibt die Zählung
+unsichtbar; erst das Auszählen zeigt das Ergebnis, das Feststellen macht es
+verbindlich.
+
+Bei **geheimer Wahl** existiert die Zuordnung Stimme zu Person nirgends: nicht
+in der Tabelle `stimme`, nicht im Ereignisprotokoll, nicht im Zustand. Nur
+`stimmabgabe` hält fest, *dass* jemand abgestimmt hat — sonst ließe sich
+doppeltes Abstimmen nicht verhindern.
 
 ## Test
 
@@ -85,4 +99,6 @@ Achtung: Die Testdatenbank wird dabei geleert.
   Kameras. Antwort 409, wenn es trotzdem jemand versucht.
 - **Prüfung bei jedem Push.** `.github/workflows/pruefung.yml` baut, prüft die
   Formatierung und lässt die Tests laufen, auch gegen eine echte PostgreSQL.
+- **Keine Technikeingriffe während der Abstimmung.** Das Mikrofon geht auf,
+  die Kamera bleibt stehen. Danach fährt sie wieder.
 - **Kein Ton.** Der Dolmetscherplatz zeigt nur, wer spricht.

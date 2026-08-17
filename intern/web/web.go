@@ -13,8 +13,9 @@ import (
 
 	"github.com/coder/websocket"
 
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kern"
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/vorabcheck"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/protokoll"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/vorabcheck"
 )
 
 // Nachricht ist das, was der Client schickt. Das Feld typ entscheidet.
@@ -23,6 +24,9 @@ type Nachricht struct {
 	Typ   string `json:"typ"`
 	Platz int    `json:"platz"`
 	Pin   string `json:"pin"`
+	Titel string `json:"titel"`
+	Art   string `json:"art"`
+	Wahl  string `json:"wahl"`
 }
 
 // Fehlernachricht geht an genau den Client, dessen Befehl scheiterte.
@@ -45,6 +49,8 @@ type Server struct {
 	verzeichnis string
 	protokoll   *slog.Logger
 	pruefer     *vorabcheck.Pruefer
+	schreiber   *protokoll.Schreiber
+	sitzungID   string
 
 	mu           sync.Mutex
 	verbindungen map[*verbindung]struct{}
@@ -84,7 +90,37 @@ func (s *Server) Handler() http.Handler {
 	weiche.Handle("GET /testumgebung", s.seite("testumgebung.html"))
 	weiche.Handle("GET /vorabcheck", s.seite("vorabcheck.html"))
 	weiche.HandleFunc("POST /vorabcheck", s.vorabcheck)
+	weiche.HandleFunc("GET /protokoll.md", s.protokollSeite)
 	return weiche
+}
+
+// SetzeProtokoll hinterlegt den Protokollschreiber.
+func (s *Server) SetzeProtokoll(schreiber *protokoll.Schreiber, sitzungID string) {
+	s.schreiber, s.sitzungID = schreiber, sitzungID
+}
+
+// protokollSeite liefert das Sitzungsprotokoll als Markdown — lesbar im
+// Browser, weiterverarbeitbar überall.
+func (s *Server) protokollSeite(w http.ResponseWriter, r *http.Request) {
+	if s.schreiber == nil {
+		http.Error(w, "Das Protokoll ist nicht eingerichtet.", http.StatusServiceUnavailable)
+		return
+	}
+
+	zustand := s.kern.Zustand()
+	inhalt, err := s.schreiber.Markdown(r.Context(), s.sitzungID, zustand.Sitzung.Titel)
+	if err != nil {
+		s.protokoll.Error("protokoll nicht erzeugt", "grund", err)
+		http.Error(w, "Das Protokoll ließ sich nicht erzeugen.", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/markdown; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-store")
+	w.Header().Set("Content-Disposition", `inline; filename="protokoll.md"`)
+	if _, err := w.Write([]byte(inhalt)); err != nil {
+		s.protokoll.Warn("protokoll nicht vollständig gesendet", "grund", err)
+	}
 }
 
 // SetzeVorabcheck hinterlegt den Prüfer. Ohne ihn antwortet die Seite, dass
@@ -248,6 +284,26 @@ func (v *verbindung) ausfuehren(ctx context.Context, n Nachricht) {
 		err = s.kern.SitzungEroeffnen(ctx, absender)
 	case kern.AktionSitzungSchliessen:
 		err = s.kern.SitzungSchliessen(ctx, absender)
+	case kern.AktionAbstimmungStarten:
+		art, fehler := kern.ArtLesen(n.Art)
+		if fehler != nil {
+			v.melde(&kern.Fehler{Code: kern.CodeKeineAbstimmung, Text: fehler.Error()})
+			return
+		}
+		err = s.kern.AbstimmungStarten(ctx, absender, n.Titel, art)
+	case kern.AktionStimmeAbgeben:
+		wahl, fehler := kern.WahlLesen(n.Wahl)
+		if fehler != nil {
+			v.melde(&kern.Fehler{Code: kern.CodeKeineAbstimmung, Text: fehler.Error()})
+			return
+		}
+		err = s.kern.StimmeAbgeben(ctx, absender, wahl)
+	case kern.AktionAbstimmungBeenden:
+		err = s.kern.AbstimmungBeenden(ctx, absender)
+	case kern.AktionAbstimmungFeststellen:
+		err = s.kern.AbstimmungFeststellen(ctx, absender)
+	case kern.AktionAbstimmungAbbrechen:
+		err = s.kern.AbstimmungAbbrechen(ctx, absender)
 	default:
 		return
 	}

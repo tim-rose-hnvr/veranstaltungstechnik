@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/kern"
-	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/speicher"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/speicher"
 )
 
 // stilleKamera nimmt jeden Befehl an, ohne UDP zu sprechen.

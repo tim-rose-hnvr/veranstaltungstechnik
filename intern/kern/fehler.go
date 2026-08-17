@@ -12,6 +12,12 @@ const (
 	CodeKeinWort           = "kein_wort"
 	CodeSitzungLaeuftNicht = "sitzung_laeuft_nicht"
 
+	// Aus Meilenstein 3.
+	CodeKeineAbstimmung      = "keine_abstimmung"
+	CodeAbstimmungLaeuft     = "abstimmung_laeuft"
+	CodeNichtBeschlussfaehig = "nicht_beschlussfaehig"
+	CodeSchonAbgestimmt      = "schon_abgestimmt"
+
 	// CodeSpeicherFehler meldet, dass ein Ereignis nicht in die Kette
 	// geschrieben werden konnte. Der Zustand bleibt dann unverändert — ein
 	// Zustandswechsel ohne Protokolleintrag darf es nicht geben.
