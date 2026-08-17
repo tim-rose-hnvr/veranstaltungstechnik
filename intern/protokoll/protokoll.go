@@ -121,6 +121,9 @@ func (s *Schreiber) zeile(e kern.Ereignis) string {
 	case "leitung_uebergeben":
 		return fmt.Sprintf("Die Sitzungsleitung geht von %s auf %s über.",
 			s.wer(zahl(e.Nutzlast["von"])), s.wer(zahl(e.Nutzlast["an"])))
+	case "leitung_uebernommen":
+		return fmt.Sprintf("%s übernimmt die Sitzungsleitung, da Platz %d verwaist ist.",
+			s.wer(zahl(e.Nutzlast["an"])), zahl(e.Nutzlast["von"]))
 	case "wort_gemeldet":
 		return fmt.Sprintf("%s meldet sich zu Wort.", wer)
 	case "wort_erteilt":

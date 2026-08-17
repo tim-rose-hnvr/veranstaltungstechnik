@@ -4,7 +4,19 @@ Eine Sitzung wird eröffnet, die Leitung erteilt das Wort, das Mikrofon geht auf
 und die PTZ-Kamera fährt per VISCA over IP auf den Preset des Platzes.
 Kein Audio, kein Video, keine Abstimmung.
 
-## Start
+## Einmal ansehen
+
+Ohne Datenbank, ohne Einrichtung, zwölf Plätze und zwei Kameras:
+
+```sh
+go run ./cmd/server -konfiguration vorfuehrung/config.yaml
+```
+
+Dann `http://localhost:8080` öffnen. Anmelden auf Platz 1 mit der PIN `0101`,
+Platz 2 `0202` und so weiter. Alles liegt im Arbeitsspeicher und ist nach dem
+Beenden weg — für eine echte Sitzung gehört eine Datenbank darunter.
+
+## Start im Betrieb
 
 Vorausgesetzt: Go 1.24 und PostgreSQL ab 13 (wegen `gen_random_uuid()`).
 
@@ -99,6 +111,9 @@ Achtung: Die Testdatenbank wird dabei geleert.
   Kameras. Antwort 409, wenn es trotzdem jemand versucht.
 - **Prüfung bei jedem Push.** `.github/workflows/pruefung.yml` baut, prüft die
   Formatierung und lässt die Tests laufen, auch gegen eine echte PostgreSQL.
+- **Wenn die Leitung ausfällt**, übernimmt eine andere berechtigte Person
+  ausdrücklich — das System vollzieht das nie von selbst, und es steht im
+  Protokoll. Solange der führende Platz besetzt ist, wird übergeben.
 - **Keine Technikeingriffe während der Abstimmung.** Das Mikrofon geht auf,
   die Kamera bleibt stehen. Danach fährt sie wieder.
 - **Kein Ton.** Der Dolmetscherplatz zeigt nur, wer spricht.

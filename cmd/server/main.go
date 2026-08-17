@@ -44,6 +44,36 @@ func main() {
 	}
 }
 
+// VorfuehrBetrieb steht in config.yaml statt einer Verbindungszeichenkette und
+// hält alles im Arbeitsspeicher. Damit läuft das System ohne jede Einrichtung
+// — aber nach dem Beenden ist nichts mehr da.
+const VorfuehrBetrieb = "gedaechtnis"
+
+// ablageOeffnen wählt zwischen PostgreSQL und dem Vorführbetrieb.
+func ablageOeffnen(ctx context.Context, datenbank string, protokoll *slog.Logger) (speicher.Ablage, error) {
+	if datenbank == VorfuehrBetrieb {
+		protokoll.Warn("vorführbetrieb: alles liegt im arbeitsspeicher und ist nach dem beenden weg")
+		return speicher.NeuGedaechtnis(), nil
+	}
+
+	pg, err := speicher.Verbinden(ctx, datenbank)
+	if err != nil {
+		return nil, err
+	}
+	for _, m := range migrationen {
+		migration, err := os.ReadFile(m.Datei)
+		if err != nil {
+			pg.Schliessen()
+			return nil, err
+		}
+		if err := pg.SchemaSicherstellen(ctx, m.Waechter, string(migration)); err != nil {
+			pg.Schliessen()
+			return nil, err
+		}
+	}
+	return pg, nil
+}
+
 func starten(konfigPfad string, protokoll *slog.Logger) error {
 	konfiguration, err := KonfigurationLesen(konfigPfad)
 	if err != nil {
@@ -65,20 +95,12 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 	anlaufCtx, anlaufFertig := context.WithTimeout(ctx, 30*time.Second)
 	defer anlaufFertig()
 
-	ablage, err := speicher.Verbinden(anlaufCtx, konfiguration.Datenbank)
+	ablage, err := ablageOeffnen(anlaufCtx, konfiguration.Datenbank, protokoll)
 	if err != nil {
 		return err
 	}
-	defer ablage.Schliessen()
-
-	for _, m := range migrationen {
-		migration, err := os.ReadFile(m.Datei)
-		if err != nil {
-			return err
-		}
-		if err := ablage.SchemaSicherstellen(anlaufCtx, m.Waechter, string(migration)); err != nil {
-			return err
-		}
+	if schliessbar, passt := ablage.(interface{ Schliessen() }); passt {
+		defer schliessbar.Schliessen()
 	}
 
 	saalID, plaetze, err := ablage.SaalImportieren(anlaufCtx, saaldaten)

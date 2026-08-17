@@ -28,15 +28,16 @@ func RolleLesen(text string) (Rolle, error) {
 // an den Client gehen — dann kann er Knöpfe ausgrauen, ohne selbst zu
 // entscheiden, was erlaubt ist.
 const (
-	AktionWortMelden        = "wort_melden"
-	AktionWortZurueckziehen = "wort_zurueckziehen"
-	AktionWortErteilen      = "wort_erteilen"
-	AktionWortEntziehen     = "wort_entziehen"
-	AktionLeitungUebergeben = "leitung_uebergeben"
-	AktionSitzungEroeffnen  = "sitzung_eroeffnen"
-	AktionSitzungSchliessen = "sitzung_schliessen"
-	AktionMikroAn           = "mikro_an"
-	AktionMikroAus          = "mikro_aus"
+	AktionWortMelden         = "wort_melden"
+	AktionWortZurueckziehen  = "wort_zurueckziehen"
+	AktionWortErteilen       = "wort_erteilen"
+	AktionWortEntziehen      = "wort_entziehen"
+	AktionLeitungUebergeben  = "leitung_uebergeben"
+	AktionLeitungUebernehmen = "leitung_uebernehmen"
+	AktionSitzungEroeffnen   = "sitzung_eroeffnen"
+	AktionSitzungSchliessen  = "sitzung_schliessen"
+	AktionMikroAn            = "mikro_an"
+	AktionMikroAus           = "mikro_aus"
 
 	AktionAbstimmungStarten     = "abstimmung_starten"
 	AktionAbstimmungBeenden     = "abstimmung_beenden"
@@ -50,7 +51,7 @@ var alleAktionen = []string{
 	AktionSitzungEroeffnen, AktionSitzungSchliessen,
 	AktionWortMelden, AktionWortZurueckziehen,
 	AktionWortErteilen, AktionWortEntziehen,
-	AktionLeitungUebergeben,
+	AktionLeitungUebergeben, AktionLeitungUebernehmen,
 	AktionMikroAn, AktionMikroAus,
 	AktionAbstimmungStarten, AktionAbstimmungBeenden,
 	AktionAbstimmungFeststellen, AktionAbstimmungAbbrechen,
@@ -71,6 +72,12 @@ func rolleDarf(rolle Rolle, leitungAktiv bool, aktion string) bool {
 		AktionAbstimmungStarten, AktionAbstimmungBeenden,
 		AktionAbstimmungFeststellen, AktionAbstimmungAbbrechen:
 		return rolle == RolleLeitung && leitungAktiv
+
+	case AktionLeitungUebernehmen:
+		// Übernehmen darf, wer zur Leitung berechtigt ist — auch ohne
+		// Staffelstab. Ob der führende Platz wirklich leer ist, entscheidet
+		// der Sitzungszustand.
+		return rolle == RolleLeitung
 
 	case AktionStimmeAbgeben:
 		// Stimmrecht hat, wer leitet oder delegiert ist — nicht die

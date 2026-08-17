@@ -292,8 +292,14 @@ func (k *Kern) Abmelden(ctx context.Context, nummer int) error {
 		k.mu.Unlock()
 		return err
 	}
-	if p.mikro {
-		k.wortmeldungSetzenIntern(ctx, nummer, WortBeendet)
+	// Wer geht, verschwindet auch aus der Redeliste — sonst erteilt die
+	// Leitung das Wort an einen leeren Platz.
+	if w := k.wortmeldungIntern(nummer); w != nil {
+		neu := WortZurueckgezogen
+		if w.Zustand != WortGemeldet {
+			neu = WortBeendet
+		}
+		k.wortmeldungSetzenIntern(ctx, nummer, neu)
 	}
 	if p.teilnahme != nil {
 		if err := k.ablage.TeilnahmeZustandSetzen(ctx, p.teilnahme.ID, TeilnahmeAbwesend); err != nil {
@@ -361,6 +367,21 @@ func (k *Kern) sitzungSetzen(ctx context.Context, absender int, aktion string,
 	}
 
 	if ziel == SitzungGeschlossen {
+		// Eine nicht ausgezählte Abstimmung ist kein Ergebnis. Sie bliebe
+		// sonst für immer auf laufend stehen und ließe sich nie beenden.
+		if k.abstimmung.Laeuft() {
+			if err := k.schreiben(ctx, "abstimmung_abgebrochen", map[string]any{
+				"abstimmung": k.abstimmung.ID, "titel": k.abstimmung.Titel,
+				"grund": "sitzung geschlossen",
+			}); err != nil {
+				k.protokoll.Error("abbruch nicht protokolliert", "grund", err)
+			}
+			if err := k.ablage.AbstimmungZustandSetzen(ctx, k.abstimmung.ID,
+				AbstimmungAbgebrochen, time.Now()); err != nil {
+				k.protokoll.Error("abstimmung nicht gespeichert", "grund", err)
+			}
+			k.abstimmung.Zustand = AbstimmungAbgebrochen
+		}
 		for _, p := range k.plaetze {
 			if p.mikro {
 				p.mikro = false
@@ -605,6 +626,32 @@ func (k *Kern) LeitungUebergeben(ctx context.Context, absender, ziel int) error 
 	return nil
 }
 
+// LeitungUebernehmen holt den Staffelstab, wenn der führende Platz verwaist
+// ist — etwa weil das Gerät ausgefallen ist. Das System vollzieht das nie von
+// selbst: eine berechtigte Person muss es ausdrücklich tun, und es steht im
+// Protokoll.
+func (k *Kern) LeitungUebernehmen(ctx context.Context, absender int) error {
+	k.mu.Lock()
+	if err := k.darfPlatz(absender, AktionLeitungUebernehmen); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+
+	vorher := k.leitungPlatz
+	if err := k.schreiben(ctx, "leitung_uebernommen", map[string]any{
+		"an": absender, "von": vorher, "grund": "führender Platz verwaist",
+	}); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	k.leitungPlatz = absender
+	k.stand++
+	k.mu.Unlock()
+
+	k.melder()
+	return nil
+}
+
 // KameraAbwarten wartet auf laufende Kamerabefehle. Nur für Tests.
 func (k *Kern) KameraAbwarten() { k.wartend.Wait() }
 
@@ -640,6 +687,17 @@ func (k *Kern) darfIntern(p *platz, aktion string) *Fehler {
 	// Was der Abstimmungszustand zusätzlich erlaubt oder verbietet. Damit ist
 	// das Feld "darf" im Zustand genau — der Client muss nichts ableiten.
 	switch aktion {
+	case AktionLeitungUebernehmen:
+		// Nur wenn der führende Platz verwaist ist. Sonst bliebe der
+		// Staffelstab kein Staffelstab.
+		if p.aufbau.Nummer == k.leitungPlatz {
+			return fehler(CodeNichtBerechtigt, "Dieser Platz führt bereits")
+		}
+		if fuehrend, bekannt := k.nach[k.leitungPlatz]; k.leitungPlatz != 0 && bekannt && fuehrend.belegt {
+			return fehler(CodeNichtBerechtigt,
+				fmt.Sprintf("Platz %d führt und ist besetzt — die Leitung wird übergeben, nicht übernommen",
+					k.leitungPlatz))
+		}
 	case AktionSitzungEroeffnen:
 		// Eröffnen geht nur aus einem Zustand heraus, der es zulässt — sonst
 		// böte die Oberfläche einen Knopf an, der immer fehlschlägt.

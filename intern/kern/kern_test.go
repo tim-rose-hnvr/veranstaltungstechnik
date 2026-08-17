@@ -40,10 +40,11 @@ func (s *stilleKamera) Abrufe() []abruf {
 
 // pruefstand hält alles zusammen, was ein Test braucht.
 type pruefstand struct {
-	kern   *kern.Kern
-	kamera *stilleKamera
-	ablage speicher.Ablage
-	saalID string
+	kern       *kern.Kern
+	kamera     *stilleKamera
+	ablage     speicher.Ablage
+	saalID     string
+	teilnahmen []speicher.Teilnahmedaten
 }
 
 // aufbauen baut Saal, Sitzung und Kern über die Ablage im Arbeitsspeicher —
@@ -87,7 +88,64 @@ func aufbauen(t *testing.T, plaetze, maxOffen int, teilnahmen []speicher.Teilnah
 	if err != nil {
 		t.Fatalf("kern nicht aufgebaut: %v", err)
 	}
-	return &pruefstand{kern: k, kamera: kamera, ablage: ablage, saalID: saalID}
+	return &pruefstand{kern: k, kamera: kamera, ablage: ablage, saalID: saalID, teilnahmen: teilnahmen}
+}
+
+// neustarten baut den Kern neu auf, so wie es der Server nach einem Absturz
+// täte: alles kommt aus der Ablage.
+func neustarten(t *testing.T, p *pruefstand) *kern.Kern {
+	t.Helper()
+	ctx := context.Background()
+
+	saal := speicher.Saaldaten{
+		Saal:    "Testraum",
+		Kameras: []speicher.Kameradaten{{Name: "PTZ Mitte", Adresse: "192.168.1.50:52381", Kanal: 1}},
+	}
+	for i := 1; i <= len(p.kern.Zustand().Plaetze); i++ {
+		saal.Plaetze = append(saal.Plaetze, speicher.Platzdaten{
+			Nummer: i, Name: fmt.Sprintf("Platz %d", i), Kamera: "PTZ Mitte", Preset: uint8(i),
+		})
+	}
+	saalID, platzaufbau, err := p.ablage.SaalImportieren(ctx, saal)
+	if err != nil {
+		t.Fatalf("saal erneut einlesen: %v", err)
+	}
+	stand, err := p.ablage.SitzungImportieren(ctx, saalID,
+		speicher.Sitzungsdaten{Titel: "Probesitzung", Teilnahmen: p.teilnahmen})
+	if err != nil {
+		t.Fatalf("sitzung erneut einlesen: %v", err)
+	}
+	abstimmung, err := p.ablage.LetzteAbstimmung(ctx, stand.SitzungID)
+	if err != nil {
+		t.Fatalf("abstimmung laden: %v", err)
+	}
+	leitung, err := p.ablage.LeitungAusKette(ctx, saalID)
+	if err != nil {
+		t.Fatalf("leitung laden: %v", err)
+	}
+
+	k, err := kern.Neu(kern.Aufbau{
+		SaalID: saalID, SitzungID: stand.SitzungID, Titel: stand.Titel,
+		SitzungZustand: stand.Zustand, Beginn: stand.Beginn, Plaetze: platzaufbau,
+		Teilnahmen: stand.Teilnahmen, Wortmeldungen: stand.Wortmeldungen,
+		Abstimmung: abstimmung, LeitungPlatz: leitung,
+		MaxOffen: 3, Zeitlimit: 100 * time.Millisecond,
+	}, p.kamera, p.ablage, nil)
+	if err != nil {
+		t.Fatalf("kern nach dem neustart: %v", err)
+	}
+
+	// Nach einem Neustart ist niemand mehr verbunden — die Plätze werden
+	// erneut belegt, sobald sich die Geräte melden.
+	pins := map[int]string{1: "1111", 2: "2222", 3: "3333", 4: "4444", 5: "5555"}
+	for _, pl := range p.kern.Zustand().Plaetze {
+		if pl.Belegt {
+			if err := k.Anmelden(ctx, pl.Nummer, pins[pl.Nummer]); err != nil {
+				t.Fatalf("platz %d nach dem neustart anmelden: %v", pl.Nummer, err)
+			}
+		}
+	}
+	return k
 }
 
 // standardbesetzung: zwei zur Leitung Berechtigte, ein Delegierter,

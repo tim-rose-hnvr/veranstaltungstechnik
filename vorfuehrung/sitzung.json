@@ -1,0 +1,77 @@
+{
+  "titel": "Vorstandssitzung am 17. August",
+  "teilnahmen": [
+    {
+      "platz": 1,
+      "person": "Anke Bergmann",
+      "rolle": "leitung",
+      "pin": "0101"
+    },
+    {
+      "platz": 2,
+      "person": "Mark Voss",
+      "rolle": "leitung",
+      "pin": "0202"
+    },
+    {
+      "platz": 3,
+      "person": "Jonas Öztürk",
+      "rolle": "delegierter",
+      "pin": "0303"
+    },
+    {
+      "platz": 4,
+      "person": "Ida Peters",
+      "rolle": "delegierter",
+      "pin": "0404"
+    },
+    {
+      "platz": 5,
+      "person": "Lars Krüger",
+      "rolle": "delegierter",
+      "pin": "0505"
+    },
+    {
+      "platz": 6,
+      "person": "Nadja Simon",
+      "rolle": "delegierter",
+      "pin": "0606"
+    },
+    {
+      "platz": 7,
+      "person": "Timo Hofer",
+      "rolle": "delegierter",
+      "pin": "0707"
+    },
+    {
+      "platz": 8,
+      "person": "Elif Yilmaz",
+      "rolle": "delegierter",
+      "pin": "0808"
+    },
+    {
+      "platz": 9,
+      "person": "Bernd Ritter",
+      "rolle": "delegierter",
+      "pin": "0909"
+    },
+    {
+      "platz": 10,
+      "person": "Sara Lindner",
+      "rolle": "delegierter",
+      "pin": "1010"
+    },
+    {
+      "platz": 11,
+      "person": "Paul Weber",
+      "rolle": "delegierter",
+      "pin": "1111"
+    },
+    {
+      "platz": 12,
+      "person": "Rita Falk",
+      "rolle": "schriftfuehrung",
+      "pin": "1212"
+    }
+  ]
+}

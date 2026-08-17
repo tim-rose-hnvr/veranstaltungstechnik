@@ -1,0 +1,8 @@
+# Vorführbetrieb: keine Datenbank, keine Einrichtung, nichts wird gespeichert.
+#   go run ./cmd/server -konfiguration vorfuehrung/config.yaml
+datenbank: gedaechtnis
+adresse: ":8080"
+saal_datei: vorfuehrung/saal.json
+sitzungs_datei: vorfuehrung/sitzung.json
+max_offene_mikrofone: 3
+kamera_zeitlimit_ms: 500

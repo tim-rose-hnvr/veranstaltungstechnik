@@ -280,6 +280,8 @@ func (v *verbindung) ausfuehren(ctx context.Context, n Nachricht) {
 		err = s.kern.WortEntziehen(ctx, absender, n.Platz)
 	case kern.AktionLeitungUebergeben:
 		err = s.kern.LeitungUebergeben(ctx, absender, n.Platz)
+	case kern.AktionLeitungUebernehmen:
+		err = s.kern.LeitungUebernehmen(ctx, absender)
 	case kern.AktionSitzungEroeffnen:
 		err = s.kern.SitzungEroeffnen(ctx, absender)
 	case kern.AktionSitzungSchliessen:

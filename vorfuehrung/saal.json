@@ -1,0 +1,89 @@
+{
+  "saal": "Vorstandszimmer",
+  "kameras": [
+    {
+      "name": "PTZ links",
+      "adresse": "127.0.0.1:52381",
+      "kanal": 1
+    },
+    {
+      "name": "PTZ rechts",
+      "adresse": "127.0.0.1:52382",
+      "kanal": 1
+    }
+  ],
+  "plaetze": [
+    {
+      "nummer": 1,
+      "name": "Vorsitz",
+      "kamera": "PTZ links",
+      "preset": 1
+    },
+    {
+      "nummer": 2,
+      "name": "Stellv. Vorsitz",
+      "kamera": "PTZ links",
+      "preset": 2
+    },
+    {
+      "nummer": 3,
+      "name": "Platz 3",
+      "kamera": "PTZ links",
+      "preset": 3
+    },
+    {
+      "nummer": 4,
+      "name": "Platz 4",
+      "kamera": "PTZ links",
+      "preset": 4
+    },
+    {
+      "nummer": 5,
+      "name": "Platz 5",
+      "kamera": "PTZ links",
+      "preset": 5
+    },
+    {
+      "nummer": 6,
+      "name": "Platz 6",
+      "kamera": "PTZ links",
+      "preset": 6
+    },
+    {
+      "nummer": 7,
+      "name": "Platz 7",
+      "kamera": "PTZ rechts",
+      "preset": 1
+    },
+    {
+      "nummer": 8,
+      "name": "Platz 8",
+      "kamera": "PTZ rechts",
+      "preset": 2
+    },
+    {
+      "nummer": 9,
+      "name": "Platz 9",
+      "kamera": "PTZ rechts",
+      "preset": 3
+    },
+    {
+      "nummer": 10,
+      "name": "Platz 10",
+      "kamera": "PTZ rechts",
+      "preset": 4
+    },
+    {
+      "nummer": 11,
+      "name": "Platz 11",
+      "kamera": "PTZ rechts",
+      "preset": 5
+    },
+    {
+      "nummer": 12,
+      "name": "Schriftführung",
+      "kamera": "PTZ rechts",
+      "preset": 6
+    }
+  ]
+}
