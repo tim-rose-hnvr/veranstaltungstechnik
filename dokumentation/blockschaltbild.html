@@ -1,0 +1,502 @@
+<title>Saalwerk Blockschaltbild</title>
+<style>
+  /* Reißbrett-Palette: Papier, Tinte, eine Bauzeichnungs-Blau für Struktur,
+     ein Signalrot ausschließlich für den Weg, um den es geht. */
+  :root {
+    --papier:   #F0F1F3;
+    --flaeche:  #FFFFFF;
+    --riss:     #C7CBD2;
+    --tinte:    #171A21;
+    --leise:    #6B7280;
+    --blau:     #2B4C7E;
+    --signal:   #C8102E;
+    --offen:    #9A6B12;
+    --raster:   rgba(43, 76, 126, .07);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --papier:  #14161A;
+      --flaeche: #1B1E24;
+      --riss:    #333944;
+      --tinte:   #E9EBEF;
+      --leise:   #99A1AE;
+      --blau:    #7EA6DC;
+      --signal:  #FF5A62;
+      --offen:   #D9A648;
+      --raster:  rgba(126, 166, 220, .08);
+    }
+  }
+  :root[data-theme="dark"] {
+    --papier:  #14161A;
+    --flaeche: #1B1E24;
+    --riss:    #333944;
+    --tinte:   #E9EBEF;
+    --leise:   #99A1AE;
+    --blau:    #7EA6DC;
+    --signal:  #FF5A62;
+    --offen:   #D9A648;
+    --raster:  rgba(126, 166, 220, .08);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--papier);
+    background-image:
+      linear-gradient(var(--raster) 1px, transparent 1px),
+      linear-gradient(90deg, var(--raster) 1px, transparent 1px);
+    background-size: 28px 28px;
+    color: var(--tinte);
+    font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  .bahn { max-width: 74rem; margin: 0 auto; padding: 3rem 1.5rem 5rem; }
+  .satz { max-width: 62ch; }
+
+  /* Beschriftung wie in einer technischen Zeichnung: Maschinenschrift,
+     gesperrt, klein. */
+  .marke {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .7rem; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--blau);
+  }
+  h1 {
+    font-size: clamp(2rem, 5vw, 3.1rem); line-height: 1.05; margin: .5rem 0 1rem;
+    letter-spacing: -.03em; font-weight: 700; text-wrap: balance;
+  }
+  h2 {
+    font-size: clamp(1.2rem, 2.6vw, 1.6rem); line-height: 1.15; margin: 0 0 .6rem;
+    letter-spacing: -.02em; font-weight: 650; text-wrap: balance;
+  }
+  h3 { font-size: 1rem; margin: 0 0 .3rem; font-weight: 650; }
+  p { margin: 0 0 1rem; }
+  .leise { color: var(--leise); }
+
+  header { border-bottom: 2px solid var(--tinte); padding-bottom: 2rem; margin-bottom: 3rem; }
+  .kopfzeile { display: flex; flex-wrap: wrap; gap: .5rem 2rem; align-items: baseline; }
+  section { margin-bottom: 3.5rem; }
+  section > .satz:last-child { margin-bottom: 0; }
+
+  figure { margin: 1.5rem 0 0; }
+  .rahmen {
+    overflow-x: auto; background: var(--flaeche);
+    border: 1px solid var(--riss); border-radius: 2px; padding: 1.25rem;
+  }
+  svg { display: block; width: 100%; min-width: 40rem; height: auto; }
+  figcaption {
+    font-size: .85rem; color: var(--leise); margin-top: .6rem; max-width: 62ch;
+    border-left: 2px solid var(--riss); padding-left: .75rem;
+  }
+
+  .gitter { display: grid; gap: 1px; background: var(--riss); border: 1px solid var(--riss);
+            grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin-top: 1.5rem; }
+  .zelle { background: var(--flaeche); padding: 1rem 1.1rem; }
+  .zelle .pfad {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .72rem; color: var(--blau); display: block; margin-bottom: .35rem;
+  }
+  .zelle p { font-size: .9rem; margin: 0; color: var(--leise); }
+
+  .liste { list-style: none; padding: 0; margin: 1.25rem 0 0; }
+  .liste li {
+    display: grid; grid-template-columns: 8.5rem 1fr; gap: 1rem;
+    padding: .8rem 0; border-top: 1px solid var(--riss); align-items: baseline;
+  }
+  .liste li:last-child { border-bottom: 1px solid var(--riss); }
+  .liste .was { font-weight: 650; }
+  .liste .warum { color: var(--leise); font-size: .92rem; }
+  @media (max-width: 34rem) { .liste li { grid-template-columns: 1fr; gap: .2rem; } }
+
+  .befehl {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: .88rem; background: var(--flaeche); border: 1px solid var(--riss);
+    border-left: 3px solid var(--signal); padding: .9rem 1.1rem; overflow-x: auto;
+    margin: 1.25rem 0; white-space: pre;
+  }
+  .fussnote { border-top: 2px solid var(--tinte); padding-top: 1.25rem; font-size: .87rem; color: var(--leise); }
+  .fussnote strong { color: var(--tinte); }
+</style>
+
+<div class="bahn">
+
+<header>
+  <div class="kopfzeile">
+    <span class="marke">Blockschaltbild · Stand 17.08.2026</span>
+    <span class="marke" style="color: var(--leise)">Arbeitstitel Saalwerk</span>
+  </div>
+  <h1>Was im Saal wirklich läuft</h1>
+  <p class="satz">Ein Konferenz- und Abstimmungssystem für Gremiensitzungen. Dieses Bild zeigt
+    nicht das Konzept, sondern den gebauten Stand: welche Bausteine es gibt, welche Wege die
+    Daten nehmen — und was ausdrücklich noch fehlt.</p>
+  <p class="satz leise">Durchgezogen gezeichnet ist, was läuft und getestet ist. Gestrichelt und
+    blass ist, was noch nicht existiert. Rot ist der eine Weg, um den es dem Produkt geht.</p>
+</header>
+
+<section>
+  <span class="marke">Abschnitt 01</span>
+  <h2>Der vollständige Aufbau</h2>
+  <p class="satz">Links die Geräte im Saal, in der Mitte der Server als ein Programm, rechts
+    die Peripherie. Jeder Kasten in der Mitte ist ein eigenes Go-Paket.</p>
+
+  <figure>
+    <div class="rahmen">
+      <svg viewBox="0 0 1180 700" role="img"
+           aria-label="Blockschaltbild: Geräte im Saal verbinden sich über WebSocket mit dem Server. Im Server reicht das Paket web Befehle an den Kern weiter, der Rechte prüft, den Zustand hält und Ereignisse schreibt. Der Kern steuert über das Paket kamera die PTZ-Kameras per VISCA und legt über das Paket speicher alles in PostgreSQL ab. Vorabcheck und Protokoll hängen daran. Ton, Video, Dolmetschen, Transkript und Sitzungsmappe fehlen noch.">
+        <defs>
+          <marker id="spitze" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+          </marker>
+          <marker id="spitzeRot" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--signal)"/>
+          </marker>
+          <marker id="spitzeBlau" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--blau)"/>
+          </marker>
+        </defs>
+
+        <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11"
+           letter-spacing="1.4" fill="var(--blau)">
+          <text x="40" y="30">SAAL</text>
+          <text x="300" y="30">SERVER — EIN GO-BINARY</text>
+          <text x="1010" y="30">PERIPHERIE</text>
+        </g>
+
+        <!-- Serverrahmen -->
+        <rect x="288" y="42" width="712" height="356" rx="2" fill="none"
+              stroke="var(--blau)" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/>
+
+        <!-- Geräte -->
+        <g fill="none" stroke="currentColor" stroke-width="1.4">
+          <rect x="40" y="60" width="200" height="56" rx="2"/>
+          <rect x="40" y="130" width="200" height="56" rx="2"/>
+          <rect x="40" y="200" width="200" height="56" rx="2"/>
+          <rect x="40" y="270" width="200" height="56" rx="2"/>
+        </g>
+        <g font-size="13" fill="currentColor">
+          <text x="56" y="84">iPad · Sprechstelle</text>
+          <text x="56" y="154">iPhone · Namensschild</text>
+          <text x="56" y="224">iPhone · Dolmetscherplatz</text>
+          <text x="56" y="294">Browser · Vorabcheck</text>
+        </g>
+        <g font-size="11" fill="var(--leise)">
+          <text x="56" y="101">anmelden, melden, schalten, abstimmen</text>
+          <text x="56" y="171">liest mit, belegt keinen Platz</text>
+          <text x="56" y="241">liest mit, ohne Ton</text>
+          <text x="56" y="311">Selbsttest vor der Sitzung</text>
+        </g>
+
+        <!-- Leitung Geräte → web -->
+        <path d="M 240 88 L 268 88 L 268 200 L 296 200" fill="none" stroke="currentColor"
+              stroke-width="1.4" marker-end="url(#spitze)"/>
+        <path d="M 240 158 L 268 158" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M 240 228 L 268 228 L 268 200" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <path d="M 240 298 L 268 298 L 268 200" fill="none" stroke="currentColor" stroke-width="1.4"/>
+        <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="var(--leise)">
+          <text x="250" y="190">WebSocket /ws</text>
+          <text x="250" y="356">HTTP /vorabcheck</text>
+        </g>
+
+        <!-- web -->
+        <rect x="316" y="150" width="150" height="100" rx="2" fill="var(--flaeche)"
+              stroke="currentColor" stroke-width="1.6"/>
+        <text x="332" y="180" font-size="14" font-weight="600" fill="currentColor">web</text>
+        <g font-size="11" fill="var(--leise)">
+          <text x="332" y="200">Seiten ausliefern</text>
+          <text x="332" y="216">Befehle annehmen</text>
+          <text x="332" y="232">Zustand verteilen</text>
+        </g>
+
+        <!-- kern -->
+        <rect x="530" y="70" width="250" height="260" rx="2" fill="var(--flaeche)"
+              stroke="currentColor" stroke-width="2"/>
+        <text x="548" y="98" font-size="15" font-weight="700" fill="currentColor">kern</text>
+        <text x="548" y="115" font-size="11" fill="var(--leise)">die einzige Stelle, die entscheidet</text>
+        <g fill="none" stroke="var(--riss)" stroke-width="1">
+          <line x1="530" y1="128" x2="780" y2="128"/>
+          <line x1="530" y1="168" x2="780" y2="168"/>
+          <line x1="530" y1="208" x2="780" y2="208"/>
+          <line x1="530" y1="248" x2="780" y2="248"/>
+          <line x1="530" y1="288" x2="780" y2="288"/>
+        </g>
+        <g font-size="12.5" fill="currentColor">
+          <text x="548" y="153">Rollen und Rechte</text>
+          <text x="548" y="193">Sitzung, Redeliste</text>
+          <text x="548" y="233">Abstimmung, Quorum</text>
+          <text x="548" y="273">Ereigniskette, Zeitachse</text>
+          <text x="548" y="313">Grenze offener Mikrofone</text>
+        </g>
+
+        <!-- Pfeile web ↔ kern -->
+        <path d="M 466 178 L 524 178" fill="none" stroke="currentColor" stroke-width="1.6"
+              marker-end="url(#spitze)"/>
+        <path d="M 524 222 L 466 222" fill="none" stroke="currentColor" stroke-width="1.6"
+              marker-end="url(#spitze)"/>
+        <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5" fill="var(--leise)">
+          <text x="470" y="171">Befehl</text>
+          <text x="454" y="243">Zustand, vollständig</text>
+        </g>
+
+        <!-- kamera -->
+        <rect x="840" y="70" width="140" height="76" rx="2" fill="var(--flaeche)"
+              stroke="var(--signal)" stroke-width="1.8"/>
+        <text x="856" y="96" font-size="14" font-weight="600" fill="var(--signal)">kamera</text>
+        <text x="856" y="114" font-size="11" fill="var(--leise)">VISCA over IP</text>
+        <text x="856" y="130" font-size="11" fill="var(--leise)">UDP 52381</text>
+
+        <!-- speicher -->
+        <rect x="840" y="186" width="140" height="76" rx="2" fill="var(--flaeche)"
+              stroke="currentColor" stroke-width="1.6"/>
+        <text x="856" y="212" font-size="14" font-weight="600" fill="currentColor">speicher</text>
+        <text x="856" y="230" font-size="11" fill="var(--leise)">Hash-Kette,</text>
+        <text x="856" y="246" font-size="11" fill="var(--leise)">nur anfügbar</text>
+
+        <!-- kern → kamera (der rote Weg) -->
+        <path d="M 780 108 L 834 108" fill="none" stroke="var(--signal)" stroke-width="2.2"
+              marker-end="url(#spitzeRot)"/>
+        <text x="786" y="100" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+              font-size="10.5" fill="var(--signal)">preset</text>
+
+        <!-- kern → speicher -->
+        <path d="M 780 224 L 834 224" fill="none" stroke="currentColor" stroke-width="1.6"
+              marker-end="url(#spitze)"/>
+        <text x="786" y="216" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+              font-size="10.5" fill="var(--leise)">ereignis</text>
+
+        <!-- Peripherie -->
+        <g fill="none" stroke-width="1.6">
+          <rect x="1030" y="70" width="120" height="76" rx="2" stroke="var(--signal)"/>
+          <rect x="1030" y="186" width="120" height="76" rx="2" stroke="currentColor"/>
+        </g>
+        <text x="1046" y="98" font-size="13" font-weight="600" fill="var(--signal)">PTZ-Kamera</text>
+        <text x="1046" y="116" font-size="11" fill="var(--leise)">Preset in der</text>
+        <text x="1046" y="132" font-size="11" fill="var(--leise)">Kamera, nicht</text>
+        <text x="1046" y="148" font-size="11" fill="var(--leise)">im Server</text>
+        <text x="1046" y="214" font-size="13" font-weight="600" fill="currentColor">PostgreSQL</text>
+        <text x="1046" y="232" font-size="11" fill="var(--leise)">oder Arbeits-</text>
+        <text x="1046" y="248" font-size="11" fill="var(--leise)">speicher</text>
+
+        <path d="M 980 108 L 1024 108" fill="none" stroke="var(--signal)" stroke-width="2.2"
+              marker-end="url(#spitzeRot)"/>
+        <path d="M 980 224 L 1024 224" fill="none" stroke="currentColor" stroke-width="1.6"
+              marker-end="url(#spitze)"/>
+
+        <!-- vorabcheck und protokoll -->
+        <rect x="316" y="288" width="150" height="62" rx="2" fill="var(--flaeche)"
+              stroke="currentColor" stroke-width="1.4"/>
+        <text x="332" y="312" font-size="13" font-weight="600" fill="currentColor">vorabcheck</text>
+        <text x="332" y="330" font-size="11" fill="var(--leise)">fährt jeden Platz an</text>
+
+        <rect x="530" y="352" width="250" height="34" rx="2" fill="var(--flaeche)"
+              stroke="currentColor" stroke-width="1.4"/>
+        <text x="548" y="374" font-size="13" font-weight="600" fill="currentColor">protokoll</text>
+        <text x="640" y="374" font-size="11" fill="var(--leise)">Sitzungsprotokoll aus der Kette</text>
+
+        <path d="M 466 312 L 500 312 L 500 108 L 524 108" fill="none" stroke="var(--blau)"
+              stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#spitzeBlau)"/>
+        <path d="M 780 369 L 900 369 L 900 268" fill="none" stroke="var(--blau)"
+              stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#spitzeBlau)"/>
+        <text x="806" y="362" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+              font-size="10.5" fill="var(--blau)">liest die Kette</text>
+
+        <!-- Was fehlt -->
+        <line x1="40" y1="440" x2="1150" y2="440" stroke="var(--riss)" stroke-width="1"/>
+        <text x="40" y="468" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+              font-size="11" letter-spacing="1.4" fill="var(--offen)">NOCH NICHT GEBAUT</text>
+
+        <g fill="none" stroke="var(--offen)" stroke-width="1.3" stroke-dasharray="5 4" opacity=".85">
+          <rect x="40" y="488" width="205" height="80" rx="2"/>
+          <rect x="265" y="488" width="205" height="80" rx="2"/>
+          <rect x="490" y="488" width="205" height="80" rx="2"/>
+          <rect x="715" y="488" width="205" height="80" rx="2"/>
+          <rect x="940" y="488" width="210" height="80" rx="2"/>
+        </g>
+        <g font-size="13" font-weight="600" fill="var(--offen)">
+          <text x="56" y="514">Ton</text>
+          <text x="281" y="514">Video</text>
+          <text x="506" y="514">Dolmetschen</text>
+          <text x="731" y="514">Transkript</text>
+          <text x="956" y="514">Sitzungsmappe</text>
+        </g>
+        <g font-size="11" fill="var(--leise)">
+          <text x="56" y="534">Automixer, Mix-Minus,</text>
+          <text x="56" y="550">Einmessung</text>
+          <text x="281" y="534">Kompositor, NDI,</text>
+          <text x="281" y="550">Zuschaltung</text>
+          <text x="506" y="534">Kanäle, Relais,</text>
+          <text x="506" y="550">Hörunterstützung</text>
+          <text x="731" y="534">Spracherkennung,</text>
+          <text x="731" y="550">Korrekturebene</text>
+          <text x="956" y="534">Dokumente je</text>
+          <text x="956" y="550">Tagesordnungspunkt</text>
+        </g>
+
+        <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5"
+           fill="var(--leise)">
+          <text x="40" y="606">Alles links der Peripherie läuft ohne Internet. Kein CDN, keine externe Schriftart, kein Lizenzabruf.</text>
+        </g>
+      </svg>
+    </div>
+    <figcaption>Der rote Weg ist der Kern des Produkts: ein offenes Mikrofon fährt die
+      zuständige Kamera auf den Preset des Sitzplatzes. Alles andere hängt daran.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <span class="marke">Abschnitt 02</span>
+  <h2>Was jeder Baustein tut</h2>
+  <div class="gitter">
+    <div class="zelle">
+      <span class="pfad">intern/kern</span>
+      <h3>Zustand und Regeln</h3>
+      <p>Die einzige Stelle, die entscheidet. Rollen, Rechte, Redeliste, Abstimmung,
+        Beschlussfähigkeit, Ereigniskette. Die Oberfläche prüft nichts — sie graut aus.</p>
+    </div>
+    <div class="zelle">
+      <span class="pfad">intern/web</span>
+      <h3>Oberfläche und Kanal</h3>
+      <p>Liefert die Seiten aus und hält den WebSocket. Nach jeder Änderung geht der
+        vollständige Zustand an alle — nie Teiländerungen, dann heilen sich Aussetzer selbst.</p>
+    </div>
+    <div class="zelle">
+      <span class="pfad">intern/kamera</span>
+      <h3>PTZ-Steuerung</h3>
+      <p>VISCA over IP, UDP 52381, sieben Byte Nutzlast. Antwortet die Kamera nicht, ist das
+        kein Systemfehler, sondern ein Protokolleintrag.</p>
+    </div>
+    <div class="zelle">
+      <span class="pfad">intern/speicher</span>
+      <h3>Ablage</h3>
+      <p>PostgreSQL im Betrieb, Arbeitsspeicher zur Vorführung — dieselbe Schnittstelle.
+        Die Ereigniskette wird unter Sperre geschrieben und bleibt lückenlos.</p>
+    </div>
+    <div class="zelle">
+      <span class="pfad">intern/vorabcheck</span>
+      <h3>Selbsttest</h3>
+      <p>Rechnet die Kette nach, meldet unbesetzte Plätze und fährt jeden Platz an. Während
+        einer laufenden Sitzung gesperrt — er bewegt Kameras.</p>
+    </div>
+    <div class="zelle">
+      <span class="pfad">intern/protokoll</span>
+      <h3>Sitzungsprotokoll</h3>
+      <p>Macht aus der Ereigniskette ein lesbares Dokument mit Verlauf und Beschlüssen.
+        Es erfindet nichts: was kein Ereignis ist, steht nicht drin.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="marke">Abschnitt 03</span>
+  <h2>Der Weg eines Mikrofons</h2>
+  <p class="satz">Was zwischen dem Tippen auf dem iPad und der Kamerafahrt passiert. Die
+    Reihenfolge ist keine Geschmacksfrage: das Ereignis wird vor der Zustandsänderung
+    geschrieben, damit es keinen Zustand ohne Protokolleintrag geben kann.</p>
+
+  <figure>
+    <div class="rahmen">
+      <svg viewBox="0 0 1180 300" role="img"
+           aria-label="Ablauf: Das Gerät sendet mikro_an. Der Kern prüft Rolle, erteiltes Wort und die Grenze offener Mikrofone, schreibt dann das Ereignis in die Kette, ändert erst danach den Zustand und verteilt ihn an alle Geräte. Der Kamerabefehl läuft nebenher und bleibt während einer laufenden Abstimmung aus.">
+        <defs>
+          <marker id="s2" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor"/>
+          </marker>
+          <marker id="s2rot" viewBox="0 0 10 10" refX="9" refY="5"
+                  markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--signal)"/>
+          </marker>
+        </defs>
+
+        <g fill="var(--flaeche)" stroke="currentColor" stroke-width="1.5">
+          <rect x="20" y="60" width="170" height="66" rx="2"/>
+          <rect x="240" y="60" width="170" height="66" rx="2"/>
+          <rect x="460" y="60" width="170" height="66" rx="2"/>
+          <rect x="680" y="60" width="170" height="66" rx="2"/>
+          <rect x="900" y="60" width="170" height="66" rx="2"/>
+        </g>
+        <g font-size="13" font-weight="600" fill="currentColor">
+          <text x="36" y="88">1 · Gerät</text>
+          <text x="256" y="88">2 · Rechte</text>
+          <text x="476" y="88">3 · Ereignis</text>
+          <text x="696" y="88">4 · Zustand</text>
+          <text x="916" y="88">5 · Verteilen</text>
+        </g>
+        <g font-size="11" fill="var(--leise)">
+          <text x="36" y="108">mikro_an, Platz 3</text>
+          <text x="256" y="108">Rolle, Wort erteilt,</text>
+          <text x="256" y="122">Grenze eingehalten?</text>
+          <text x="476" y="108">in die Hash-Kette,</text>
+          <text x="476" y="122">mit ms seit Beginn</text>
+          <text x="696" y="108">Mikrofon offen,</text>
+          <text x="696" y="122">Wort läuft</text>
+          <text x="916" y="108">an alle Geräte,</text>
+          <text x="916" y="122">vollständig</text>
+        </g>
+
+        <g fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#s2)">
+          <line x1="190" y1="93" x2="234" y2="93"/>
+          <line x1="410" y1="93" x2="454" y2="93"/>
+          <line x1="630" y1="93" x2="674" y2="93"/>
+          <line x1="850" y1="93" x2="894" y2="93"/>
+        </g>
+
+        <!-- Abbruchpfad -->
+        <path d="M 325 126 L 325 176 L 120 176 L 120 132" fill="none" stroke="currentColor"
+              stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#s2)"/>
+        <text x="336" y="172" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+              font-size="10.5" fill="var(--leise)">abgelehnt: kein_wort, grenze_erreicht, nicht_berechtigt — Zustand bleibt unverändert</text>
+
+        <!-- Kamerapfad -->
+        <path d="M 765 126 L 765 226 L 900 226" fill="none" stroke="var(--signal)"
+              stroke-width="2" marker-end="url(#s2rot)"/>
+        <rect x="900" y="196" width="170" height="60" rx="2" fill="var(--flaeche)"
+              stroke="var(--signal)" stroke-width="1.8"/>
+        <text x="916" y="222" font-size="13" font-weight="600" fill="var(--signal)">6 · Kamera</text>
+        <text x="916" y="240" font-size="11" fill="var(--leise)">nebenher, mit Zeitlimit</text>
+        <text x="440" y="222" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+              font-size="10.5" fill="var(--signal)">läuft eine Abstimmung, bleibt die Kamera stehen</text>
+      </svg>
+    </div>
+    <figcaption>Schritt 6 hängt bewusst nicht in der Kette: eine stumme Kamera darf die
+      Antwort an die Geräte nicht um ihr Zeitlimit verzögern. Gemessen wurden 2,7 ms
+      zwischen Tippen und Ankommen bei allen anderen Geräten.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <span class="marke">Abschnitt 04</span>
+  <h2>Was fehlt — und warum</h2>
+  <p class="satz">Die gestrichelten Kästen unten im Bild sind keine Lücken aus Nachlässigkeit.
+    Vier davon lassen sich am Schreibtisch nicht abnehmen.</p>
+  <ul class="liste">
+    <li><span class="was">Ton</span><span class="warum">Automixer, Mix-Minus und Einmessung prüft man in einem Raum mit Lautsprechern, nicht im Editor. Ein Meilenstein, dessen Abnahme niemand abhaken kann, versandet.</span></li>
+    <li><span class="was">Video</span><span class="warum">Kompositor und Zuschaltung setzen den Ton voraus. Wer mit dem Kompositor anfängt, versandet — das steht so in der Projektanweisung.</span></li>
+    <li><span class="was">Dolmetschen</span><span class="warum">Baut vollständig auf dem Audiopfad auf. Der Dolmetscherplatz zeigt heute nur, wer spricht, und sagt das auch.</span></li>
+    <li><span class="was">Transkript</span><span class="warum">Braucht Sprachaufnahme. Die Zuordnung Sprecher zu Person ist dagegen schon exakt vorhanden — über den Platz.</span></li>
+    <li><span class="was">Sitzungsmappe</span><span class="warum">Reine Software, ohne Hardware baubar. Der nächste sinnvolle Schritt, zusammen mit der Tagesordnung.</span></li>
+  </ul>
+</section>
+
+<section>
+  <span class="marke">Abschnitt 05</span>
+  <h2>Einmal selbst ansehen</h2>
+  <p class="satz">Ohne Datenbank, ohne Einrichtung. Zwölf Plätze, zwei Kameras, eine
+    vorbereitete Sitzung. Alles liegt im Arbeitsspeicher und ist nach dem Beenden weg.</p>
+  <div class="befehl">go run ./cmd/server -konfiguration vorfuehrung/config.yaml</div>
+  <p class="satz leise">Dann <strong>localhost:8080</strong> öffnen, auf Platz 1 mit der PIN
+    <strong>0101</strong> anmelden, Sitzung eröffnen. Platz 2 hat <strong>0202</strong>, und so
+    weiter. Mehrere Fenster nebeneinander zeigen, dass alle denselben Zustand sehen.
+    <strong>/vorabcheck</strong> prüft den Saal durch, <strong>/protokoll.md</strong> schreibt
+    das Protokoll, <strong>/testumgebung</strong> stellt iPad, Namensschild und
+    Dolmetscherplatz nebeneinander.</p>
+</section>
+
+<div class="fussnote">
+  <strong>Stand:</strong> 47 Tests über sechs Pakete, grün ohne Datenbank, gegen PostgreSQL 16
+  und mit Wettlaufprüfung; bei jedem Push automatisch geprüft. <strong>Saalwerk</strong> ist ein
+  Arbeitstitel. Was hier gestrichelt steht, wird nicht behauptet.
+</div>
+
+</div>

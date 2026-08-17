@@ -16,6 +16,12 @@ Dann `http://localhost:8080` öffnen. Anmelden auf Platz 1 mit der PIN `0101`,
 Platz 2 `0202` und so weiter. Alles liegt im Arbeitsspeicher und ist nach dem
 Beenden weg — für eine echte Sitzung gehört eine Datenbank darunter.
 
+## Aufbau auf einen Blick
+
+`dokumentation/blockschaltbild.html` im Browser öffnen: alle Bausteine, der Weg
+eines Mikrofons vom Tastendruck bis zur Kamerafahrt, und was heute noch fehlt.
+Eine einzelne Datei ohne Abhängigkeiten.
+
 ## Start im Betrieb
 
 Vorausgesetzt: Go 1.24 und PostgreSQL ab 13 (wegen `gen_random_uuid()`).
