@@ -1,5 +1,28 @@
 {
   "titel": "Vorstandssitzung am 17. August",
+  "tagesordnung": [
+    {
+      "nummer": 1,
+      "titel": "Begrüßung, Feststellung der Beschlussfähigkeit"
+    },
+    {
+      "nummer": 2,
+      "titel": "Genehmigung des Protokolls der letzten Sitzung"
+    },
+    {
+      "nummer": 3,
+      "titel": "Personalangelegenheit Geschäftsführung",
+      "oeffentlich": false
+    },
+    {
+      "nummer": 4,
+      "titel": "Feststellung des Jahresabschlusses 2026"
+    },
+    {
+      "nummer": 5,
+      "titel": "Verschiedenes"
+    }
+  ],
   "teilnahmen": [
     {
       "platz": 1,
@@ -53,7 +76,8 @@
       "platz": 9,
       "person": "Bernd Ritter",
       "rolle": "delegierter",
-      "pin": "0909"
+      "pin": "0909",
+      "aufzeichnungswiderspruch": true
     },
     {
       "platz": 10,

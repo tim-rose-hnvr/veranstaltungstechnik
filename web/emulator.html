@@ -1,0 +1,1054 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prüfstelle — ConferenceCue</title>
+<link rel="icon" href="data:,">
+<style>
+  /* Keine externe Schrift, kein CDN: dieselbe Regel wie im Saal. */
+  :root {
+    color-scheme: light dark;
+    --grund: #f2f2f4;
+    --karte: #ffffff;
+    --vertieft: #e9e9ed;
+    --rand: #d2d2d8;
+    --schrift: #16161a;
+    --leise: #6d6d78;
+    --an: #c8102e;
+    --gut: #14803c;
+    --wort: #1d4ed8;
+    --achtung: #8a5a00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --grund: #0a0a0c; --karte: #16161a; --vertieft: #101014; --rand: #2e2e36;
+      --schrift: #f2f2f5; --leise: #9a9aa6;
+      --an: #f0576a; --gut: #3fbc6d; --wort: #7ba4f5; --achtung: #d9a648;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 1rem 1.25rem 3rem;
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--grund); color: var(--schrift);
+  }
+  h1 { font-size: 1.15rem; margin: 0; font-weight: 650; letter-spacing: -.01em; }
+  h2 { font-size: .72rem; margin: 0 0 .6rem; font-weight: 650; letter-spacing: .1em;
+       text-transform: uppercase; color: var(--leise); }
+  .leise { color: var(--leise); }
+  .klein { font-size: .8rem; }
+  code, .hex { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78rem; }
+
+  header { display: flex; flex-wrap: wrap; align-items: baseline; gap: .5rem 1rem;
+           padding-bottom: .75rem; border-bottom: 1px solid var(--rand); margin-bottom: 1rem; }
+  header .weg { margin-left: auto; display: flex; gap: 1rem; }
+  header a { color: var(--leise); text-decoration: none; font-size: .85rem; }
+  header a:hover { color: var(--schrift); }
+
+  .lage { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; }
+  .kachel {
+    background: var(--karte); border: 1px solid var(--rand); border-radius: .55rem;
+    padding: .45rem .7rem; display: flex; flex-direction: column; gap: .1rem; min-width: 8.5rem;
+  }
+  .kachel b { font-size: .95rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .kachel span { font-size: .7rem; letter-spacing: .07em; text-transform: uppercase; color: var(--leise); }
+  .kachel.warn b { color: var(--achtung); }
+  .kachel.an b { color: var(--an); }
+  .kachel.gut b { color: var(--gut); }
+
+  .raster { display: grid; gap: 1rem; grid-template-columns: 1fr; align-items: start; }
+  @media (min-width: 68rem) { .raster { grid-template-columns: minmax(0,1.35fr) minmax(0,1fr); } }
+
+  section { background: var(--karte); border: 1px solid var(--rand); border-radius: .8rem;
+            padding: .9rem 1rem 1rem; margin-bottom: 1rem; }
+
+  .geraete { display: grid; gap: .55rem; grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr)); }
+  .geraet { border: 1px solid var(--rand); border-radius: .6rem; padding: .6rem .7rem;
+            display: flex; flex-direction: column; gap: .5rem; background: var(--vertieft); }
+  .geraet.an { border-color: var(--schrift); background: var(--karte); }
+  .geraet.spricht { border-color: var(--an); box-shadow: inset 0 0 0 1px var(--an); }
+  .geraet.fuehrt { border-color: var(--wort); }
+  .zeile1 { display: flex; align-items: baseline; gap: .4rem; }
+  .nr { font-weight: 650; font-variant-numeric: tabular-nums; min-width: 1.3rem; }
+  .name { font-weight: 550; }
+  .marken { display: flex; flex-wrap: wrap; gap: .25rem; margin-left: auto; }
+  .marke { font-size: .64rem; letter-spacing: .06em; text-transform: uppercase;
+           padding: .1rem .35rem; border-radius: .25rem; border: 1px solid var(--rand); color: var(--leise); }
+  .marke.an { color: var(--an); border-color: var(--an); }
+  .marke.wort { color: var(--wort); border-color: var(--wort); }
+  .marke.gut { color: var(--gut); border-color: var(--gut); }
+  .marke.warn { color: var(--achtung); border-color: var(--achtung); }
+
+  .knoepfe { display: flex; flex-wrap: wrap; gap: .3rem; }
+  button {
+    font: inherit; font-size: .8rem; padding: .3rem .55rem; border-radius: .4rem; cursor: pointer;
+    border: 1px solid var(--rand); background: var(--karte); color: var(--schrift);
+  }
+  button:hover:not(:disabled) { border-color: var(--schrift); }
+  button:disabled { opacity: .35; cursor: default; }
+  button.stark { background: var(--schrift); color: var(--grund); border-color: var(--schrift); }
+  button.rot { border-color: var(--an); color: var(--an); }
+  button:focus-visible { outline: 2px solid var(--wort); outline-offset: 1px; }
+
+  ol.top { list-style: none; margin: 0; padding: 0; }
+  ol.top li { display: flex; gap: .5rem; align-items: center; padding: .35rem 0;
+              border-bottom: 1px solid var(--rand); }
+  ol.top li:last-child { border-bottom: 0; }
+  ol.top .tnr { font-variant-numeric: tabular-nums; color: var(--leise); min-width: 1.2rem; }
+  ol.top .ttitel { flex: 1; min-width: 0; }
+  ol.top li.laeuft .ttitel { font-weight: 650; }
+  ol.top li.zu .ttitel { color: var(--leise); text-decoration: line-through; }
+
+  .strom { max-height: 22rem; overflow-y: auto; margin: 0; padding: 0; list-style: none;
+           border-top: 1px solid var(--rand); }
+  .strom li { padding: .35rem .1rem; border-bottom: 1px solid var(--rand); display: flex; gap: .5rem; }
+  .strom li:last-child { border-bottom: 0; }
+  .strom .zeit { color: var(--leise); font-variant-numeric: tabular-nums; min-width: 3.2rem;
+                 font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .75rem; }
+  .strom .was { flex: 1; min-width: 0; word-break: break-word; }
+  .strom .art { font-weight: 600; }
+  .strom .nutz { color: var(--leise); font-size: .78rem; }
+  .strom li.gut .art { color: var(--gut); }
+  .strom li.schlecht .art { color: var(--an); }
+  .strom li.warn .art { color: var(--achtung); }
+
+  table.kette { width: 100%; border-collapse: collapse; font-size: .8rem; }
+  table.kette th { text-align: left; font-weight: 600; color: var(--leise); font-size: .7rem;
+                   letter-spacing: .07em; text-transform: uppercase; padding: .25rem .4rem .35rem 0; }
+  table.kette td { padding: .3rem .4rem .3rem 0; border-top: 1px solid var(--rand);
+                   vertical-align: top; word-break: break-word; }
+  table.kette td.nr, table.kette td.ms { font-variant-numeric: tabular-nums; color: var(--leise); white-space: nowrap; }
+  .rollen { max-height: 20rem; overflow-y: auto; }
+
+  .kamera { display: flex; gap: .6rem; align-items: center; padding: .45rem 0;
+            border-bottom: 1px solid var(--rand); }
+  .kamera:last-of-type { border-bottom: 0; }
+  .scheibe { width: 2.6rem; height: 2.6rem; border-radius: 50%; border: 2px solid var(--rand);
+             display: grid; place-items: center; font-weight: 650; font-variant-numeric: tabular-nums;
+             flex: none; transition: border-color .2s, color .2s; }
+  .scheibe.bewegt { border-color: var(--an); color: var(--an); }
+
+  .ablaeufe { display: grid; gap: .4rem; grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr)); }
+  .ablauf { border: 1px solid var(--rand); border-radius: .6rem; padding: .55rem .7rem;
+            display: flex; flex-direction: column; gap: .35rem; background: var(--vertieft); }
+  .ablauf b { font-size: .88rem; font-weight: 600; }
+  .ablauf p { margin: 0; font-size: .78rem; color: var(--leise); flex: 1; }
+
+  #hinweis { display: none; margin-bottom: 1rem; padding: .6rem .8rem; border-radius: .5rem;
+             border: 1px solid var(--an); color: var(--an); background: var(--karte); font-size: .85rem; }
+  .punkt { width: .55rem; height: .55rem; border-radius: 50%; background: var(--leise); display: inline-block; }
+  .punkt.gut { background: var(--gut); }
+  .punkt.schlecht { background: var(--an); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Prüfstelle</h1>
+  <span class="leise klein" id="kopfzeile">wird geladen …</span>
+  <nav class="weg">
+    <a href="/" target="_blank">Sprechstelle</a>
+    <a href="/testumgebung" target="_blank">Testumgebung</a>
+    <a href="/vorabcheck" target="_blank">Vorabcheck</a>
+    <a href="/protokoll.md" target="_blank">Protokoll</a>
+  </nav>
+</header>
+
+<div id="hinweis" role="alert"></div>
+
+<div class="lage" id="lage"></div>
+
+<div class="raster">
+  <div>
+    <section>
+      <h2>Abläufe — einmal drücken, zusehen</h2>
+      <div class="ablaeufe" id="ablaeufe"></div>
+    </section>
+
+    <section>
+      <h2>Geräte im Saal <span class="leise klein" id="geraetezeile"></span></h2>
+      <div class="geraete" id="geraete"></div>
+    </section>
+
+    <section>
+      <h2>Tagesordnung</h2>
+      <ol class="top" id="tagesordnung"></ol>
+      <div class="knoepfe" id="topknoepfe" style="margin-top:.6rem"></div>
+    </section>
+
+    <section>
+      <h2>Abstimmung</h2>
+      <div id="abstimmung"></div>
+    </section>
+  </div>
+
+  <div>
+    <section>
+      <h2>Was geschieht <span class="leise klein">— Befehle, Antworten, Abweisungen</span></h2>
+      <ul class="strom" id="strom"></ul>
+    </section>
+
+    <section>
+      <h2>Kameras <span class="leise klein" id="kamerazeile"></span></h2>
+      <div id="kameras"></div>
+      <div id="viscastrom" class="klein" style="margin-top:.5rem"></div>
+    </section>
+
+    <section>
+      <h2>Ereigniskette <span class="leise klein" id="kettenzeile"></span></h2>
+      <div class="rollen">
+        <table class="kette">
+          <thead><tr><th>Nr</th><th>ms</th><th>Ereignis</th><th>Hash</th></tr></thead>
+          <tbody id="kette"></tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+// Die Prüfstelle bekommt keinen Sonderweg in den Server. Sie öffnet je Platz
+// eine ganz normale WebSocket-Verbindung und meldet sich mit der PIN an —
+// genau das, was zwölf iPads täten. Was hier abgewiesen wird, wird im Saal
+// auch abgewiesen.
+
+let aufbau = null;          // Plätze, PINs, Kameras
+let zustand = null;         // letzter Saalzustand
+const geraete = new Map();  // Platznummer -> { sitz, rechte, verbunden }
+let ausgewaehlt = 0;        // Platz, dessen Rechte die Knöpfe zeigen
+let ablaufLaeuft = false;
+
+const knoten = {
+  lage: document.getElementById("lage"),
+  geraete: document.getElementById("geraete"),
+  geraetezeile: document.getElementById("geraetezeile"),
+  tagesordnung: document.getElementById("tagesordnung"),
+  topknoepfe: document.getElementById("topknoepfe"),
+  abstimmung: document.getElementById("abstimmung"),
+  strom: document.getElementById("strom"),
+  kette: document.getElementById("kette"),
+  kettenzeile: document.getElementById("kettenzeile"),
+  kameras: document.getElementById("kameras"),
+  kamerazeile: document.getElementById("kamerazeile"),
+  viscastrom: document.getElementById("viscastrom"),
+  kopfzeile: document.getElementById("kopfzeile"),
+  ablaeufe: document.getElementById("ablaeufe"),
+  hinweis: document.getElementById("hinweis")
+};
+
+/* ---------- Strom der Vorgänge ---------- */
+
+let stromNr = 0;
+
+function melden(art, text, klasse) {
+  stromNr++;
+  const li = document.createElement("li");
+  if (klasse) li.className = klasse;
+  const zeit = document.createElement("span");
+  zeit.className = "zeit";
+  const jetzt = new Date();
+  zeit.textContent = String(jetzt.getMinutes()).padStart(2, "0") + ":" +
+    String(jetzt.getSeconds()).padStart(2, "0");
+  const was = document.createElement("span");
+  was.className = "was";
+  const b = document.createElement("span");
+  b.className = "art";
+  b.textContent = art;
+  was.appendChild(b);
+  if (text) {
+    const rest = document.createElement("span");
+    rest.className = "nutz";
+    rest.textContent = " " + text;
+    was.appendChild(rest);
+  }
+  li.appendChild(zeit);
+  li.appendChild(was);
+  knoten.strom.insertBefore(li, knoten.strom.firstChild);
+  while (knoten.strom.childElementCount > 120) knoten.strom.lastElementChild.remove();
+}
+
+function hinweisZeigen(text) {
+  knoten.hinweis.textContent = text;
+  knoten.hinweis.style.display = "block";
+  clearTimeout(hinweisZeigen.uhr);
+  hinweisZeigen.uhr = setTimeout(function () { knoten.hinweis.style.display = "none"; }, 5000);
+}
+
+/* ---------- Geräte ---------- */
+
+function geraetAnschalten(nummer) {
+  if (geraete.has(nummer)) return Promise.resolve();
+  const platz = aufbau.plaetze.find(function (p) { return p.nummer === nummer; });
+  if (!platz || !platz.person) return Promise.resolve();
+
+  return new Promise(function (fertig) {
+    const schema = location.protocol === "https:" ? "wss:" : "ws:";
+    const sitz = new WebSocket(schema + "//" + location.host + "/ws");
+    const g = { sitz: sitz, rechte: [], verbunden: false, person: platz.person };
+    geraete.set(nummer, g);
+
+    sitz.onopen = function () {
+      g.verbunden = true;
+      sitz.send(JSON.stringify({ typ: "anmelden", platz: nummer, pin: platz.pin }));
+      melden("Gerät an", "Platz " + nummer + " — " + platz.person + " meldet sich mit PIN an");
+      setTimeout(fertig, 90);
+    };
+    sitz.onclose = function () {
+      geraete.delete(nummer);
+      if (ausgewaehlt === nummer) ausgewaehlt = 0;
+      zeichnen();
+      fertig();
+    };
+    sitz.onerror = function () { sitz.close(); };
+    sitz.onmessage = function (e) {
+      let n;
+      try { n = JSON.parse(e.data); } catch (_) { return; }
+      if (n.typ === "zustand") {
+        g.rechte = n.ich ? n.ich.darf : [];
+        if (!zustand || n.stand >= zustand.stand) zustand = n;
+        if (ausgewaehlt === 0) ausgewaehlt = nummer;
+        zeichnen();
+      } else if (n.typ === "fehler") {
+        // Eine Abweisung ist kein Unfall, sondern die Regel bei der Arbeit.
+        melden("abgewiesen", "Platz " + nummer + " · " + n.code + " — " + n.text, "warn");
+        hinweisZeigen("Platz " + nummer + ": " + n.text);
+      }
+    };
+  });
+}
+
+function geraetAusschalten(nummer) {
+  const g = geraete.get(nummer);
+  if (!g) return;
+  melden("Gerät aus", "Platz " + nummer + " — die Verbindung bricht ab");
+  g.sitz.close();
+}
+
+function senden(nummer, nachricht) {
+  const g = geraete.get(nummer);
+  if (!g || g.sitz.readyState !== WebSocket.OPEN) {
+    melden("nicht gesendet", "Platz " + nummer + " ist nicht angeschaltet", "schlecht");
+    return false;
+  }
+  g.sitz.send(JSON.stringify(nachricht));
+  const teile = [];
+  for (const schluessel of Object.keys(nachricht)) {
+    if (schluessel === "typ" || schluessel === "pin") continue;
+    teile.push(schluessel + "=" + nachricht[schluessel]);
+  }
+  melden(nachricht.typ, "von Platz " + nummer + (teile.length ? " · " + teile.join(" ") : ""));
+  return true;
+}
+
+function darf(nummer, aktion) {
+  const g = geraete.get(nummer);
+  if (!g) return false;
+  return g.rechte.indexOf(aktion) !== -1;
+}
+
+/* ---------- Zeichnen ---------- */
+
+function zeichnen() {
+  if (!aufbau) return;
+  lageZeichnen();
+  geraeteZeichnen();
+  tagesordnungZeichnen();
+  abstimmungZeichnen();
+}
+
+function kachel(wert, beschriftung, klasse) {
+  const d = document.createElement("div");
+  d.className = "kachel" + (klasse ? " " + klasse : "");
+  const b = document.createElement("b");
+  b.textContent = wert;
+  const s = document.createElement("span");
+  s.textContent = beschriftung;
+  d.appendChild(b);
+  d.appendChild(s);
+  return d;
+}
+
+function lageZeichnen() {
+  const neu = document.createDocumentFragment();
+  if (!zustand) {
+    neu.appendChild(kachel("—", "kein Zustand"));
+    knoten.lage.replaceChildren(neu);
+    return;
+  }
+  let offen = 0, belegt = 0;
+  for (const p of zustand.plaetze) { if (p.mikro) offen++; if (p.belegt) belegt++; }
+
+  neu.appendChild(kachel(zustand.sitzung.zustand, "Sitzung",
+    zustand.sitzung.zustand === "laufend" ? "gut" : ""));
+  neu.appendChild(kachel(belegt + " / " + zustand.plaetze.length, "Plätze besetzt"));
+  neu.appendChild(kachel(offen + " / " + zustand.max_offen, "Mikrofone offen",
+    offen >= zustand.max_offen ? "warn" : ""));
+  neu.appendChild(kachel(zustand.sitzung.leitung_platz || "—", "Leitung auf Platz"));
+  neu.appendChild(kachel(zustand.sitzung.aktueller_top || "—", "Tagesordnungspunkt"));
+  neu.appendChild(kachel(zustand.aufzeichnung ? "läuft" : "pausiert", "Aufzeichnung",
+    zustand.aufzeichnung ? "gut" : "warn"));
+  if (zustand.kamera) {
+    neu.appendChild(kachel("Preset " + zustand.kamera.preset,
+      zustand.kamera.name + (zustand.kamera.erreichbar ? "" : " · stumm"),
+      zustand.kamera.erreichbar ? "" : "an"));
+  }
+  knoten.lage.replaceChildren(neu);
+
+  knoten.kopfzeile.textContent = aufbau.saal + " · " + zustand.sitzung.titel;
+}
+
+function geraeteZeichnen() {
+  const neu = document.createDocumentFragment();
+  const nachNummer = new Map();
+  if (zustand) for (const p of zustand.plaetze) nachNummer.set(p.nummer, p);
+
+  for (const a of aufbau.plaetze) {
+    const p = nachNummer.get(a.nummer) || {};
+    const an = geraete.has(a.nummer);
+    const fuehrt = zustand && zustand.sitzung.leitung_platz === a.nummer;
+
+    const karte = document.createElement("div");
+    karte.className = "geraet" + (an ? " an" : "") + (p.mikro ? " spricht" : "") +
+      (fuehrt ? " fuehrt" : "");
+
+    const zeile = document.createElement("div");
+    zeile.className = "zeile1";
+    const nr = document.createElement("span");
+    nr.className = "nr";
+    nr.textContent = a.nummer;
+    const name = document.createElement("span");
+    name.className = "name";
+    name.textContent = a.person || a.name;
+    const marken = document.createElement("span");
+    marken.className = "marken";
+    if (fuehrt) marken.appendChild(marke("Leitung", "wort"));
+    if (p.mikro) marken.appendChild(marke("Mikro", "an"));
+    else if (p.hat_wort) marken.appendChild(marke("hat Wort", "wort"));
+    if (a.widerspruch) marken.appendChild(marke("kein Bild", "warn"));
+    if (an) marken.appendChild(marke("verbunden", "gut"));
+    zeile.appendChild(nr);
+    zeile.appendChild(name);
+    zeile.appendChild(marken);
+
+    const unter = document.createElement("div");
+    unter.className = "klein leise";
+    unter.textContent = a.name + " · " + (a.rolle || "—") + " · " + a.kamera +
+      " Preset " + a.preset + " · PIN " + a.pin;
+
+    const knoepfe = document.createElement("div");
+    knoepfe.className = "knoepfe";
+
+    const schalter = document.createElement("button");
+    schalter.textContent = an ? "aus" : "anschalten";
+    if (!an) schalter.className = "stark";
+    schalter.disabled = !a.person;
+    schalter.onclick = function () {
+      if (an) geraetAusschalten(a.nummer); else geraetAnschalten(a.nummer);
+    };
+    knoepfe.appendChild(schalter);
+
+    if (an) {
+      knoepfe.appendChild(knopf("Wort melden", darf(a.nummer, "wort_melden"),
+        function () { senden(a.nummer, { typ: "wort_melden" }); }));
+      knoepfe.appendChild(knopf(p.mikro ? "Mikro aus" : "Mikro an",
+        darf(a.nummer, p.mikro ? "mikro_aus" : "mikro_an"),
+        function () { senden(a.nummer, { typ: p.mikro ? "mikro_aus" : "mikro_an", platz: a.nummer }); },
+        p.mikro ? "rot" : ""));
+
+      if (darf(a.nummer, "sitzung_eroeffnen")) {
+        knoepfe.appendChild(knopf("Sitzung eröffnen", true,
+          function () { senden(a.nummer, { typ: "sitzung_eroeffnen" }); }, "stark"));
+      }
+      if (darf(a.nummer, "sitzung_schliessen")) {
+        knoepfe.appendChild(knopf("Sitzung schließen", true,
+          function () { senden(a.nummer, { typ: "sitzung_schliessen" }); }));
+      }
+      if (darf(a.nummer, "leitung_uebernehmen")) {
+        knoepfe.appendChild(knopf("Leitung übernehmen", true,
+          function () { senden(a.nummer, { typ: "leitung_uebernehmen" }); }, "stark"));
+      }
+      if (zustand && zustand.abstimmung && zustand.abstimmung.zustand === "laufend" &&
+          darf(a.nummer, "stimme_abgeben")) {
+        for (const [wahl, text] of [["ja", "Ja"], ["nein", "Nein"], ["enthaltung", "Enth."]]) {
+          knoepfe.appendChild(knopf(text, true,
+            function () { senden(a.nummer, { typ: "stimme_abgeben", wahl: wahl }); }));
+        }
+      }
+      // Die Leitung schaltet fremde Plätze: Wort erteilen, wo gemeldet ist.
+      if (zustand && aufDerListe(a.nummer)) {
+        for (const [nummer, g] of geraete) {
+          if (!darf(nummer, "wort_erteilen")) continue;
+          knoepfe.appendChild(knopf("Wort erteilen", true,
+            function () { senden(nummer, { typ: "wort_erteilen", platz: a.nummer }); }));
+          break;
+        }
+      }
+    }
+
+    karte.appendChild(zeile);
+    karte.appendChild(unter);
+    karte.appendChild(knoepfe);
+    neu.appendChild(karte);
+  }
+  knoten.geraete.replaceChildren(neu);
+  knoten.geraetezeile.textContent = geraete.size + " von " + aufbau.plaetze.length + " angeschaltet";
+}
+
+function marke(text, klasse) {
+  const s = document.createElement("span");
+  s.className = "marke" + (klasse ? " " + klasse : "");
+  s.textContent = text;
+  return s;
+}
+
+function knopf(text, erlaubt, tun, klasse) {
+  const b = document.createElement("button");
+  b.textContent = text;
+  b.disabled = !erlaubt;
+  if (klasse) b.className = klasse;
+  b.onclick = tun;
+  return b;
+}
+
+function aufDerListe(nummer) {
+  if (!zustand) return false;
+  for (const e of zustand.redeliste) if (e.platz === nummer && e.zustand === "gemeldet") return true;
+  return false;
+}
+
+// leitungsgeraet: das angeschaltete Gerät, das gerade den Staffelstab hat.
+function leitungsgeraet() {
+  if (!zustand) return 0;
+  const platz = zustand.sitzung.leitung_platz;
+  return geraete.has(platz) ? platz : 0;
+}
+
+function tagesordnungZeichnen() {
+  const neu = document.createDocumentFragment();
+  if (!zustand || zustand.tagesordnung.length === 0) {
+    const li = document.createElement("li");
+    li.className = "leise klein";
+    li.textContent = "Diese Sitzung hat keine Tagesordnung.";
+    neu.appendChild(li);
+    knoten.tagesordnung.replaceChildren(neu);
+    knoten.topknoepfe.replaceChildren();
+    return;
+  }
+
+  const leitung = leitungsgeraet();
+  for (const t of zustand.tagesordnung) {
+    const li = document.createElement("li");
+    li.className = t.zustand === "laufend" ? "laeuft" :
+      (t.zustand === "abgeschlossen" || t.zustand === "vertagt" ? "zu" : "");
+
+    const nr = document.createElement("span");
+    nr.className = "tnr";
+    nr.textContent = t.nummer + ".";
+    const titel = document.createElement("span");
+    titel.className = "ttitel";
+    titel.textContent = t.titel;
+    const marken = document.createElement("span");
+    marken.className = "marken";
+    if (!t.oeffentlich) marken.appendChild(marke("nicht öffentlich", "warn"));
+    marken.appendChild(marke(t.zustand, t.zustand === "laufend" ? "gut" : ""));
+
+    li.appendChild(nr);
+    li.appendChild(titel);
+    li.appendChild(marken);
+
+    if (leitung && t.zustand !== "laufend" && t.zustand !== "vertagt") {
+      const auf = document.createElement("button");
+      auf.textContent = "aufrufen";
+      auf.disabled = !darf(leitung, "top_aufrufen");
+      auf.onclick = function () { senden(leitung, { typ: "top_aufrufen", top: t.nummer }); };
+      li.appendChild(auf);
+    }
+    neu.appendChild(li);
+  }
+  knoten.tagesordnung.replaceChildren(neu);
+
+  const knoepfe = document.createDocumentFragment();
+  if (leitung) {
+    knoepfe.appendChild(knopf("Punkt abschließen", darf(leitung, "top_abschliessen"),
+      function () { senden(leitung, { typ: "top_abschliessen" }); }));
+    knoepfe.appendChild(knopf("Punkt vertagen", darf(leitung, "top_vertagen"),
+      function () { senden(leitung, { typ: "top_vertagen" }); }));
+  } else {
+    const s = document.createElement("span");
+    s.className = "leise klein";
+    s.textContent = "Kein Gerät der Sitzungsleitung ist angeschaltet.";
+    knoepfe.appendChild(s);
+  }
+  knoten.topknoepfe.replaceChildren(knoepfe);
+}
+
+function abstimmungZeichnen() {
+  const neu = document.createDocumentFragment();
+  const leitung = leitungsgeraet();
+  const a = zustand ? zustand.abstimmung : null;
+
+  if (!a || a.zustand === "abgebrochen" || a.zustand === "festgestellt") {
+    if (a) {
+      const alt = document.createElement("div");
+      alt.className = "klein leise";
+      alt.textContent = "zuletzt: „" + a.titel + "“ — " + a.zustand +
+        (a.ergebnis ? " (" + a.ergebnis.ja + " Ja, " + a.ergebnis.nein + " Nein, " +
+          a.ergebnis.enthaltung + " Enthaltungen, " +
+          (a.ergebnis.angenommen ? "angenommen" : "abgelehnt") + ")" : "");
+      neu.appendChild(alt);
+    }
+    if (leitung && darf(leitung, "abstimmung_starten")) {
+      const zeile = document.createElement("div");
+      zeile.className = "knoepfe";
+      zeile.style.marginTop = ".5rem";
+      const titel = document.createElement("input");
+      titel.placeholder = "Beschlusstext";
+      titel.style.flex = "1";
+      titel.style.font = "inherit";
+      titel.style.fontSize = ".8rem";
+      titel.style.padding = ".3rem .45rem";
+      titel.style.borderRadius = ".4rem";
+      titel.style.border = "1px solid var(--rand)";
+      titel.style.background = "var(--vertieft)";
+      titel.style.color = "var(--schrift)";
+      const art = document.createElement("select");
+      art.style.font = "inherit";
+      art.style.fontSize = ".8rem";
+      for (const wert of ["offen", "namentlich", "geheim"]) {
+        const o = document.createElement("option");
+        o.value = wert; o.textContent = wert;
+        art.appendChild(o);
+      }
+      zeile.appendChild(titel);
+      zeile.appendChild(art);
+      zeile.appendChild(knopf("eröffnen", true, function () {
+        if (!titel.value.trim()) { hinweisZeigen("Eine Abstimmung braucht einen Beschlusstext."); return; }
+        senden(leitung, { typ: "abstimmung_starten", titel: titel.value.trim(), art: art.value });
+      }, "stark"));
+      neu.appendChild(zeile);
+    } else {
+      const s = document.createElement("div");
+      s.className = "leise klein";
+      s.style.marginTop = ".4rem";
+      s.textContent = leitung
+        ? "Die Abstimmung ist gerade nicht eröffenbar — ein Tagesordnungspunkt muss aufgerufen sein."
+        : "Kein Gerät der Sitzungsleitung ist angeschaltet.";
+      neu.appendChild(s);
+    }
+    knoten.abstimmung.replaceChildren(neu);
+    return;
+  }
+
+  const titel = document.createElement("div");
+  titel.style.fontWeight = "600";
+  titel.textContent = a.titel;
+  const lage = document.createElement("div");
+  lage.className = "klein leise";
+  lage.textContent = a.art + " · " + a.zustand + " · " + a.abgegeben + " von " + a.anwesend +
+    " Stimmen · Quorum " + a.quorum + " von " + a.stimmberechtigt + " Stimmberechtigten";
+  neu.appendChild(titel);
+  neu.appendChild(lage);
+
+  if (a.zustand === "laufend") {
+    const merk = document.createElement("div");
+    merk.className = "klein";
+    merk.style.marginTop = ".35rem";
+    merk.style.color = "var(--achtung)";
+    merk.textContent = a.art === "geheim"
+      ? "Geheim: das Protokoll hält fest, DASS abgestimmt wurde — nie, wie."
+      : "Solange abgestimmt wird, bleiben Kamerafahrten und der Tagesordnungspunkt stehen.";
+    neu.appendChild(merk);
+  }
+  if (a.ergebnis) {
+    const e = document.createElement("div");
+    e.style.marginTop = ".4rem";
+    e.textContent = a.ergebnis.ja + " Ja · " + a.ergebnis.nein + " Nein · " +
+      a.ergebnis.enthaltung + " Enthaltungen — " +
+      (a.ergebnis.angenommen ? "angenommen" : "abgelehnt");
+    neu.appendChild(e);
+  }
+
+  if (leitung) {
+    const knoepfe = document.createElement("div");
+    knoepfe.className = "knoepfe";
+    knoepfe.style.marginTop = ".5rem";
+    for (const [aktion, text] of [["abstimmung_beenden", "auszählen"],
+                                  ["abstimmung_feststellen", "feststellen"],
+                                  ["abstimmung_abbrechen", "abbrechen"]]) {
+      if (!darf(leitung, aktion)) continue;
+      knoepfe.appendChild(knopf(text, true, function () { senden(leitung, { typ: aktion }); }));
+    }
+    if (knoepfe.hasChildNodes()) neu.appendChild(knoepfe);
+  }
+  knoten.abstimmung.replaceChildren(neu);
+}
+
+/* ---------- Kette und Kameras ---------- */
+
+let letzteKettenlaenge = 0;
+
+async function ketteHolen() {
+  try {
+    const antwort = await fetch("/emulator/kette.json", { cache: "no-store" });
+    const daten = await antwort.json();
+    const eintraege = daten.eintraege || [];
+
+    const neu = document.createDocumentFragment();
+    for (let i = eintraege.length - 1; i >= 0; i--) {
+      const e = eintraege[i];
+      const tr = document.createElement("tr");
+      tr.appendChild(zelle(e.folge_nr, "nr"));
+      tr.appendChild(zelle(e.nutzlast && e.nutzlast.ms !== undefined ? e.nutzlast.ms : "—", "ms"));
+
+      const was = document.createElement("td");
+      const art = document.createElement("div");
+      art.style.fontWeight = "600";
+      art.textContent = e.art;
+      const nutz = document.createElement("div");
+      nutz.className = "leise";
+      nutz.style.fontSize = ".76rem";
+      nutz.textContent = nutzlastText(e.nutzlast);
+      was.appendChild(art);
+      was.appendChild(nutz);
+      tr.appendChild(was);
+
+      const hash = document.createElement("td");
+      hash.className = "hex leise";
+      hash.textContent = (e.hash || "").slice(0, 10);
+      tr.appendChild(hash);
+      neu.appendChild(tr);
+    }
+    knoten.kette.replaceChildren(neu);
+
+    if (eintraege.length !== letzteKettenlaenge) letzteKettenlaenge = eintraege.length;
+    knoten.kettenzeile.innerHTML = "";
+    const punkt = document.createElement("span");
+    punkt.className = "punkt " + (daten.geprueft ? "gut" : "schlecht");
+    knoten.kettenzeile.appendChild(punkt);
+    knoten.kettenzeile.appendChild(document.createTextNode(
+      " " + eintraege.length + " Glieder, " +
+      (daten.geprueft ? "lückenlos und nachgerechnet" : "FEHLER: " + (daten.fehler || "unbekannt"))));
+  } catch (_) { /* Server weg — der nächste Durchlauf holt es nach */ }
+}
+
+function nutzlastText(nutzlast) {
+  if (!nutzlast) return "";
+  const teile = [];
+  for (const schluessel of Object.keys(nutzlast).sort()) {
+    if (schluessel === "sitzung" || schluessel === "ms") continue;
+    teile.push(schluessel + "=" + nutzlast[schluessel]);
+  }
+  return teile.join("  ");
+}
+
+function zelle(text, klasse) {
+  const td = document.createElement("td");
+  if (klasse) td.className = klasse;
+  td.textContent = text;
+  return td;
+}
+
+let letzterViscaStand = 0;
+
+async function kamerasHolen() {
+  try {
+    const antwort = await fetch("/emulator/kameras.json", { cache: "no-store" });
+    const daten = await antwort.json();
+
+    if (!daten.attrappe) {
+      knoten.kamerazeile.textContent = "— echte Kameras";
+      knoten.kameras.textContent = daten.hinweis || "";
+      return;
+    }
+
+    const neu = document.createDocumentFragment();
+    for (const s of daten.staende || []) {
+      const zeile = document.createElement("div");
+      zeile.className = "kamera";
+      const scheibe = document.createElement("div");
+      scheibe.className = "scheibe" + (s.preset ? " bewegt" : "");
+      scheibe.textContent = s.preset ? s.preset : "—";
+      const text = document.createElement("div");
+      const name = document.createElement("div");
+      name.textContent = s.name;
+      const unten = document.createElement("div");
+      unten.className = "klein leise";
+      unten.textContent = s.adresse + " · " + s.befehle + " Befehle · " +
+        (s.preset ? "steht auf Preset " + s.preset : "noch nicht gefahren");
+      text.appendChild(name);
+      text.appendChild(unten);
+      zeile.appendChild(scheibe);
+      zeile.appendChild(text);
+      neu.appendChild(zeile);
+    }
+    knoten.kameras.replaceChildren(neu);
+
+    const empfang = daten.empfang || [];
+    knoten.kamerazeile.textContent = "— simuliert, sie hören wirklich auf UDP";
+    if (empfang.length > letzterViscaStand) {
+      for (let i = letzterViscaStand; i < empfang.length; i++) {
+        melden("VISCA", empfang[i].kamera + " ← " + empfang[i].deutung, "gut");
+      }
+      letzterViscaStand = empfang.length;
+    }
+
+    const letzte = empfang.slice(-3).reverse();
+    const strom = document.createDocumentFragment();
+    if (letzte.length) {
+      const titel = document.createElement("div");
+      titel.className = "leise";
+      titel.style.marginBottom = ".2rem";
+      titel.textContent = "zuletzt auf dem Netz:";
+      strom.appendChild(titel);
+    }
+    for (const e of letzte) {
+      const d = document.createElement("div");
+      d.className = "hex";
+      d.style.color = "var(--leise)";
+      d.textContent = e.roh;
+      strom.appendChild(d);
+    }
+    knoten.viscastrom.replaceChildren(strom);
+  } catch (_) { /* nächster Durchlauf */ }
+}
+
+/* ---------- Abläufe ---------- */
+
+function warten(ms) { return new Promise(function (fertig) { setTimeout(fertig, ms); }); }
+
+// beschlussfaehig schaltet so viele Geräte an, dass das Quorum steht. Ohne
+// Beschlussfähigkeit lässt der Kern keine Abstimmung zu — das ist die Regel,
+// nicht ein Mangel des Ablaufs.
+async function beschlussfaehig() {
+  for (const platz of [1, 2, 3, 4, 5, 6, 7]) { await geraetAnschalten(platz); await warten(110); }
+}
+
+// leitung liefert den Platz, der den Staffelstab gerade hat, und schaltet
+// dessen Gerät an. Kein Ablauf darf annehmen, dass Platz 1 führt — der
+// Staffelstab wandert, und genau das ist eine der Regeln.
+async function leitung() {
+  const platz = (zustand && zustand.sitzung.leitung_platz) || 1;
+  await geraetAnschalten(platz);
+  await warten(120);
+  return platz;
+}
+
+const ablaeufe = [
+  {
+    name: "Sitzung eröffnen",
+    was: "Sieben Geräte gehen an — genug für das Quorum —, die Leitung eröffnet. Erst danach ist irgendetwas erlaubt.",
+    schritte: async function () {
+      await beschlussfaehig();
+      senden(await leitung(), { typ: "sitzung_eroeffnen" });
+      await warten(350);
+    }
+  },
+  {
+    name: "Vom Wort zur Kamerafahrt",
+    was: "Platz 3 meldet sich, bekommt das Wort, schaltet das Mikrofon — die Kamera fährt auf seinen Preset.",
+    schritte: async function () {
+      await geraetAnschalten(3);
+      senden(3, { typ: "wort_melden" });
+      await warten(350);
+      senden(await leitung(), { typ: "wort_erteilen", platz: 3 });
+      await warten(350);
+      senden(3, { typ: "mikro_an", platz: 3 });
+      await warten(700);
+    }
+  },
+  {
+    name: "Grenze offener Mikrofone",
+    was: "Mehr Mikrofone öffnen, als die Einmessung hergibt. Das letzte wird abgewiesen — jede Verdopplung kostet 3 dB Reserve.",
+    schritte: async function () {
+      await beschlussfaehig();
+      const fuehrend = await leitung();
+      for (const platz of [3, 4, 5, 6]) {
+        senden(fuehrend, { typ: "wort_erteilen", platz: platz });
+        await warten(150);
+        senden(fuehrend, { typ: "mikro_an", platz: platz });
+        await warten(350);
+      }
+    }
+  },
+  {
+    name: "Nicht öffentlicher Punkt",
+    was: "Punkt 3 aufrufen: Stream und Aufzeichnung pausieren von selbst, gesteuert vom Sitzungszustand.",
+    schritte: async function () {
+      senden(await leitung(), { typ: "top_aufrufen", top: 3 });
+      await warten(600);
+      senden(await leitung(), { typ: "top_aufrufen", top: 4 });
+      await warten(600);
+    }
+  },
+  {
+    name: "Offene Abstimmung",
+    was: "Punkt 4 aufrufen, Beschluss eröffnen, sieben Stimmen, auszählen, feststellen. Die Zählung bleibt bis zum Auszählen verborgen.",
+    schritte: async function () {
+      await beschlussfaehig();
+      senden(await leitung(), { typ: "top_aufrufen", top: 4 });
+      await warten(350);
+      senden(await leitung(), { typ: "abstimmung_starten", titel: "Jahresabschluss 2026 feststellen", art: "offen" });
+      await warten(500);
+      for (const [platz, wahl] of [[1, "ja"], [2, "ja"], [3, "ja"], [4, "nein"],
+                                   [5, "ja"], [6, "enthaltung"], [7, "ja"]]) {
+        senden(platz, { typ: "stimme_abgeben", wahl: wahl });
+        await warten(160);
+      }
+      await warten(300);
+      senden(await leitung(), { typ: "abstimmung_beenden" });
+      await warten(450);
+      senden(await leitung(), { typ: "abstimmung_feststellen" });
+      await warten(450);
+    }
+  },
+  {
+    name: "Geheime Wahl",
+    was: "Dieselbe Abstimmung geheim. Danach steht in der Kette nur, DASS abgestimmt wurde — kein Platz, keine Wahl.",
+    schritte: async function () {
+      await beschlussfaehig();
+      senden(await leitung(), { typ: "top_aufrufen", top: 5 });
+      await warten(350);
+      senden(await leitung(), { typ: "abstimmung_starten", titel: "Wahl der Schriftführung", art: "geheim" });
+      await warten(500);
+      for (const [platz, wahl] of [[1, "ja"], [2, "nein"], [3, "ja"], [4, "ja"],
+                                   [5, "ja"], [6, "nein"], [7, "ja"]]) {
+        senden(platz, { typ: "stimme_abgeben", wahl: wahl });
+        await warten(160);
+      }
+      senden(await leitung(), { typ: "abstimmung_beenden" });
+      await warten(500);
+      melden("nachsehen", "In der Kette oben: stimme_abgegeben trägt geheim=true und sonst nichts.", "gut");
+    }
+  },
+  {
+    name: "Technik gesperrt beim Abstimmen",
+    was: "Während der Abstimmung ein Mikrofon öffnen: es geht auf, die Kamera bleibt stehen.",
+    schritte: async function () {
+      await beschlussfaehig();
+      senden(await leitung(), { typ: "top_aufrufen", top: 5 });
+      await warten(300);
+      senden(await leitung(), { typ: "abstimmung_starten", titel: "Probe: Technik gesperrt", art: "offen" });
+      await warten(450);
+      const vorher = zustand && zustand.kamera ? zustand.kamera.preset : 0;
+      senden(await leitung(), { typ: "wort_erteilen", platz: 3 });
+      await warten(200);
+      senden(await leitung(), { typ: "mikro_an", platz: 3 });
+      await warten(700);
+      const nachher = zustand && zustand.kamera ? zustand.kamera.preset : 0;
+      melden("nachgesehen", nachher === vorher
+        ? "Die Kamera steht weiter auf Preset " + (nachher || "—") + " — richtig."
+        : "Die Kamera ist gefahren (" + vorher + " → " + nachher + ") — das wäre ein Fehler.",
+        nachher === vorher ? "gut" : "schlecht");
+      senden(await leitung(), { typ: "abstimmung_abbrechen" });
+      await warten(300);
+    }
+  },
+  {
+    name: "Widerspruch gegen die Aufzeichnung",
+    was: "Platz 9 hat widersprochen. Das Mikrofon geht auf, die Kamera überspringt ihn.",
+    schritte: async function () {
+      await geraetAnschalten(9);
+      await warten(200);
+      senden(9, { typ: "wort_melden" });
+      await warten(300);
+      senden(await leitung(), { typ: "wort_erteilen", platz: 9 });
+      await warten(300);
+      const vorher = zustand && zustand.kamera ? zustand.kamera.preset : 0;
+      senden(9, { typ: "mikro_an", platz: 9 });
+      await warten(700);
+      const nachher = zustand && zustand.kamera ? zustand.kamera.preset : 0;
+      melden("nachgesehen", nachher === vorher
+        ? "Die Kamera ist nicht gefahren — der Widerspruch wirkt."
+        : "Die Kamera ist gefahren — das wäre ein Fehler.",
+        nachher === vorher ? "gut" : "schlecht");
+    }
+  },
+  {
+    name: "Ausfall der Sitzungsleitung",
+    was: "Das Gerät der Leitung fällt aus. Ein zweiter Berechtigter übernimmt ausdrücklich — das System tut es nie von selbst.",
+    schritte: async function () {
+      const fuehrend = await leitung();
+      // Ein zweiter zur Leitung Berechtigter muss im Saal sein.
+      const ersatz = fuehrend === 1 ? 2 : 1;
+      await geraetAnschalten(ersatz);
+      await warten(250);
+      geraetAusschalten(fuehrend);
+      await warten(600);
+      senden(ersatz, { typ: "leitung_uebernehmen" });
+      await warten(450);
+    }
+  },
+  {
+    name: "Alles auf Anfang",
+    was: "Alle Geräte aus. Der Server behält den Sitzungszustand — die Geräte sind austauschbar.",
+    schritte: async function () {
+      for (const nummer of Array.from(geraete.keys())) { geraetAusschalten(nummer); await warten(80); }
+      await warten(300);
+    }
+  }
+];
+
+function ablaeufeZeichnen() {
+  const neu = document.createDocumentFragment();
+  for (const a of ablaeufe) {
+    const karte = document.createElement("div");
+    karte.className = "ablauf";
+    const b = document.createElement("b");
+    b.textContent = a.name;
+    const p = document.createElement("p");
+    p.textContent = a.was;
+    const knopf = document.createElement("button");
+    knopf.textContent = "abspielen";
+    knopf.onclick = async function () {
+      if (ablaufLaeuft) return;
+      ablaufLaeuft = true;
+      for (const k of document.querySelectorAll(".ablauf button")) k.disabled = true;
+      melden("Ablauf", "„" + a.name + "“ beginnt");
+      try { await a.schritte(); } catch (fehler) { melden("Ablauf", "abgebrochen: " + fehler, "schlecht"); }
+      melden("Ablauf", "„" + a.name + "“ ist durch");
+      ablaufLaeuft = false;
+      for (const k of document.querySelectorAll(".ablauf button")) k.disabled = false;
+    };
+    karte.appendChild(b);
+    karte.appendChild(p);
+    karte.appendChild(knopf);
+    neu.appendChild(karte);
+  }
+  knoten.ablaeufe.replaceChildren(neu);
+}
+
+/* ---------- Start ---------- */
+
+async function starten() {
+  const antwort = await fetch("/emulator/aufbau.json", { cache: "no-store" });
+  aufbau = await antwort.json();
+  ablaeufeZeichnen();
+  zeichnen();
+  melden("Prüfstelle", aufbau.saal + " · " + aufbau.plaetze.length + " Plätze, " +
+    aufbau.kameras.length + " Kameras" + (aufbau.attrappe ? " (simuliert)" : ""));
+
+  // Ein stilles Gerät hält die Sicht auf den Saal offen, ohne einen Platz zu
+  // belegen — dasselbe, was Namensschild und Dolmetscherplatz tun.
+  const schema = location.protocol === "https:" ? "wss:" : "ws:";
+  const zuschauer = new WebSocket(schema + "//" + location.host + "/ws");
+  zuschauer.onmessage = function (e) {
+    let n;
+    try { n = JSON.parse(e.data); } catch (_) { return; }
+    if (n.typ !== "zustand") return;
+    if (!zustand || n.stand >= zustand.stand) { zustand = n; zeichnen(); }
+  };
+  zuschauer.onclose = function () { setTimeout(starten, 1500); };
+
+  setInterval(ketteHolen, 1000);
+  setInterval(kamerasHolen, 700);
+  ketteHolen();
+  kamerasHolen();
+}
+
+starten();
+</script>
+</body>
+</html>

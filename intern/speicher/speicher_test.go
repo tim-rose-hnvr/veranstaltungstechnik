@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"os"
+	"path/filepath"
 	"testing"
 
 	"golang.org/x/crypto/bcrypt"
@@ -40,7 +41,8 @@ func frischePostgres(t *testing.T, dsn string) speicher.Ablage {
 	}
 	defer teich.Close()
 	if _, err := teich.Exec(ctx, `
-		DROP TABLE IF EXISTS wortmeldung, teilnahme, sitzung, person,
+		DROP TABLE IF EXISTS tagesordnungspunkt, stimmabgabe, stimme, abstimmung,
+		                     wortmeldung, teilnahme, sitzung, person,
 		                     ereignis, preset, platz, kamera, saal, organisation CASCADE`); err != nil {
 		t.Fatalf("testdatenbank leeren: %v", err)
 	}
@@ -50,15 +52,14 @@ func frischePostgres(t *testing.T, dsn string) speicher.Ablage {
 		t.Fatalf("verbinden: %v", err)
 	}
 	t.Cleanup(p.Schliessen)
-	for _, m := range []struct{ datei, waechter string }{
-		{"../../migrationen/001_grundlage.sql", "ereignis"},
-		{"../../migrationen/002_sitzung.sql", "wortmeldung"},
-	} {
-		roh, err := os.ReadFile(m.datei)
+	// Dieselbe Liste wie im Betrieb — eine eigene Aufzählung im Test hatte
+	// schon einmal dazu geführt, dass die Tests gegen ein älteres Schema liefen.
+	for _, m := range speicher.Migrationen {
+		roh, err := os.ReadFile(filepath.Join("../../migrationen", m.Datei))
 		if err != nil {
 			t.Fatalf("migration lesen: %v", err)
 		}
-		if err := p.SchemaSicherstellen(ctx, m.waechter, string(roh)); err != nil {
+		if err := p.SchemaSicherstellen(ctx, m.Waechter, string(roh)); err != nil {
 			t.Fatalf("schema anlegen: %v", err)
 		}
 	}
@@ -308,13 +309,65 @@ func TestSitzungImportIdempotent(t *testing.T) {
 	}
 }
 
+// TestTagesordnungUeberlebtDenImport: der Zustand eines aufgerufenen Punktes
+// darf beim erneuten Einlesen der Sitzungsdatei nicht auf „offen"
+// zurückspringen — sonst verlöre ein Serverneustart mitten in der Sitzung den
+// Stand der Tagesordnung.
+func TestTagesordnungUeberlebtDenImport(t *testing.T) {
+	for name, bauen := range ablagen(t) {
+		t.Run(name, func(t *testing.T) {
+			ctx := context.Background()
+			ablage := bauen(t)
+
+			saalID, _, err := ablage.SaalImportieren(ctx, testsaal())
+			if err != nil {
+				t.Fatalf("saal einlesen: %v", err)
+			}
+			erste, err := ablage.SitzungImportieren(ctx, saalID, testsitzung())
+			if err != nil {
+				t.Fatalf("erster import: %v", err)
+			}
+			if len(erste.Tagesordnung) != 2 {
+				t.Fatalf("2 punkte erwartet, %d bekommen", len(erste.Tagesordnung))
+			}
+			if erste.Tagesordnung[1].Oeffentlich {
+				t.Error("punkt 2 ist als nicht öffentlich eingetragen")
+			}
+
+			if err := ablage.TopZustandSetzen(ctx, erste.Tagesordnung[1].ID, kern.TopLaufend); err != nil {
+				t.Fatalf("punkt aufrufen: %v", err)
+			}
+
+			zweite, err := ablage.SitzungImportieren(ctx, saalID, testsitzung())
+			if err != nil {
+				t.Fatalf("zweiter import: %v", err)
+			}
+			if anzahl := zaehlen(t, ctx, ablage, []string{"tagesordnungspunkt"}); anzahl["tagesordnungspunkt"] != 2 {
+				t.Errorf("der zweite import hat punkte verdoppelt: %d", anzahl["tagesordnungspunkt"])
+			}
+			if zweite.Tagesordnung[1].Zustand != kern.TopLaufend {
+				t.Errorf("punkt 2 sollte weiter laufen, ist %s", zweite.Tagesordnung[1].Zustand)
+			}
+			if zweite.Tagesordnung[0].Zustand != kern.TopOffen {
+				t.Errorf("punkt 1 sollte offen sein, ist %s", zweite.Tagesordnung[0].Zustand)
+			}
+		})
+	}
+}
+
+func nichtOeffentlich() *bool { falsch := false; return &falsch }
+
 func testsitzung() speicher.Sitzungsdaten {
 	return speicher.Sitzungsdaten{
 		Titel: "Probesitzung",
+		Tagesordnung: []speicher.Topdaten{
+			{Nummer: 1, Titel: "Begrüßung"},
+			{Nummer: 2, Titel: "Personalangelegenheit", Oeffentlich: nichtOeffentlich()},
+		},
 		Teilnahmen: []speicher.Teilnahmedaten{
 			{Platz: 1, Person: "Anke Bergmann", Rolle: "leitung", Pin: "1234"},
 			{Platz: 2, Person: "Jonas Öztürk", Rolle: "delegierter", Pin: "2345"},
-			{Platz: 3, Person: "Rita Falk", Rolle: "schriftfuehrung", Pin: "3456"},
+			{Platz: 3, Person: "Rita Falk", Rolle: "schriftfuehrung", Pin: "3456", Widerspruch: true},
 		},
 	}
 }

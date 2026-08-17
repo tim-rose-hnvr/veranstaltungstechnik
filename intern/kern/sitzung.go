@@ -82,6 +82,10 @@ type Teilnahmeaufbau struct {
 	Person      string
 	Rolle       Rolle
 	PinHash     []byte
+	// Widerspruch gegen die Aufzeichnung. Die Kameranachführung überspringt
+	// diesen Platz — das Mikrofon geht trotzdem auf, denn Reden und Gefilmtwerden
+	// sind zweierlei.
+	Widerspruch bool
 }
 
 // Wortmeldung ist ein Eintrag der Redeliste.
@@ -97,6 +101,7 @@ type SitzungZustand struct {
 	Titel        string          `json:"titel"`
 	Zustand      Sitzungszustand `json:"zustand"`
 	LeitungPlatz int             `json:"leitung_platz"`
+	AktuellerTop int             `json:"aktueller_top"`
 }
 
 // RedelisteEintrag ist eine Zeile der Redeliste für den Client.

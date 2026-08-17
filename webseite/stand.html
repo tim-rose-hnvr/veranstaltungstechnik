@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Stand — ConferenceCue</title>
+<meta name="description" content="Was gebaut ist und was nicht: Kern, Kameranachführung, Redeliste, Abstimmung, Tagesordnung und Protokoll laufen. Ton, Regie und Transkript nicht.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="stil.css">
+</head>
+<body>
+
+<header>
+  <div class="bahn">
+    <a class="wort" href="index.html">ConferenceCue</a>
+    <nav>
+      <a href="system.html">System</a>
+      <a href="einsatz.html">Einsatz</a>
+      <a href="sicherheit.html">Sicherheit</a>
+      <a href="stand.html" aria-current="page">Stand</a>
+      <a href="kontakt.html">Kontakt</a>
+    </nav>
+  </div>
+</header>
+
+<div class="bahn kopf">
+  <span class="marke">Stand</span>
+  <h1>Was läuft,<br>und was nicht.</h1>
+  <p class="gross">Diese Seite ist absichtlich unbequem. Wer ein System kauft, das noch
+    gebaut wird, hat ein Recht darauf zu wissen, wo die Grenze verläuft.</p>
+</div>
+
+<section>
+  <div class="bahn">
+    <h2>Gebaut und geprüft</h2>
+    <ul class="stufen">
+      <li><span class="zeichen fertig">läuft</span><span><b>Sitzungszustand, Rollen, Rechte.</b>
+        Jede Rechtefrage beantwortet der Kern; die Oberfläche entscheidet nichts.</span></li>
+      <li><span class="zeichen fertig">läuft</span><span><b>Kameranachführung.</b>
+        VISCA over IP, Preset je Platz, Widerspruch gegen die Aufzeichnung wird beachtet.</span></li>
+      <li><span class="zeichen fertig">läuft</span><span><b>Redeliste.</b>
+        Melden, erteilen, entziehen, zurückziehen — mit Zustandskette und Protokoll.</span></li>
+      <li><span class="zeichen fertig">läuft</span><span><b>Abstimmung.</b>
+        Offen, namentlich, geheim. Quorum beim Start eingefroren, Zählung bis zum
+        Auszählen verborgen.</span></li>
+      <li><span class="zeichen fertig">läuft</span><span><b>Tagesordnung.</b>
+        Ein Punkt in Arbeit, nicht öffentliche Punkte pausieren Stream und Aufzeichnung.</span></li>
+      <li><span class="zeichen fertig">läuft</span><span><b>Protokoll und Ereigniskette.</b>
+        Hash-Kette, nur anfügbar; der Protokollentwurf entsteht aus ihr.</span></li>
+      <li><span class="zeichen fertig">läuft</span><span><b>Vorabcheck.</b>
+        Selbsttest über Kette, Besetzung und jede Kamera.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="bahn">
+    <h2>Noch nicht gebaut</h2>
+    <ul class="stufen">
+      <li><span class="zeichen offen">offen</span><span><b>Ton.</b> Automixer, Mix-Minus,
+        Rückkopplungsfilter, Einmessung. Braucht einen echten Raum, keinen Schreibtisch.</span></li>
+      <li><span class="zeichen offen">offen</span><span><b>Bildregie.</b> Kompositor,
+        Kachelraster, Mindeststandzeit im Bild.</span></li>
+      <li><span class="zeichen offen">offen</span><span><b>Transkript.</b> Segmente,
+        Korrekturen, Untertitel.</span></li>
+      <li><span class="zeichen offen">offen</span><span><b>Sitzungsmappe.</b> Unterlagen,
+        Wasserzeichen, Zugriffsprotokoll.</span></li>
+      <li><span class="zeichen offen">offen</span><span><b>Zuschaltung und Dolmetschen.</b>
+        Externe Teilnehmer, Kanäle, Kabinen.</span></li>
+      <li><span class="zeichen offen">offen</span><span><b>Hauptversammlungsmodus.</b>
+        Gewichtetes Stimmrecht, Vollmachten, Teilnehmerverzeichnis.</span></li>
+    </ul>
+    <p class="hinweis" style="margin-top:2rem">Wer mit dem Kompositor anfängt, versandet.
+      Die Reihenfolge ist Absicht: erst der Kern, dann der Ton, dann das Bild.</p>
+  </div>
+</section>
+
+<section>
+  <div class="bahn">
+    <span class="marke">Selbst ansehen</span>
+    <h2>Es läuft mit einem Befehl</h2>
+    <p class="gross">Der Vorführbetrieb braucht keine Datenbank und keine Einrichtung:
+      zwölf Plätze, zwei simulierte Kameras, eine vollständige Tagesordnung.</p>
+    <pre><code>go run ./cmd/server -konfiguration vorfuehrung/config.yaml</code></pre>
+    <p>Dann <code>localhost:8080</code> öffnen — Platz 1 hat die PIN <code>0101</code>,
+      Platz 2 die <code>0202</code> und so weiter. Unter <code>/emulator</code> liegt eine
+      Prüfstelle, auf der sich alle zwölf Geräte gleichzeitig bedienen lassen und in der
+      man der Ereigniskette und den VISCA-Befehlen beim Entstehen zusieht.</p>
+    <p class="leise">Die simulierten Kameras hören wirklich auf UDP und quittieren wie
+      echte Geräte. Der Weg — Rahmen bauen, senden, auf Antwort warten — ist derselbe wie
+      im Saal.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="bahn">
+    <div>
+      <h3>ConferenceCue</h3>
+      <p>Konferenz-, Abstimmungs- und Protokollsystem für Gremiensitzungen.
+        Betrieben auf eigener Hardware.</p>
+    </div>
+    <div>
+      <h3>Seiten</h3>
+      <ul>
+        <li><a href="system.html">System</a></li>
+        <li><a href="einsatz.html">Einsatz</a></li>
+        <li><a href="sicherheit.html">Sicherheit</a></li>
+        <li><a href="stand.html">Stand</a></li>
+        <li><a href="kontakt.html">Kontakt</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Rechtliches</h3>
+      <p>Impressum und Datenschutzerklärung fehlen noch und sind vor der
+        Veröffentlichung zu ergänzen.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

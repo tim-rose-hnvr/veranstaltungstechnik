@@ -1,8 +1,37 @@
 {
   "titel": "Vorstandssitzung",
+  "tagesordnung": [
+    {
+      "nummer": 1,
+      "titel": "Begrüßung"
+    },
+    {
+      "nummer": 2,
+      "titel": "Beschluss über den Haushalt"
+    },
+    {
+      "nummer": 3,
+      "titel": "Verschiedenes"
+    }
+  ],
   "teilnahmen": [
-    { "platz": 1, "person": "Anke Bergmann", "rolle": "leitung",     "pin": "1234" },
-    { "platz": 2, "person": "Jonas Öztürk",  "rolle": "delegierter", "pin": "2345" },
-    { "platz": 3, "person": "Rita Falk",     "rolle": "delegierter", "pin": "3456" }
+    {
+      "platz": 1,
+      "person": "Anke Bergmann",
+      "rolle": "leitung",
+      "pin": "1234"
+    },
+    {
+      "platz": 2,
+      "person": "Jonas Öztürk",
+      "rolle": "delegierter",
+      "pin": "2345"
+    },
+    {
+      "platz": 3,
+      "person": "Rita Falk",
+      "rolle": "delegierter",
+      "pin": "3456"
+    }
   ]
 }

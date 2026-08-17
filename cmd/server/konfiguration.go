@@ -16,6 +16,15 @@ type Konfiguration struct {
 	SitzungsDatei      string `yaml:"sitzungs_datei"`
 	MaxOffeneMikrofone int    `yaml:"max_offene_mikrofone"`
 	KameraZeitlimitMs  int    `yaml:"kamera_zeitlimit_ms"`
+
+	// KameraAttrappe lässt simulierte Kameras auf den Adressen aus saal.json
+	// hören. Der Weg bleibt derselbe — Rahmen, UDP, Quittung —, nur steht am
+	// Ende keine Optik.
+	KameraAttrappe bool `yaml:"kamera_attrappe"`
+	// Emulator schaltet /emulator frei. Die Seite braucht die PINs im
+	// Klartext, deshalb ist das eine ausdrückliche Entscheidung und kein
+	// Nebeneffekt des Vorführbetriebs.
+	Emulator bool `yaml:"emulator"`
 }
 
 // KonfigurationLesen liest config.yaml und prüft die Pflichtangaben.

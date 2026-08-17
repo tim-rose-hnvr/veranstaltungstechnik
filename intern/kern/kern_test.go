@@ -40,16 +40,18 @@ func (s *stilleKamera) Abrufe() []abruf {
 
 // pruefstand hält alles zusammen, was ein Test braucht.
 type pruefstand struct {
-	kern       *kern.Kern
-	kamera     *stilleKamera
-	ablage     speicher.Ablage
-	saalID     string
-	teilnahmen []speicher.Teilnahmedaten
+	kern         *kern.Kern
+	kamera       *stilleKamera
+	ablage       speicher.Ablage
+	saalID       string
+	teilnahmen   []speicher.Teilnahmedaten
+	tagesordnung []speicher.Topdaten
 }
 
 // aufbauen baut Saal, Sitzung und Kern über die Ablage im Arbeitsspeicher —
 // dieselben Wege wie im Betrieb, nur ohne Datenbank und ohne UDP.
-func aufbauen(t *testing.T, plaetze, maxOffen int, teilnahmen []speicher.Teilnahmedaten) *pruefstand {
+func aufbauen(t *testing.T, plaetze, maxOffen int, teilnahmen []speicher.Teilnahmedaten,
+	tagesordnung ...speicher.Topdaten) *pruefstand {
 	t.Helper()
 	ctx := context.Background()
 	ablage := speicher.NeuGedaechtnis()
@@ -68,8 +70,8 @@ func aufbauen(t *testing.T, plaetze, maxOffen int, teilnahmen []speicher.Teilnah
 		t.Fatalf("saal einlesen: %v", err)
 	}
 
-	stand, err := ablage.SitzungImportieren(ctx, saalID,
-		speicher.Sitzungsdaten{Titel: "Probesitzung", Teilnahmen: teilnahmen})
+	stand, err := ablage.SitzungImportieren(ctx, saalID, speicher.Sitzungsdaten{
+		Titel: "Probesitzung", Teilnahmen: teilnahmen, Tagesordnung: tagesordnung})
 	if err != nil {
 		t.Fatalf("sitzung einlesen: %v", err)
 	}
@@ -82,13 +84,15 @@ func aufbauen(t *testing.T, plaetze, maxOffen int, teilnahmen []speicher.Teilnah
 		SitzungZustand: stand.Zustand,
 		Plaetze:        platzaufbau,
 		Teilnahmen:     stand.Teilnahmen,
+		Tagesordnung:   stand.Tagesordnung,
 		MaxOffen:       maxOffen,
 		Zeitlimit:      100 * time.Millisecond,
 	}, kamera, ablage, nil)
 	if err != nil {
 		t.Fatalf("kern nicht aufgebaut: %v", err)
 	}
-	return &pruefstand{kern: k, kamera: kamera, ablage: ablage, saalID: saalID, teilnahmen: teilnahmen}
+	return &pruefstand{kern: k, kamera: kamera, ablage: ablage, saalID: saalID,
+		teilnahmen: teilnahmen, tagesordnung: tagesordnung}
 }
 
 // neustarten baut den Kern neu auf, so wie es der Server nach einem Absturz
@@ -110,8 +114,8 @@ func neustarten(t *testing.T, p *pruefstand) *kern.Kern {
 	if err != nil {
 		t.Fatalf("saal erneut einlesen: %v", err)
 	}
-	stand, err := p.ablage.SitzungImportieren(ctx, saalID,
-		speicher.Sitzungsdaten{Titel: "Probesitzung", Teilnahmen: p.teilnahmen})
+	stand, err := p.ablage.SitzungImportieren(ctx, saalID, speicher.Sitzungsdaten{
+		Titel: "Probesitzung", Teilnahmen: p.teilnahmen, Tagesordnung: p.tagesordnung})
 	if err != nil {
 		t.Fatalf("sitzung erneut einlesen: %v", err)
 	}
@@ -127,8 +131,9 @@ func neustarten(t *testing.T, p *pruefstand) *kern.Kern {
 	k, err := kern.Neu(kern.Aufbau{
 		SaalID: saalID, SitzungID: stand.SitzungID, Titel: stand.Titel,
 		SitzungZustand: stand.Zustand, Beginn: stand.Beginn, Plaetze: platzaufbau,
-		Teilnahmen: stand.Teilnahmen, Wortmeldungen: stand.Wortmeldungen,
-		Abstimmung: abstimmung, LeitungPlatz: leitung,
+		Teilnahmen: stand.Teilnahmen, Tagesordnung: stand.Tagesordnung,
+		Wortmeldungen: stand.Wortmeldungen,
+		Abstimmung:    abstimmung, LeitungPlatz: leitung,
 		MaxOffen: 3, Zeitlimit: 100 * time.Millisecond,
 	}, p.kamera, p.ablage, nil)
 	if err != nil {

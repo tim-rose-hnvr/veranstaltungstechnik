@@ -39,6 +39,10 @@ const (
 	AktionMikroAn            = "mikro_an"
 	AktionMikroAus           = "mikro_aus"
 
+	AktionTopAufrufen     = "top_aufrufen"
+	AktionTopAbschliessen = "top_abschliessen"
+	AktionTopVertagen     = "top_vertagen"
+
 	AktionAbstimmungStarten     = "abstimmung_starten"
 	AktionAbstimmungBeenden     = "abstimmung_beenden"
 	AktionAbstimmungFeststellen = "abstimmung_feststellen"
@@ -53,6 +57,7 @@ var alleAktionen = []string{
 	AktionWortErteilen, AktionWortEntziehen,
 	AktionLeitungUebergeben, AktionLeitungUebernehmen,
 	AktionMikroAn, AktionMikroAus,
+	AktionTopAufrufen, AktionTopAbschliessen, AktionTopVertagen,
 	AktionAbstimmungStarten, AktionAbstimmungBeenden,
 	AktionAbstimmungFeststellen, AktionAbstimmungAbbrechen,
 	AktionStimmeAbgeben,
@@ -69,6 +74,7 @@ func rolleDarf(rolle Rolle, leitungAktiv bool, aktion string) bool {
 	switch aktion {
 	case AktionSitzungEroeffnen, AktionSitzungSchliessen,
 		AktionWortErteilen, AktionWortEntziehen, AktionLeitungUebergeben,
+		AktionTopAufrufen, AktionTopAbschliessen, AktionTopVertagen,
 		AktionAbstimmungStarten, AktionAbstimmungBeenden,
 		AktionAbstimmungFeststellen, AktionAbstimmungAbbrechen:
 		return rolle == RolleLeitung && leitungAktiv

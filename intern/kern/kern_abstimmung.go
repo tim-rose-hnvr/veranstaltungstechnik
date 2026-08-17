@@ -48,11 +48,17 @@ func (k *Kern) AbstimmungStarten(ctx context.Context, absender int, titel string
 	}
 
 	jetzt := time.Now()
-	if err := k.schreiben(ctx, "abstimmung_gestartet", map[string]any{
+	nutzlast := map[string]any{
 		"abstimmung": id, "titel": titel, "art": string(art),
 		"stimmberechtigt": stimmberechtigt, "anwesend": anwesend, "quorum": quorum,
 		"von": absender,
-	}); err != nil {
+	}
+	// Der Beschluss trägt den Tagesordnungspunkt, unter dem er gefasst wurde.
+	// Nachträglich ist diese Zuordnung nicht mehr herstellbar.
+	if t := k.laufenderTopIntern(); t != nil {
+		nutzlast["top"] = t.Nummer
+	}
+	if err := k.schreiben(ctx, "abstimmung_gestartet", nutzlast); err != nil {
 		k.mu.Unlock()
 		return err
 	}

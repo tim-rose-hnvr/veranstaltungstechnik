@@ -6,10 +6,12 @@ import (
 	"context"
 	"errors"
 	"flag"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
+	"path/filepath"
 	"syscall"
 	"time"
 
@@ -21,15 +23,10 @@ import (
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/web"
 )
 
-// Migrationen in dieser Reihenfolge. Die Wächtertabelle ist die letzte, die
-// die jeweilige Datei anlegt — gibt es sie, ist die Migration gelaufen.
-var migrationen = []struct{ Datei, Waechter string }{
-	{"migrationen/001_grundlage.sql", "ereignis"},
-	{"migrationen/002_sitzung.sql", "wortmeldung"},
-	{"migrationen/003_abstimmung.sql", "stimmabgabe"},
-}
-
-const webVerzeichnis = "web"
+const (
+	webVerzeichnis        = "web"
+	migrationsVerzeichnis = "migrationen"
+)
 
 func main() {
 	konfigPfad := flag.String("konfiguration", "config.yaml", "Pfad zu config.yaml")
@@ -60,8 +57,8 @@ func ablageOeffnen(ctx context.Context, datenbank string, protokoll *slog.Logger
 	if err != nil {
 		return nil, err
 	}
-	for _, m := range migrationen {
-		migration, err := os.ReadFile(m.Datei)
+	for _, m := range speicher.Migrationen {
+		migration, err := os.ReadFile(filepath.Join(migrationsVerzeichnis, m.Datei))
 		if err != nil {
 			pg.Schliessen()
 			return nil, err
@@ -127,6 +124,22 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 		"titel", stand.Titel, "zustand", stand.Zustand,
 		"teilnahmen", len(stand.Teilnahmen), "redeliste", len(stand.Wortmeldungen))
 
+	// Simulierte Kameras hören auf denselben Adressen wie die echten. Die
+	// Steuerung merkt keinen Unterschied — sie schickt UDP und wartet auf die
+	// Quittung.
+	var attrappe *kamera.Attrappe
+	if konfiguration.KameraAttrappe {
+		attrappe = kamera.NeuAttrappe(protokoll)
+		defer attrappe.Schliessen()
+		for _, k := range saaldaten.Kameras {
+			adresse, err := attrappe.Anschalten(k.Name, k.Adresse)
+			if err != nil {
+				return fmt.Errorf("kamera-attrappe: %w", err)
+			}
+			protokoll.Warn("simulierte kamera hört", "kamera", k.Name, "adresse", adresse)
+		}
+	}
+
 	steuerung := kamera.NeuViscaIP(konfiguration.KameraZeitlimit())
 	aufbau := kern.Aufbau{
 		SaalID:         saalID,
@@ -136,6 +149,7 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 		Beginn:         stand.Beginn,
 		Plaetze:        plaetze,
 		Teilnahmen:     stand.Teilnahmen,
+		Tagesordnung:   stand.Tagesordnung,
 		Wortmeldungen:  stand.Wortmeldungen,
 		Abstimmung:     abstimmung,
 		LeitungPlatz:   leitungPlatz,
@@ -152,6 +166,22 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 		protokollpaket.Neu(saalID, saaldaten.Saal, ablage, stand.Teilnahmen), stand.SitzungID)
 	oberflaeche.SetzeVorabcheck(
 		vorabcheck.Neu(aufbau, sitzung, steuerung, ablage, konfiguration.KameraZeitlimit()))
+
+	if konfiguration.Emulator {
+		protokoll.Warn("prüfstelle unter /emulator freigeschaltet — sie gibt die PINs preis")
+		kameras := make([]web.Kameraangabe, 0, len(saaldaten.Kameras))
+		for _, k := range saaldaten.Kameras {
+			kameras = append(kameras, web.Kameraangabe{Name: k.Name, Adresse: k.Adresse, Kanal: k.Kanal})
+		}
+		pins := make(map[int]string, len(sitzungsdaten.Teilnahmen))
+		for _, t := range sitzungsdaten.Teilnahmen {
+			pins[t.Platz] = t.Pin
+		}
+		oberflaeche.SetzeEmulator(web.Emulatordaten{
+			Saal: saaldaten.Saal, SaalID: saalID, Plaetze: plaetze,
+			Pins: pins, Kameras: kameras, Attrappe: attrappe, Kette: ablage,
+		})
+	}
 
 	dienst := &http.Server{
 		Addr:              konfiguration.Adresse,

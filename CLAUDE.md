@@ -10,7 +10,9 @@ Ein Konferenz-, Abstimmungs- und Protokollsystem für Gremiensitzungen, Aufsicht
 
 Betrieben wird es beim Kunden auf eigener Hardware. Kein Cloud-Zwang, keine Abhängigkeit vom Internet während einer Sitzung.
 
-**Stand:** Konzept und Datenmodell stehen, Oberflächen existieren als Entwurf mit simulierten Daten. Produktivcode gibt es noch nicht.
+**Produktname:** ConferenceCue.
+
+**Stand:** Kern, Kameranachführung, Redeliste, Tagesordnung, Abstimmung, Protokoll und Vorabcheck laufen und sind geprüft. Ton, Bildregie, Transkript und Sitzungsmappe sind nicht gebaut. Vorführbetrieb ohne Datenbank: `go run ./cmd/server -konfiguration vorfuehrung/config.yaml`.
 
 ---
 
@@ -110,10 +112,11 @@ Zustandsketten:
 
 ## Baureihenfolge
 
-**Jetzt:** Kern (Sitzungszustand, Rollen, Rechte) + Kamerasteuerung + Web-Client in der Rolle Sprechstelle.
-Erstes Ziel: Ein Gerät meldet „Mikro an", der Server fährt die PTZ auf den gelernten Preset. Kein Audio, kein Video im System.
+**Erledigt:** Kern (Sitzungszustand, Rollen, Rechte), Kamerasteuerung über VISCA, Sprechstelle, Redeliste, Abstimmung, Protokoll, Vorabcheck, Tagesordnung mit automatischer Aufzeichnungspause.
 
-**Danach:** Ton (Automixer, Mix-Minus, Einmessung) → Abstimmung und Protokoll → Sitzungsmappe → Transkript → Kompositor.
+**Jetzt:** Ton (Automixer, Mix-Minus, Einmessung) — braucht einen echten Raum, keinen Schreibtisch.
+
+**Danach:** Sitzungsmappe → Transkript → Kompositor.
 
 **Nicht zuerst:** Kompositor, Dolmetschen, Hauptversammlungsmodus, Teams-Media-Bot, eigene Hardware. Alles additiv, alles später.
 
@@ -150,7 +153,6 @@ Wer mit dem Kompositor anfängt, versandet.
 
 ## Offene Entscheidungen
 
-- Produktname steht nicht fest („Saalwerk" ist ein Platzhalter)
 - Erster Pilotkunde und Termin
 - Verteilung der nativen App: Apple Business Manager oder App Store
 - Ob Dante-Anbindung in der ersten Version gebraucht wird oder erst zur Nachrüstung

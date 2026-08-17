@@ -18,9 +18,22 @@ import (
 
 // Sitzungsdaten ist der Inhalt von sitzung.json.
 type Sitzungsdaten struct {
-	Titel      string           `json:"titel"`
-	Teilnahmen []Teilnahmedaten `json:"teilnahmen"`
+	Titel        string           `json:"titel"`
+	Tagesordnung []Topdaten       `json:"tagesordnung"`
+	Teilnahmen   []Teilnahmedaten `json:"teilnahmen"`
 }
+
+// Topdaten ist ein Punkt der Tagesordnung. oeffentlich fehlt in der Datei
+// selten — deshalb ein Zeiger: nicht angegeben bedeutet öffentlich.
+type Topdaten struct {
+	Nummer      int    `json:"nummer"`
+	Titel       string `json:"titel"`
+	Oeffentlich *bool  `json:"oeffentlich,omitempty"`
+}
+
+// IstOeffentlich sagt, ob Stream und Aufzeichnung bei diesem Punkt
+// weiterlaufen. Fehlt die Angabe, ist der Punkt öffentlich.
+func (t Topdaten) IstOeffentlich() bool { return t.Oeffentlich == nil || *t.Oeffentlich }
 
 // Teilnahmedaten verbindet Person, Platz und Rolle.
 type Teilnahmedaten struct {
@@ -28,6 +41,9 @@ type Teilnahmedaten struct {
 	Person string `json:"person"`
 	Rolle  string `json:"rolle"`
 	Pin    string `json:"pin"`
+	// Widerspruch gegen die Aufzeichnung: die Kameranachführung überspringt
+	// diesen Platz, das Mikrofon bleibt davon unberührt.
+	Widerspruch bool `json:"aufzeichnungswiderspruch,omitempty"`
 }
 
 // Sitzungsstand ist das Ergebnis des Imports.
@@ -37,6 +53,7 @@ type Sitzungsstand struct {
 	Zustand       kern.Sitzungszustand
 	Beginn        *time.Time // Nullpunkt der Zeitachse, solange nicht eröffnet: nil
 	Teilnahmen    []kern.Teilnahmeaufbau
+	Tagesordnung  []kern.Tagesordnungspunkt
 	Wortmeldungen []kern.Wortmeldung
 }
 
@@ -66,6 +83,20 @@ func (d Sitzungsdaten) Pruefen() error {
 	}
 	if len(d.Teilnahmen) == 0 {
 		return fmt.Errorf("keine teilnahme angegeben")
+	}
+
+	nummern := make(map[int]bool, len(d.Tagesordnung))
+	for _, t := range d.Tagesordnung {
+		if t.Nummer < 1 {
+			return fmt.Errorf("tagesordnungspunkt mit nummer %d", t.Nummer)
+		}
+		if nummern[t.Nummer] {
+			return fmt.Errorf("tagesordnungspunkt %d kommt doppelt vor", t.Nummer)
+		}
+		nummern[t.Nummer] = true
+		if t.Titel == "" {
+			return fmt.Errorf("tagesordnungspunkt %d ohne titel", t.Nummer)
+		}
 	}
 
 	plaetze := make(map[int]bool, len(d.Teilnahmen))
@@ -173,6 +204,30 @@ func (p *Postgres) SitzungImportieren(ctx context.Context, saalID string, d Sitz
 				Person:      t.Person,
 				Rolle:       kern.Rolle(t.Rolle),
 				PinHash:     pinHash,
+				Widerspruch: t.Widerspruch,
+			})
+		}
+
+		// Die Tagesordnung wird abgeglichen, nicht neu angelegt: der Zustand
+		// eines schon aufgerufenen Punktes überlebt den Neustart.
+		for _, t := range d.Tagesordnung {
+			var id, zustand string
+			if err := tx.QueryRow(ctx, `
+				INSERT INTO tagesordnungspunkt (sitzung_id, nummer, titel, oeffentlich)
+				VALUES ($1, $2, $3, $4)
+				ON CONFLICT (sitzung_id, nummer)
+				DO UPDATE SET titel = EXCLUDED.titel, oeffentlich = EXCLUDED.oeffentlich
+				RETURNING id::text, zustand`,
+				stand.SitzungID, t.Nummer, t.Titel, t.IstOeffentlich()).Scan(&id, &zustand); err != nil {
+				return fmt.Errorf("tagesordnungspunkt %d: %w", t.Nummer, err)
+			}
+			gelesen, err := kern.TopzustandLesen(zustand)
+			if err != nil {
+				return fmt.Errorf("tagesordnungspunkt %d: %w", t.Nummer, err)
+			}
+			stand.Tagesordnung = append(stand.Tagesordnung, kern.Tagesordnungspunkt{
+				ID: id, Nummer: t.Nummer, Titel: t.Titel,
+				Oeffentlich: t.IstOeffentlich(), Zustand: gelesen,
 			})
 		}
 		return nil
@@ -205,9 +260,9 @@ func (p *Postgres) teilnahmeSichern(ctx context.Context, tx pgx.Tx,
 			return "", nil, fmt.Errorf("pin für platz %d: %w", t.Platz, err)
 		}
 		if err := tx.QueryRow(ctx, `
-			INSERT INTO teilnahme (sitzung_id, person_id, platz_id, rolle, pin_hash)
-			VALUES ($1, $2, $3, $4, $5) RETURNING id::text`,
-			sitzungID, personID, platzID, t.Rolle, hash).Scan(&id); err != nil {
+			INSERT INTO teilnahme (sitzung_id, person_id, platz_id, rolle, pin_hash, aufzeichnungswiderspruch)
+			VALUES ($1, $2, $3, $4, $5, $6) RETURNING id::text`,
+			sitzungID, personID, platzID, t.Rolle, hash, t.Widerspruch).Scan(&id); err != nil {
 			return "", nil, fmt.Errorf("teilnahme auf platz %d: %w", t.Platz, err)
 		}
 		return id, hash, nil
@@ -228,11 +283,34 @@ func (p *Postgres) teilnahmeSichern(ctx context.Context, tx pgx.Tx,
 		hash = neu
 	}
 	if _, err := tx.Exec(ctx, `
-		UPDATE teilnahme SET person_id = $2, rolle = $3, pin_hash = $4 WHERE id = $1`,
-		id, personID, t.Rolle, hash); err != nil {
+		UPDATE teilnahme SET person_id = $2, rolle = $3, pin_hash = $4, aufzeichnungswiderspruch = $5
+		WHERE id = $1`,
+		id, personID, t.Rolle, hash, t.Widerspruch); err != nil {
 		return "", nil, fmt.Errorf("teilnahme auf platz %d abgleichen: %w", t.Platz, err)
 	}
 	return id, hash, nil
+}
+
+// TopZustandSetzen schreibt den Übergang eines Tagesordnungspunkts fest.
+func (p *Postgres) TopZustandSetzen(ctx context.Context, topID string, zustand kern.Topzustand) error {
+	var err error
+	switch zustand {
+	case kern.TopLaufend:
+		_, err = p.teich.Exec(ctx, `
+			UPDATE tagesordnungspunkt SET zustand = $2, beginn = coalesce(beginn, now()), ende = NULL
+			WHERE id = $1`, topID, string(zustand))
+	case kern.TopAbgeschlossen, kern.TopVertagt:
+		_, err = p.teich.Exec(ctx, `
+			UPDATE tagesordnungspunkt SET zustand = $2, ende = now() WHERE id = $1`,
+			topID, string(zustand))
+	default:
+		_, err = p.teich.Exec(ctx,
+			"UPDATE tagesordnungspunkt SET zustand = $2 WHERE id = $1", topID, string(zustand))
+	}
+	if err != nil {
+		return fmt.Errorf("tagesordnungspunkt setzen: %w", err)
+	}
+	return nil
 }
 
 // SitzungZustandSetzen hält den Zustandswechsel der Sitzung fest. zeit kommt
@@ -341,13 +419,15 @@ func (p *Postgres) OffeneWortmeldungen(ctx context.Context, sitzungID string) ([
 	return liste, zeilen.Err()
 }
 
-// LeitungAusKette liest den zuletzt übergebenen Staffelstab aus dem
-// Ereignisprotokoll. 0 bedeutet: noch nie übergeben.
+// LeitungAusKette liest den Staffelstab aus dem Ereignisprotokoll. Übergabe
+// und Übernahme zählen gleich — wer nur die Übergabe liest, verliert nach
+// einem Neustart die Leitung, die wegen eines Geräteausfalls übernommen wurde.
+// 0 bedeutet: noch nie gewechselt.
 func (p *Postgres) LeitungAusKette(ctx context.Context, saalID string) (int, error) {
 	var platz *int
 	err := p.teich.QueryRow(ctx, `
 		SELECT (nutzlast->>'an')::int FROM ereignis
-		WHERE saal_id = $1 AND art = 'leitung_uebergeben'
+		WHERE saal_id = $1 AND art IN ('leitung_uebergeben','leitung_uebernommen')
 		ORDER BY folge_nr DESC LIMIT 1`, saalID).Scan(&platz)
 	switch {
 	case errors.Is(err, pgx.ErrNoRows):

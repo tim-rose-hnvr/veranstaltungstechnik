@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Sicherheit und Betrieb — ConferenceCue</title>
+<meta name="description" content="Betrieb im eigenen Haus, Ereigniskette als Hash-Kette, Verschlüsselung zwischen allen Diensten, Löschen durch Schlüsselvernichtung.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="stil.css">
+</head>
+<body>
+
+<header>
+  <div class="bahn">
+    <a class="wort" href="index.html">ConferenceCue</a>
+    <nav>
+      <a href="system.html">System</a>
+      <a href="einsatz.html">Einsatz</a>
+      <a href="sicherheit.html" aria-current="page">Sicherheit</a>
+      <a href="stand.html">Stand</a>
+      <a href="kontakt.html">Kontakt</a>
+    </nav>
+  </div>
+</header>
+
+<div class="bahn kopf">
+  <span class="marke">Sicherheit und Betrieb</span>
+  <h1>Der Saal hängt<br>von nichts ab.</h1>
+  <p class="gross">Fällt während der Sitzung das Internet aus, läuft alles weiter:
+    Mikrofone, Kameras, Abstimmung, Protokoll. Entwickelt wird mit abgeschaltetem
+    Internet — dann kann sich keine Abhängigkeit einschleichen.</p>
+</div>
+
+<section>
+  <div class="bahn">
+    <ul class="strich">
+      <li><b>Betrieb im eigenen Haus.</b> Server im Rack oder im Flightcase für einzelne
+        Veranstaltungen. Keine Cloud im Pfad, wenn Sie das nicht wollen.</li>
+      <li><b>Ereigniskette.</b> Jeder Eintrag hängt am Hash des vorherigen. Nur anfügbar,
+        kein Ändern, kein Löschen — Manipulation fällt beim Nachrechnen auf.</li>
+      <li><b>Eine Zeitachse je Sitzung.</b> Audio, Video, Abstimmungen und Telemetrie in
+        Millisekunden seit Sitzungsbeginn. Nachträglich ist diese Achse nicht mehr
+        herstellbar, deshalb steht sie von der ersten Zeile an.</li>
+      <li><b>Verschlüsselung zwischen allen Diensten.</b> Eigene Zertifizierungsstelle,
+        gegenseitige Authentisierung. Funktioniert auch im abgeschotteten Netz.</li>
+      <li><b>Löschen durch Schlüsselvernichtung.</b> Wirkt auch auf Kopien und auf Geräten,
+        die gerade offline sind.</li>
+      <li><b>Keine Hintertür.</b> Wo der Kunde den Schlüssel hält, kann der Hersteller nicht
+        entschlüsseln. Das ist eine Zusage, kein Schalter.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="bahn">
+    <span class="marke">Geheime Wahl</span>
+    <h2>Was nicht existiert, kann nicht herausgegeben werden</h2>
+    <p class="gross">Bei geheimer Wahl gibt es die Verbindung zwischen Stimme und Person an
+      keiner Stelle: nicht in der Datenbank, nicht im Ereignisprotokoll, nicht auf dem
+      Namensschild.</p>
+    <p>Festgehalten wird nur, <em>dass</em> ein Platz abgestimmt hat — sonst ließe sich
+      doppelte Stimmabgabe nicht verhindern. Wie abgestimmt wurde, steht in einer Zeile
+      ohne jeden Personenbezug. Beides zusammenzuführen ist nicht schwer gemacht, sondern
+      unmöglich.</p>
+  </div>
+</section>
+
+<section>
+  <div class="bahn">
+    <span class="marke">Vor der Sitzung</span>
+    <h2>Der Vorabcheck stellt fest, was fehlt — bevor es auffällt</h2>
+    <p class="gross">Fünfzehn Minuten vor Sitzungsbeginn prüft das System sich selbst:
+      Ereigniskette nachrechnen, jede Kamera einmal anfahren, jeden Platz auf Besetzung
+      prüfen, Beschlussfähigkeit hochrechnen.</p>
+    <p>Während einer laufenden Sitzung ist der Vorabcheck gesperrt — er fährt Kameras,
+      und das ist ein Eingriff.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="bahn">
+    <div>
+      <h3>ConferenceCue</h3>
+      <p>Konferenz-, Abstimmungs- und Protokollsystem für Gremiensitzungen.
+        Betrieben auf eigener Hardware.</p>
+    </div>
+    <div>
+      <h3>Seiten</h3>
+      <ul>
+        <li><a href="system.html">System</a></li>
+        <li><a href="einsatz.html">Einsatz</a></li>
+        <li><a href="sicherheit.html">Sicherheit</a></li>
+        <li><a href="stand.html">Stand</a></li>
+        <li><a href="kontakt.html">Kontakt</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Rechtliches</h3>
+      <p>Impressum und Datenschutzerklärung fehlen noch und sind vor der
+        Veröffentlichung zu ergänzen.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

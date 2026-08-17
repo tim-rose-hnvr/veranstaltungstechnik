@@ -29,6 +29,7 @@ type Ablage interface {
 	StimmeAbgeben(ctx context.Context, abstimmungID, teilnahmeID string, wahl kern.Wahl, geheim bool) error
 	SitzungZustandSetzen(ctx context.Context, sitzungID string, zustand kern.Sitzungszustand, zeit time.Time) error
 	TeilnahmeZustandSetzen(ctx context.Context, teilnahmeID string, zustand kern.Teilnahmezustand) error
+	TopZustandSetzen(ctx context.Context, topID string, zustand kern.Topzustand) error
 	WortmeldungAnlegen(ctx context.Context, sitzungID, teilnahmeID string) (string, int64, error)
 	WortmeldungZustandSetzen(ctx context.Context, wortmeldungID string, zustand kern.Wortzustand) error
 }
@@ -56,6 +57,7 @@ type Gedaechtnis struct {
 	abstimmungen  []*gAbstimmung
 	sitzungen     map[string]*gSitzung
 	teilnahmen    map[string]*gTeilnahme // sitzung_id|platz_id -> Teilnahme
+	tagesordnung  map[string]*gTop       // sitzung_id|nummer -> Punkt
 	wortmeldungen []*gWortmeldung
 }
 
@@ -71,6 +73,7 @@ func NeuGedaechtnis() *Gedaechtnis {
 		personen:       map[string]string{},
 		sitzungen:      map[string]*gSitzung{},
 		teilnahmen:     map[string]*gTeilnahme{},
+		tagesordnung:   map[string]*gTop{},
 	}
 }
 
@@ -197,6 +200,8 @@ func (g *Gedaechtnis) Zaehlen(ctx context.Context, tabelle string) (int, error) 
 		return len(g.teilnahmen), nil
 	case "wortmeldung":
 		return len(g.wortmeldungen), nil
+	case "tagesordnungspunkt":
+		return len(g.tagesordnung), nil
 	case "abstimmung":
 		return len(g.abstimmungen), nil
 	case "stimme":

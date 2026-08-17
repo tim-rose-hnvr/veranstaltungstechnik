@@ -3,6 +3,7 @@ package web_test
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -59,6 +60,17 @@ type nachricht struct {
 
 func aufstellen(t *testing.T) *httptest.Server {
 	t.Helper()
+	return aufbauenMit(t, false)
+}
+
+// aufstellenMitPruefstelle schaltet zusätzlich /emulator frei.
+func aufstellenMitPruefstelle(t *testing.T) *httptest.Server {
+	t.Helper()
+	return aufbauenMit(t, true)
+}
+
+func aufbauenMit(t *testing.T, pruefstelle bool) *httptest.Server {
+	t.Helper()
 	ctx := context.Background()
 	ablage := speicher.NeuGedaechtnis()
 
@@ -99,6 +111,14 @@ func aufstellen(t *testing.T) *httptest.Server {
 
 	oberflaeche := web.Neu(k, "../../web", nil)
 	oberflaeche.SetzeVorabcheck(vorabcheck.Neu(aufbau, k, stilleKamera{}, ablage, 50*time.Millisecond))
+	if pruefstelle {
+		oberflaeche.SetzeEmulator(web.Emulatordaten{
+			Saal: "Testraum", SaalID: saalID, Plaetze: plaetze,
+			Pins:    map[int]string{1: "1111", 2: "2222", 3: "3333"},
+			Kameras: []web.Kameraangabe{{Name: "PTZ Mitte", Adresse: "127.0.0.1:52381", Kanal: 1}},
+			Kette:   ablage,
+		})
+	}
 
 	dienst := httptest.NewServer(oberflaeche.Handler())
 	t.Cleanup(dienst.Close)
@@ -345,5 +365,41 @@ func TestVorabcheckUeberHTTP(t *testing.T) {
 	defer gesperrt.Body.Close()
 	if gesperrt.StatusCode != http.StatusConflict {
 		t.Errorf("HTTP 409 erwartet, %d bekommen", gesperrt.StatusCode)
+	}
+}
+
+// TestPruefstelleNurMitSchalter: die Prüfstelle gibt die PINs im Klartext
+// heraus. Ohne ausdrückliche Freischaltung darf es ihre Adressen nicht geben —
+// nicht abgeschaltet, sondern nicht vorhanden.
+func TestPruefstelleNurMitSchalter(t *testing.T) {
+	adressen := []string{"/emulator", "/emulator/aufbau.json", "/emulator/kette.json", "/emulator/kameras.json"}
+
+	dienst := aufstellen(t)
+	for _, pfad := range adressen {
+		antwort, err := http.Get(dienst.URL + pfad)
+		if err != nil {
+			t.Fatalf("%s: %v", pfad, err)
+		}
+		antwort.Body.Close()
+		if antwort.StatusCode != http.StatusNotFound {
+			t.Errorf("%s: ohne freischaltung HTTP 404 erwartet, %d bekommen", pfad, antwort.StatusCode)
+		}
+	}
+
+	// Mit Freischaltung sind sie da — und die PIN steht darin, wie angekündigt.
+	mitSchalter := aufstellenMitPruefstelle(t)
+	for _, pfad := range adressen {
+		antwort, err := http.Get(mitSchalter.URL + pfad)
+		if err != nil {
+			t.Fatalf("%s: %v", pfad, err)
+		}
+		roh, _ := io.ReadAll(antwort.Body)
+		antwort.Body.Close()
+		if antwort.StatusCode != http.StatusOK {
+			t.Errorf("%s: HTTP 200 erwartet, %d bekommen", pfad, antwort.StatusCode)
+		}
+		if pfad == "/emulator/aufbau.json" && !strings.Contains(string(roh), `"pin":"1111"`) {
+			t.Errorf("die prüfstelle liefert die pin nicht: %s", roh)
+		}
 	}
 }

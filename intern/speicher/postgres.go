@@ -245,6 +245,7 @@ func (p *Postgres) Zaehlen(ctx context.Context, tabelle string) (int, error) {
 		"platz": true, "preset": true, "ereignis": true,
 		"person": true, "sitzung": true, "teilnahme": true, "wortmeldung": true,
 		"abstimmung": true, "stimme": true, "stimmabgabe": true,
+		"tagesordnungspunkt": true,
 	}
 	if !erlaubt[tabelle] {
 		return 0, fmt.Errorf("unbekannte tabelle %q", tabelle)
@@ -267,4 +268,15 @@ func (p *Postgres) imVorgang(ctx context.Context, arbeit func(pgx.Tx) error) err
 		return err
 	}
 	return tx.Commit(ctx)
+}
+
+// Migrationen sind die Schemadateien in der Reihenfolge, in der sie laufen.
+// Waechter ist die letzte Tabelle, die die jeweilige Datei anlegt — gibt es
+// sie, ist die Migration gelaufen. Die Liste steht hier und nicht im Server,
+// damit Betrieb und Test nicht auseinanderlaufen können.
+var Migrationen = []struct{ Datei, Waechter string }{
+	{"001_grundlage.sql", "ereignis"},
+	{"002_sitzung.sql", "wortmeldung"},
+	{"003_abstimmung.sql", "stimmabgabe"},
+	{"004_tagesordnung.sql", "tagesordnungspunkt"},
 }

@@ -20,12 +20,22 @@ type gSitzung struct {
 }
 
 type gTeilnahme struct {
-	id       string
-	personID string
-	platz    int
-	rolle    kern.Rolle
-	zustand  kern.Teilnahmezustand
-	pinHash  []byte
+	id          string
+	personID    string
+	platz       int
+	rolle       kern.Rolle
+	zustand     kern.Teilnahmezustand
+	pinHash     []byte
+	widerspruch bool
+}
+
+type gTop struct {
+	id          string
+	sitzungID   string
+	nummer      int
+	titel       string
+	oeffentlich bool
+	zustand     kern.Topzustand
 }
 
 type gWortmeldung struct {
@@ -94,6 +104,7 @@ func (g *Gedaechtnis) SitzungImportieren(ctx context.Context, saalID string, d S
 		}
 		teilnahme.personID = personID
 		teilnahme.rolle = kern.Rolle(t.Rolle)
+		teilnahme.widerspruch = t.Widerspruch
 
 		stand.Teilnahmen = append(stand.Teilnahmen, kern.Teilnahmeaufbau{
 			ID:          teilnahme.id,
@@ -101,10 +112,34 @@ func (g *Gedaechtnis) SitzungImportieren(ctx context.Context, saalID string, d S
 			Person:      t.Person,
 			Rolle:       teilnahme.rolle,
 			PinHash:     teilnahme.pinHash,
+			Widerspruch: teilnahme.widerspruch,
 		})
 	}
 	sort.Slice(stand.Teilnahmen, func(i, j int) bool {
 		return stand.Teilnahmen[i].PlatzNummer < stand.Teilnahmen[j].PlatzNummer
+	})
+
+	// Die Tagesordnung wird abgeglichen: der Zustand eines schon aufgerufenen
+	// Punktes bleibt stehen, Titel und Öffentlichkeit kommen aus der Datei.
+	for _, t := range d.Tagesordnung {
+		schluessel := fmt.Sprintf("%s|%d", sitzung.id, t.Nummer)
+		top, bekannt := g.tagesordnung[schluessel]
+		if !bekannt {
+			top = &gTop{
+				id: g.id(), sitzungID: sitzung.id, nummer: t.Nummer, zustand: kern.TopOffen,
+			}
+			g.tagesordnung[schluessel] = top
+		}
+		top.titel = t.Titel
+		top.oeffentlich = t.IstOeffentlich()
+
+		stand.Tagesordnung = append(stand.Tagesordnung, kern.Tagesordnungspunkt{
+			ID: top.id, Nummer: top.nummer, Titel: top.titel,
+			Oeffentlich: top.oeffentlich, Zustand: top.zustand,
+		})
+	}
+	sort.Slice(stand.Tagesordnung, func(i, j int) bool {
+		return stand.Tagesordnung[i].Nummer < stand.Tagesordnung[j].Nummer
 	})
 
 	for _, w := range g.wortmeldungen {
@@ -211,14 +246,29 @@ func (g *Gedaechtnis) OffeneWortmeldungen(ctx context.Context, sitzungID string)
 	return liste, nil
 }
 
-// LeitungAusKette liest den zuletzt übergebenen Staffelstab aus der Kette.
+// TopZustandSetzen schreibt den Übergang eines Tagesordnungspunkts fest.
+func (g *Gedaechtnis) TopZustandSetzen(ctx context.Context, topID string, zustand kern.Topzustand) error {
+	g.mu.Lock()
+	defer g.mu.Unlock()
+
+	for _, t := range g.tagesordnung {
+		if t.id == topID {
+			t.zustand = zustand
+			return nil
+		}
+	}
+	return fmt.Errorf("tagesordnungspunkt %s gibt es nicht", topID)
+}
+
+// LeitungAusKette liest den Staffelstab aus der Kette. Übergabe und Übernahme
+// zählen gleich — sonst geht die übernommene Leitung beim Neustart verloren.
 func (g *Gedaechtnis) LeitungAusKette(ctx context.Context, saalID string) (int, error) {
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
 	platz := 0
 	for _, e := range g.ketten[saalID] {
-		if e.Art != "leitung_uebergeben" {
+		if e.Art != "leitung_uebergeben" && e.Art != "leitung_uebernommen" {
 			continue
 		}
 		if an, gefunden := e.Nutzlast["an"]; gefunden {

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>System — ConferenceCue</title>
+<meta name="description" content="Wie ConferenceCue arbeitet: Sprechstelle, Kameranachführung, Tagesordnung, Abstimmung, Protokoll — und die Fachregeln, die dahinterstehen.">
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="stil.css">
+</head>
+<body>
+
+<header>
+  <div class="bahn">
+    <a class="wort" href="index.html">ConferenceCue</a>
+    <nav>
+      <a href="system.html" aria-current="page">System</a>
+      <a href="einsatz.html">Einsatz</a>
+      <a href="sicherheit.html">Sicherheit</a>
+      <a href="stand.html">Stand</a>
+      <a href="kontakt.html">Kontakt</a>
+    </nav>
+  </div>
+</header>
+
+<div class="bahn kopf">
+  <span class="marke">Wie es arbeitet</span>
+  <h1>Ein Platz, eine Identität,<br>alles verknüpft.</h1>
+  <p class="gross">Jede Rolle ist eine eigene Oberfläche am selben Zustand. Was jemand darf,
+    entscheidet der Kern — nie die Oberfläche. Die Oberfläche graut nur aus.</p>
+</div>
+
+<section>
+  <div class="bahn">
+    <span class="marke">Bestandteile</span>
+    <h2>Sechs Teile, ein Zustand</h2>
+    <div class="gitter" style="margin-top:2rem">
+      <div class="karte">
+        <h3>Sprechstelle</h3>
+        <p class="leise">Wortmeldung, Mikrofon, Redeliste. Die Zahl gleichzeitig offener
+          Mikrofone folgt aus der Einmessung des Saals, nicht aus einer Einstellung.</p>
+      </div>
+      <div class="karte">
+        <h3>Kameranachführung</h3>
+        <p class="leise">Offenes Mikrofon fährt die PTZ-Kamera über VISCA over IP auf den
+          gelernten Preset des Platzes. Mit Mindeststandzeit, damit das Bild bei
+          Zwischenrufen ruhig bleibt.</p>
+      </div>
+      <div class="karte">
+        <h3>Tagesordnung</h3>
+        <p class="leise">Höchstens ein Punkt ist in Arbeit. Bei einem nicht öffentlichen
+          Punkt pausieren Stream und Aufzeichnung automatisch — gesteuert vom
+          Sitzungszustand, nicht von einem Handgriff.</p>
+      </div>
+      <div class="karte">
+        <h3>Abstimmung</h3>
+        <p class="leise">Beschlussfähigkeit wird beim Start geprüft und eingefroren.
+          Bei geheimer Wahl existiert die Zuordnung Stimme zu Person nirgends — auch nicht
+          im Protokoll.</p>
+      </div>
+      <div class="karte">
+        <h3>Protokoll</h3>
+        <p class="leise">Jede Wortmeldung, jede Stimme, jeder Technikeingriff als Kette,
+          nur anfügbar. Der Protokollentwurf fällt am Ende der Sitzung von selbst an,
+          gegliedert nach Tagesordnungspunkten.</p>
+      </div>
+      <div class="karte">
+        <h3>Sitzungsmappe</h3>
+        <p class="leise">Unterlagen je Tagesordnungspunkt, mit Vertraulichkeitsstufe,
+          persönlichem Wasserzeichen und Zugriffsprotokoll. <span class="leise">Geplant.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="bahn">
+    <span class="marke">Fachregeln</span>
+    <h2>Was das System nicht tut, obwohl es könnte</h2>
+    <p class="gross">Diese Regeln sind keine Meinungen, sondern Ergebnisse aus Akustik,
+      Funktechnik und Verfahrensrecht. Sie lassen sich nicht wegkonfigurieren.</p>
+    <ul class="strich" style="margin-top:1.5rem">
+      <li><b>Die Zahl offener Mikrofone ist gedeckelt.</b> Jede Verdopplung offener
+        Mikrofone kostet 3 dB Reserve gegen Rückkopplung. Die Höchstzahl folgt aus dem
+        Ring-out des Saals, typisch acht.</li>
+      <li><b>Während einer Abstimmung greift die Technik nicht ein.</b> Das Mikrofon geht
+        auf, die Kamera bleibt stehen. Eine Kamerafahrt im laufenden Beschluss ist ein
+        Eingriff, den niemand angeordnet hat.</li>
+      <li><b>Wer der Aufzeichnung widersprochen hat, wird übersprungen.</b> Das Mikrofon
+        geht trotzdem auf — Reden und Gefilmtwerden sind zweierlei. Der Widerspruch hängt
+        an der Teilnahme, nicht an einer Einstellung, die jemand vergessen kann.</li>
+      <li><b>Die Sitzungsleitung ist ein Staffelstab.</b> Berechtigt sind viele, aktiv ist
+        genau eine. Die Übergabe geschieht ausdrücklich und steht im Protokoll. Fällt das
+        Gerät der Leitung aus, übernimmt ein anderer Berechtigter — ausdrücklich, nie von
+        selbst.</li>
+      <li><b>Ein Beschluss gehört an einen Tagesordnungspunkt.</b> Ohne aufgerufenen Punkt
+        keine Abstimmung, denn nachträglich ist die Zuordnung nicht mehr herstellbar.</li>
+      <li><b>Ein Zustandswechsel ohne Protokolleintrag ist unmöglich.</b> Das Ereignis wird
+        vor der Änderung geschrieben. Scheitert das, bleibt der Zustand, wie er war.</li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="bahn">
+    <span class="marke">Technik</span>
+    <h2>Entschieden, nicht offen</h2>
+    <div class="rollbar" style="margin-top:1.5rem">
+      <table>
+        <thead><tr><th>Bereich</th><th>Wahl</th></tr></thead>
+        <tbody>
+          <tr><td>Kern</td><td>Go, WebSocket, PostgreSQL — ein Programm, eine Binärdatei</td></tr>
+          <tr><td>Medien</td><td>GStreamer für SFU, Kompositor und NDI; WebRTC zu den Geräten</td></tr>
+          <tr><td>Kamerasteuerung</td><td>VISCA over IP auf UDP 52381; ONVIF als Alternative</td></tr>
+          <tr><td>Ton</td><td>Opus über WebRTC im Raum, AES67 oder Dante zur Anlagentechnik</td></tr>
+          <tr><td>Client</td><td>zuerst Web-App; native iPadOS-App erst, wenn Kiosk-Betrieb sie erzwingt</td></tr>
+          <tr><td>Server</td><td>Ubuntu Server LTS ohne Oberfläche, Container über Podman</td></tr>
+          <tr><td>Zertifikate</td><td>eigene Zertifizierungsstelle, gegenseitige Authentisierung zwischen allen Diensten</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="hinweis" style="margin-top:2rem">Bewusst nicht verwendet: vMix und OBS im
+      Produkt, Windows als Kern, macOS als Dauerserver, eigene Kryptografie.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="bahn">
+    <div>
+      <h3>ConferenceCue</h3>
+      <p>Konferenz-, Abstimmungs- und Protokollsystem für Gremiensitzungen.
+        Betrieben auf eigener Hardware.</p>
+    </div>
+    <div>
+      <h3>Seiten</h3>
+      <ul>
+        <li><a href="system.html">System</a></li>
+        <li><a href="einsatz.html">Einsatz</a></li>
+        <li><a href="sicherheit.html">Sicherheit</a></li>
+        <li><a href="stand.html">Stand</a></li>
+        <li><a href="kontakt.html">Kontakt</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Rechtliches</h3>
+      <p>Impressum und Datenschutzerklärung fehlen noch und sind vor der
+        Veröffentlichung zu ergänzen.</p>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

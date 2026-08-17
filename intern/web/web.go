@@ -27,6 +27,7 @@ type Nachricht struct {
 	Titel string `json:"titel"`
 	Art   string `json:"art"`
 	Wahl  string `json:"wahl"`
+	Top   int    `json:"top"`
 }
 
 // Fehlernachricht geht an genau den Client, dessen Befehl scheiterte.
@@ -51,6 +52,7 @@ type Server struct {
 	pruefer     *vorabcheck.Pruefer
 	schreiber   *protokoll.Schreiber
 	sitzungID   string
+	emulator    *Emulatordaten
 
 	mu           sync.Mutex
 	verbindungen map[*verbindung]struct{}
@@ -91,6 +93,11 @@ func (s *Server) Handler() http.Handler {
 	weiche.Handle("GET /vorabcheck", s.seite("vorabcheck.html"))
 	weiche.HandleFunc("POST /vorabcheck", s.vorabcheck)
 	weiche.HandleFunc("GET /protokoll.md", s.protokollSeite)
+	// Die Prüfstelle gibt die PINs preis. Ohne Freischaltung in der
+	// Konfiguration gibt es ihre Adressen nicht.
+	if s.emulator != nil {
+		s.emulatorRouten(weiche)
+	}
 	return weiche
 }
 
@@ -286,6 +293,12 @@ func (v *verbindung) ausfuehren(ctx context.Context, n Nachricht) {
 		err = s.kern.SitzungEroeffnen(ctx, absender)
 	case kern.AktionSitzungSchliessen:
 		err = s.kern.SitzungSchliessen(ctx, absender)
+	case kern.AktionTopAufrufen:
+		err = s.kern.TopAufrufen(ctx, absender, n.Top)
+	case kern.AktionTopAbschliessen:
+		err = s.kern.TopAbschliessen(ctx, absender)
+	case kern.AktionTopVertagen:
+		err = s.kern.TopVertagen(ctx, absender)
 	case kern.AktionAbstimmungStarten:
 		art, fehler := kern.ArtLesen(n.Art)
 		if fehler != nil {

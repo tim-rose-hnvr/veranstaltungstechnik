@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Sprechstelle</title>
+<link rel="icon" href="data:,">
 <style>
   /* Keine externe Schrift, kein CDN: der Saal hängt von nichts ab. */
   :root {
@@ -112,6 +113,7 @@
   <span class="marke"><span class="punkt" id="netzpunkt"></span><span id="netztext">getrennt</span></span>
   <span class="marke leise" id="offenzeile">— von — Mikrofonen offen</span>
   <span class="marke leise" id="kamerazeile">Kamera: noch keine Bewegung</span>
+  <span class="marke" id="aufzeichnungzeile"></span>
 </div>
 
 <div class="spalten">
@@ -121,6 +123,11 @@
   </main>
 
   <div>
+    <aside id="topkarte" hidden>
+      <h2>Tagesordnung</h2>
+      <ol id="tagesordnung"></ol>
+      <div class="knoepfe" id="topknoepfe" style="margin-top:.5rem"></div>
+    </aside>
     <aside>
       <h2>Redeliste</h2>
       <ol id="redeliste"></ol>
@@ -165,6 +172,10 @@ let letzterZustand = null;
 const knoten = {
   plaetze: document.getElementById("plaetze"),
   redeliste: document.getElementById("redeliste"),
+  topkarte: document.getElementById("topkarte"),
+  tagesordnung: document.getElementById("tagesordnung"),
+  topknoepfe: document.getElementById("topknoepfe"),
+  aufzeichnung: document.getElementById("aufzeichnungzeile"),
   sitzungsknoepfe: document.getElementById("sitzungsknoepfe"),
   abstimmung: document.getElementById("abstimmung"),
   fehler: document.getElementById("fehler"),
@@ -253,7 +264,14 @@ function zustand(n) {
       (n.kamera.erreichbar ? "" : " — nicht erreichbar");
   }
 
+  // Stream und Aufzeichnung folgen dem Tagesordnungspunkt, nicht einem
+  // Handgriff — die Anzeige sagt nur, was der Sitzungszustand ergibt.
+  knoten.aufzeichnung.textContent = n.aufzeichnung
+    ? "Aufzeichnung läuft" : "Aufzeichnung pausiert";
+  knoten.aufzeichnung.style.color = n.aufzeichnung ? "" : "var(--an)";
+
   zeichnen(n, offen);
+  tagesordnung(n);
   redeliste(n);
   sitzungsknoepfe(n);
   abstimmung(n);
@@ -458,6 +476,50 @@ function zeichnen(n, offen) {
 function aufDerListe(n, nummer) {
   for (let i = 0; i < n.redeliste.length; i++) if (n.redeliste[i].platz === nummer) return true;
   return false;
+}
+
+function tagesordnung(n) {
+  const liste = n.tagesordnung || [];
+  knoten.topkarte.hidden = liste.length === 0;
+  if (liste.length === 0) return;
+
+  const neu = document.createDocumentFragment();
+  for (let i = 0; i < liste.length; i++) {
+    const t = liste[i];
+    const zeile = document.createElement("li");
+    const links = document.createElement("span");
+    links.textContent = t.nummer + ". " + t.titel;
+    if (t.zustand === "laufend") links.style.fontWeight = "600";
+    if (t.zustand === "abgeschlossen" || t.zustand === "vertagt") links.style.color = "var(--leise)";
+    const rechts = document.createElement("span");
+    rechts.className = "lage";
+    rechts.textContent = t.oeffentlich ? t.zustand : t.zustand + " · nicht öffentlich";
+    if (!t.oeffentlich) rechts.style.color = "var(--an)";
+
+    if (darf("top_aufrufen") && t.zustand !== "laufend" && t.zustand !== "vertagt") {
+      const auf = document.createElement("button");
+      auf.textContent = "aufrufen";
+      auf.style.flex = "none";
+      auf.onclick = function () { senden({ typ: "top_aufrufen", top: t.nummer }); };
+      zeile.appendChild(links);
+      zeile.appendChild(auf);
+    } else {
+      zeile.appendChild(links);
+      zeile.appendChild(rechts);
+    }
+    neu.appendChild(zeile);
+  }
+  knoten.tagesordnung.replaceChildren(neu);
+
+  const knoepfe = document.createDocumentFragment();
+  for (const [aktion, text] of [["top_abschliessen", "Punkt abschließen"], ["top_vertagen", "vertagen"]]) {
+    if (!darf(aktion)) continue;
+    const knopf = document.createElement("button");
+    knopf.textContent = text;
+    knopf.onclick = function () { senden({ typ: aktion }); };
+    knoepfe.appendChild(knopf);
+  }
+  knoten.topknoepfe.replaceChildren(knoepfe);
 }
 
 function redeliste(n) {

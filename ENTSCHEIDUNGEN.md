@@ -68,7 +68,7 @@ Wenn eine Entscheidung technisch nicht haltbar ist, das sagen und begründen —
 | P4 | Anpassung je Kunde | Gestaltungsdaten und Konfiguration, **nie** ein eigener Codestand |
 | P5 | Öffentliche Webseite | darf gehostet sein; Kundendaten und Zuschaltung nicht |
 | P6 | Preise auf der Webseite | keine |
-| P7 | Produktname | offen, „Saalwerk" ist ein Platzhalter |
+| P7 | Produktname | **ConferenceCue** |
 
 ## Noch offen — hier darf gefragt werden
 

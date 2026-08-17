@@ -6,3 +6,11 @@ saal_datei: vorfuehrung/saal.json
 sitzungs_datei: vorfuehrung/sitzung.json
 max_offene_mikrofone: 3
 kamera_zeitlimit_ms: 500
+
+# Simulierte Kameras hören auf den Adressen aus saal.json und quittieren wie
+# echte. Der Weg bleibt derselbe: Rahmen bauen, UDP senden, auf Antwort warten.
+kamera_attrappe: true
+
+# Die Prüfstelle unter /emulator. Sie gibt die PINs preis und gehört deshalb
+# nie in eine Konfiguration, die im Saal läuft.
+emulator: true

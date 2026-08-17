@@ -18,6 +18,11 @@ const (
 	CodeNichtBeschlussfaehig = "nicht_beschlussfaehig"
 	CodeSchonAbgestimmt      = "schon_abgestimmt"
 
+	// Aus Meilenstein 4.
+	CodeKeinTop        = "kein_top"
+	CodeTopUnbekannt   = "top_unbekannt"
+	CodeTopGeschlossen = "top_geschlossen"
+
 	// CodeSpeicherFehler meldet, dass ein Ereignis nicht in die Kette
 	// geschrieben werden konnte. Der Zustand bleibt dann unverändert — ein
 	// Zustandswechsel ohne Protokolleintrag darf es nicht geben.

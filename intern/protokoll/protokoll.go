@@ -71,12 +71,32 @@ func (s *Schreiber) Markdown(ctx context.Context, sitzungID, titel string) (stri
 	fmt.Fprintf(&b, "Einträge: %d, Kette nachgerechnet: %s\n\n",
 		len(eigene), jaNein(kettenfehler == nil))
 
-	b.WriteString("## Verlauf\n\n")
-	b.WriteString("| Zeit | Vorgang |\n|---|---|\n")
+	// Der Verlauf wird nach Tagesordnungspunkten gegliedert. Was vor dem
+	// ersten Punkt geschah, steht unter „Vor Eintritt in die Tagesordnung" —
+	// eine Sitzung ohne Tagesordnung hat nur diesen einen Abschnitt.
+	offen := false
 	for _, e := range eigene {
+		if e.Art == "top_aufgerufen" {
+			if offen {
+				b.WriteString("\n")
+			}
+			zusatz := ""
+			if oeffentlich, passt := e.Nutzlast["oeffentlich"].(bool); passt && !oeffentlich {
+				zusatz = " *(nicht öffentlich — Stream und Aufzeichnung pausierten)*"
+			}
+			fmt.Fprintf(&b, "## TOP %d — %s%s\n\n", zahl(e.Nutzlast["top"]), text(e.Nutzlast["titel"]), zusatz)
+			b.WriteString("| Zeit | Vorgang |\n|---|---|\n")
+			offen = true
+			continue
+		}
 		zeile := s.zeile(e)
 		if zeile == "" {
 			continue
+		}
+		if !offen {
+			b.WriteString("## Vor Eintritt in die Tagesordnung\n\n")
+			b.WriteString("| Zeit | Vorgang |\n|---|---|\n")
+			offen = true
 		}
 		fmt.Fprintf(&b, "| %s | %s |\n", s.uhrzeit(e), zeile)
 	}
@@ -151,6 +171,18 @@ func (s *Schreiber) zeile(e kern.Ereignis) string {
 	case "abstimmung_abgebrochen":
 		return fmt.Sprintf("Abstimmung „%s\" abgebrochen.", text(e.Nutzlast["titel"]))
 
+	case "top_abgeschlossen":
+		return fmt.Sprintf("Der Tagesordnungspunkt %d wird abgeschlossen.", zahl(e.Nutzlast["top"]))
+	case "top_vertagt":
+		return fmt.Sprintf("Der Tagesordnungspunkt %d wird vertagt.", zahl(e.Nutzlast["top"]))
+	case "aufzeichnung_pausiert":
+		return "Stream und Aufzeichnung pausieren."
+	case "aufzeichnung_fortgesetzt":
+		return "Stream und Aufzeichnung laufen wieder."
+	case "kamera_uebersprungen":
+		return fmt.Sprintf("%s wird von der Kameranachführung übersprungen "+
+			"(Widerspruch gegen die Aufzeichnung).", wer)
+
 	default:
 		// mikro_aus, Kameraereignisse und Stimmabgaben stehen im
 		// Ereignisprotokoll, aber nicht im Sitzungsprotokoll.
@@ -160,6 +192,16 @@ func (s *Schreiber) zeile(e kern.Ereignis) string {
 
 // beschluesse fasst die festgestellten Ergebnisse zusammen.
 func (s *Schreiber) beschluesse(kette []kern.Ereignis) string {
+	// Jeder Beschluss trägt den Tagesordnungspunkt, unter dem er gefasst
+	// wurde. Der steht im Startereignis, nicht in der Feststellung — deshalb
+	// wird er von dort geholt.
+	tops := make(map[string]int)
+	for _, e := range kette {
+		if e.Art == "abstimmung_gestartet" {
+			tops[text(e.Nutzlast["abstimmung"])] = zahl(e.Nutzlast["top"])
+		}
+	}
+
 	var b strings.Builder
 	nummer := 0
 	for _, e := range kette {
@@ -167,7 +209,11 @@ func (s *Schreiber) beschluesse(kette []kern.Ereignis) string {
 			continue
 		}
 		nummer++
-		fmt.Fprintf(&b, "**%d. %s**  \n", nummer, text(e.Nutzlast["titel"]))
+		zusatz := ""
+		if top := tops[text(e.Nutzlast["abstimmung"])]; top > 0 {
+			zusatz = fmt.Sprintf(" (TOP %d)", top)
+		}
+		fmt.Fprintf(&b, "**%d. %s**%s  \n", nummer, text(e.Nutzlast["titel"]), zusatz)
 		fmt.Fprintf(&b, "%d Ja, %d Nein, %d Enthaltungen — %s.\n\n",
 			zahl(e.Nutzlast["ja"]), zahl(e.Nutzlast["nein"]), zahl(e.Nutzlast["enthaltung"]),
 			angenommen(e.Nutzlast["angenommen"]))

@@ -31,6 +31,7 @@ type Kamerasteuerung interface {
 // Ablage ist alles, was der Kern dauerhaft festhalten muss.
 type Ablage interface {
 	Abstimmungsablage
+	Tagesordnungsablage
 	EreignisAnfuegen(ctx context.Context, saalID, art string, nutzlast map[string]any) (Ereignis, error)
 	SitzungZustandSetzen(ctx context.Context, sitzungID string, zustand Sitzungszustand, zeit time.Time) error
 	TeilnahmeZustandSetzen(ctx context.Context, teilnahmeID string, zustand Teilnahmezustand) error
@@ -46,6 +47,9 @@ type PlatzZustand struct {
 	Mikro   bool   `json:"mikro"`
 	Belegt  bool   `json:"belegt"`
 	HatWort bool   `json:"hat_wort"`
+	// Widerspruch gegen die Aufzeichnung. Steht im Zustand, damit die
+	// Oberfläche erklären kann, warum die Kamera nicht fährt.
+	Widerspruch bool `json:"widerspruch"`
 }
 
 // Kamerazustand ist die zuletzt ausgelöste Kamerabewegung.
@@ -58,14 +62,16 @@ type Kamerazustand struct {
 // Zustand ist der gemeinsame Zustand des Saals. Der Server sendet immer
 // alles, nie Teiländerungen — dann heilen sich Aussetzer von selbst.
 type Zustand struct {
-	Typ        string             `json:"typ"`
-	Stand      uint64             `json:"stand"`
-	MaxOffen   int                `json:"max_offen"`
-	Sitzung    SitzungZustand     `json:"sitzung"`
-	Plaetze    []PlatzZustand     `json:"plaetze"`
-	Redeliste  []RedelisteEintrag `json:"redeliste"`
-	Abstimmung *AbstimmungZustand `json:"abstimmung"`
-	Kamera     *Kamerazustand     `json:"kamera"`
+	Typ          string             `json:"typ"`
+	Stand        uint64             `json:"stand"`
+	MaxOffen     int                `json:"max_offen"`
+	Aufzeichnung bool               `json:"aufzeichnung"`
+	Sitzung      SitzungZustand     `json:"sitzung"`
+	Plaetze      []PlatzZustand     `json:"plaetze"`
+	Tagesordnung []TopZustand       `json:"tagesordnung"`
+	Redeliste    []RedelisteEintrag `json:"redeliste"`
+	Abstimmung   *AbstimmungZustand `json:"abstimmung"`
+	Kamera       *Kamerazustand     `json:"kamera"`
 }
 
 type platz struct {
@@ -84,6 +90,7 @@ type Aufbau struct {
 	Beginn         *time.Time // Nullpunkt der Zeitachse, nil solange nicht eröffnet
 	Plaetze        []Platzaufbau
 	Teilnahmen     []Teilnahmeaufbau
+	Tagesordnung   []Tagesordnungspunkt
 	Wortmeldungen  []Wortmeldung // offene aus der Datenbank
 	Abstimmung     *Abstimmung   // laufende oder zuletzt beendete
 	LeitungPlatz   int           // 0: aus der Rolle ableiten
@@ -108,6 +115,8 @@ type Kern struct {
 	beginn       time.Time // Nullpunkt der Zeitachse, Nullwert: noch nicht eröffnet
 	plaetze      []*platz
 	nach         map[int]*platz
+	tagesordnung []*Tagesordnungspunkt
+	aufzeichnung bool
 	leitungPlatz int
 	redeliste    []*Wortmeldung
 	abstimmung   *Abstimmung
@@ -171,6 +180,32 @@ func Neu(a Aufbau, steuerung Kamerasteuerung, ablage Ablage, protokoll *slog.Log
 		}
 		p.teilnahme = &t
 	}
+
+	nummern := make(map[int]bool, len(a.Tagesordnung))
+	for i := range a.Tagesordnung {
+		t := a.Tagesordnung[i]
+		if nummern[t.Nummer] {
+			return nil, fmt.Errorf("tagesordnungspunkt %d kommt doppelt vor", t.Nummer)
+		}
+		nummern[t.Nummer] = true
+		if t.Zustand == "" {
+			t.Zustand = TopOffen
+		}
+		k.tagesordnung = append(k.tagesordnung, &t)
+	}
+	sort.Slice(k.tagesordnung, func(i, j int) bool {
+		return k.tagesordnung[i].Nummer < k.tagesordnung[j].Nummer
+	})
+	laufend := 0
+	for _, t := range k.tagesordnung {
+		if t.Zustand == TopLaufend {
+			laufend++
+		}
+	}
+	if laufend > 1 {
+		return nil, fmt.Errorf("%d tagesordnungspunkte stehen auf laufend, höchstens einer darf es", laufend)
+	}
+	k.aufzeichnung = k.aufzeichnungSollIntern()
 
 	for i := range a.Wortmeldungen {
 		w := a.Wortmeldungen[i]
@@ -393,7 +428,14 @@ func (k *Kern) sitzungSetzen(ctx context.Context, absender int, aktion string,
 			}
 		}
 		k.redeliste = nil
+		// Ein aufgerufener Punkt bleibt sonst für immer laufend stehen.
+		if t := k.laufenderTopIntern(); t != nil {
+			if err := k.topSetzenIntern(ctx, t, TopAbgeschlossen, absender); err != nil {
+				k.protokoll.Error("tagesordnungspunkt nicht abgeschlossen", "top", t.Nummer)
+			}
+		}
 	}
+	k.aufzeichnungPruefenIntern(ctx)
 	k.stand++
 	k.mu.Unlock()
 
@@ -536,12 +578,27 @@ func (k *Kern) MikroAn(ctx context.Context, absender, ziel int) error {
 	// Während einer laufenden Abstimmung sind automatische Technikeingriffe
 	// gesperrt. Das Mikrofon geht auf, die Kamera bleibt stehen.
 	abstimmungLaeuft := k.abstimmung.Laeuft()
+	// Wer der Aufzeichnung widersprochen hat, wird nicht angefahren. Das ist
+	// keine Einstellung, die jemand vergessen kann, sondern hängt an der
+	// Teilnahme.
+	widerspruch := p.teilnahme != nil && p.teilnahme.Widerspruch
+	if widerspruch {
+		if err := k.schreiben(ctx, "kamera_uebersprungen", map[string]any{
+			"platz": ziel, "grund": "widerspruch gegen die aufzeichnung",
+		}); err != nil {
+			k.protokoll.Error("übersprungene kamerafahrt nicht protokolliert", "platz", ziel)
+		}
+	}
 	k.mu.Unlock()
 
 	k.melder()
 
 	if abstimmungLaeuft {
 		k.protokoll.Info("kamera bleibt stehen, es wird abgestimmt", "platz", ziel)
+		return nil
+	}
+	if widerspruch {
+		k.protokoll.Info("kamera bleibt stehen, widerspruch gegen die aufzeichnung", "platz", ziel)
 		return nil
 	}
 
@@ -706,9 +763,30 @@ func (k *Kern) darfIntern(p *platz, aktion string) *Fehler {
 			return fehler(CodeSitzungLaeuftNicht,
 				fmt.Sprintf("Die Sitzung ist %s", k.sitzung))
 		}
+	case AktionTopAufrufen, AktionTopAbschliessen, AktionTopVertagen:
+		if len(k.tagesordnung) == 0 {
+			return fehler(CodeKeinTop, "Diese Sitzung hat keine Tagesordnung")
+		}
+		// Ein Punktwechsel während einer laufenden Abstimmung ließe den
+		// Beschluss ohne Punkt zurück — erst auszählen, dann weiter.
+		if k.abstimmung.Laeuft() {
+			return fehler(CodeAbstimmungLaeuft,
+				"Es wird abgestimmt — der Tagesordnungspunkt bleibt bis zum Auszählen stehen")
+		}
+		if aktion != AktionTopAufrufen && k.laufenderTopIntern() == nil {
+			return fehler(CodeKeinTop, "Es ist kein Tagesordnungspunkt aufgerufen")
+		}
+
 	case AktionAbstimmungStarten:
 		if k.abstimmung.Laeuft() {
 			return fehler(CodeAbstimmungLaeuft, "Es läuft bereits eine Abstimmung")
+		}
+		// Ein Beschluss gehört an einen Tagesordnungspunkt. Wo es eine
+		// Tagesordnung gibt, muss einer aufgerufen sein — sonst steht der
+		// Beschluss später ohne Bezug im Protokoll.
+		if len(k.tagesordnung) > 0 && k.laufenderTopIntern() == nil {
+			return fehler(CodeKeinTop,
+				"Erst einen Tagesordnungspunkt aufrufen, dann abstimmen")
 		}
 	case AktionAbstimmungBeenden, AktionAbstimmungAbbrechen:
 		if !k.abstimmung.Laeuft() {
@@ -872,18 +950,23 @@ func (k *Kern) offeneIntern() int {
 // zustandIntern baut den Zustandsschnappschuss. Aufrufer hält k.mu.
 func (k *Kern) zustandIntern() Zustand {
 	z := Zustand{
-		Typ:      "zustand",
-		Stand:    k.stand,
-		MaxOffen: k.maxOffen,
+		Typ:          "zustand",
+		Stand:        k.stand,
+		MaxOffen:     k.maxOffen,
+		Aufzeichnung: k.aufzeichnung,
 		Sitzung: SitzungZustand{
 			Titel:        k.titel,
 			Zustand:      k.sitzung,
 			LeitungPlatz: k.leitungPlatz,
 		},
-		Plaetze:    make([]PlatzZustand, 0, len(k.plaetze)),
-		Redeliste:  make([]RedelisteEintrag, 0, len(k.redeliste)),
-		Abstimmung: k.abstimmungZustandIntern(),
-		Kamera:     k.kamera,
+		Plaetze:      make([]PlatzZustand, 0, len(k.plaetze)),
+		Tagesordnung: k.tagesordnungZustandIntern(),
+		Redeliste:    make([]RedelisteEintrag, 0, len(k.redeliste)),
+		Abstimmung:   k.abstimmungZustandIntern(),
+		Kamera:       k.kamera,
+	}
+	if t := k.laufenderTopIntern(); t != nil {
+		z.Sitzung.AktuellerTop = t.Nummer
 	}
 	for _, p := range k.plaetze {
 		pz := PlatzZustand{
@@ -895,6 +978,7 @@ func (k *Kern) zustandIntern() Zustand {
 		}
 		if p.teilnahme != nil {
 			pz.Person = p.teilnahme.Person
+			pz.Widerspruch = p.teilnahme.Widerspruch
 		}
 		z.Plaetze = append(z.Plaetze, pz)
 	}

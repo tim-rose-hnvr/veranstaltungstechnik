@@ -1,0 +1,110 @@
+/* ConferenceCue — gemeinsame Gestaltung aller Seiten.
+   Keine externe Schrift, kein CDN, kein Analytics: dieselbe Regel wie im Saal.
+   Die Seite gibt es in einer Fassung — dunkel, wie ein Regieplatz. Das ist eine
+   Entscheidung, keine Auslassung, deshalb steht jede Farbe hier ausdrücklich. */
+:root {
+  color-scheme: dark;
+  --grund:   #08080a;
+  --karte:   #121216;
+  --tiefer:  #0d0d10;
+  --rand:    #26262c;
+  --schrift: #f6f6f8;
+  --leise:   #989aa4;
+  --akzent:  #c8102e;   /* Tally-Rot: die Farbe der offenen Kamera */
+  --gruen:   #3fbc6d;
+  --breite:  68rem;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  background: var(--grund); color: var(--schrift);
+  -webkit-font-smoothing: antialiased;
+}
+
+.bahn { width: 100%; max-width: var(--breite); margin: 0 auto; padding: 0 1.5rem; }
+section { padding: 4rem 0; border-top: 1px solid var(--rand); }
+section:first-of-type { border-top: 0; }
+
+h1, h2, h3 { line-height: 1.15; letter-spacing: -.02em; margin: 0 0 .75rem; text-wrap: balance; }
+h1 { font-size: clamp(2.1rem, 6vw, 3.5rem); font-weight: 700; }
+h2 { font-size: clamp(1.45rem, 3.2vw, 2rem); font-weight: 650; }
+h3 { font-size: 1.05rem; font-weight: 600; }
+p { margin: 0 0 1rem; max-width: 46rem; }
+a { color: var(--schrift); }
+.leise { color: var(--leise); }
+.gross { font-size: clamp(1.02rem, 2vw, 1.2rem); color: var(--leise); max-width: 46rem; }
+.marke {
+  display: inline-block; font-size: .72rem; letter-spacing: .15em; text-transform: uppercase;
+  color: var(--leise); margin-bottom: .9rem;
+}
+
+/* Kopf mit Tally-Punkt vor dem Wort — im Saal heißt Rot: das Mikrofon ist offen. */
+header { position: sticky; top: 0; z-index: 10; background: rgba(8,8,10,.88);
+         backdrop-filter: blur(12px); border-bottom: 1px solid var(--rand); }
+header .bahn { display: flex; align-items: center; gap: 1.25rem; min-height: 3.6rem; flex-wrap: wrap; }
+.wort { font-weight: 700; letter-spacing: -.01em; text-decoration: none; display: inline-flex;
+        align-items: center; gap: .5rem; }
+.wort:before { content: ""; width: .5rem; height: .5rem; border-radius: 50%;
+               background: var(--akzent); flex: none; }
+nav { margin-left: auto; display: flex; gap: 1.1rem; flex-wrap: wrap; }
+nav a { color: var(--leise); text-decoration: none; font-size: .9rem; padding: .2rem 0;
+        border-bottom: 1px solid transparent; }
+nav a:hover { color: var(--schrift); }
+nav a[aria-current="page"] { color: var(--schrift); border-bottom-color: var(--akzent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--akzent); outline-offset: 3px; }
+
+.kopf { padding: 4.5rem 0 3.5rem; }
+.knopf {
+  display: inline-block; padding: .78rem 1.4rem; border-radius: .55rem; text-decoration: none;
+  background: var(--schrift); color: #08080a; font-weight: 600; font-size: .95rem;
+}
+.knopf.leiser { background: transparent; color: var(--schrift); border: 1px solid var(--rand); }
+.knoepfe { display: flex; gap: .7rem; flex-wrap: wrap; margin-top: 1.6rem; }
+
+.gitter { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); }
+.karte { background: var(--karte); border: 1px solid var(--rand); border-radius: .85rem; padding: 1.2rem; }
+.karte p:last-child { margin-bottom: 0; }
+.karte .leise { font-size: .93rem; }
+.karte.hell { border-color: var(--akzent); }
+
+table { width: 100%; border-collapse: collapse; font-size: .93rem; }
+.rollbar { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+th, td { text-align: left; padding: .7rem .8rem; border-bottom: 1px solid var(--rand); vertical-align: top; }
+th { font-weight: 600; font-size: .76rem; text-transform: uppercase; letter-spacing: .08em; color: var(--leise); }
+td:first-child { font-weight: 600; }
+
+ul.strich { list-style: none; padding: 0; margin: 0; }
+ul.strich li { padding: .55rem 0 .55rem 1.4rem; position: relative; border-bottom: 1px solid var(--rand); }
+ul.strich li:before { content: "—"; position: absolute; left: 0; color: var(--akzent); }
+ul.strich li:last-child { border-bottom: 0; }
+
+.hinweis { border-left: 3px solid var(--akzent); padding: .3rem 0 .3rem 1.1rem; }
+
+/* Stand: was gebaut ist, was nicht. Der Punkt trägt die Aussage, nicht die Farbe allein. */
+.stufen { list-style: none; padding: 0; margin: 1.5rem 0 0; }
+.stufen li { display: flex; flex-wrap: wrap; gap: .3rem .8rem; align-items: baseline;
+             padding: .6rem 0; border-bottom: 1px solid var(--rand); }
+.stufen li > span:last-child { flex: 1 1 14rem; min-width: 0; overflow-wrap: anywhere; }
+.stufen li:last-child { border-bottom: 0; }
+.stufen .zeichen { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase;
+                   min-width: 6.5rem; flex: none; }
+.stufen .fertig  { color: var(--gruen); }
+.stufen .offen   { color: var(--leise); }
+.stufen b { font-weight: 600; }
+
+code, .hex { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .85em; }
+pre { background: var(--tiefer); border: 1px solid var(--rand); border-radius: .6rem;
+      padding: .9rem 1rem; overflow-x: auto; margin: 0 0 1rem; max-width: 100%; }
+p code { overflow-wrap: anywhere; }
+pre code { font-size: .84rem; }
+
+footer { border-top: 1px solid var(--rand); padding: 2.5rem 0 3.5rem; color: var(--leise); font-size: .88rem; }
+footer .bahn { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); }
+footer a { color: var(--schrift); }
+footer h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--leise); }
+footer ul { list-style: none; padding: 0; margin: 0; }
+footer li { padding: .2rem 0; }
