@@ -3,20 +3,53 @@
   "tagesordnung": [
     {
       "nummer": 1,
-      "titel": "Begrüßung, Feststellung der Beschlussfähigkeit"
+      "titel": "Begrüßung, Feststellung der Beschlussfähigkeit",
+      "unterlagen": [
+        {
+          "titel": "Anwesenheitsliste",
+          "datei": "unterlagen/top1-anwesenheit.pdf",
+          "stufe": "oeffentlich"
+        }
+      ]
     },
     {
       "nummer": 2,
-      "titel": "Genehmigung des Protokolls der letzten Sitzung"
+      "titel": "Genehmigung des Protokolls der letzten Sitzung",
+      "unterlagen": [
+        {
+          "titel": "Protokollentwurf der letzten Sitzung",
+          "datei": "unterlagen/top2-protokollentwurf.pdf",
+          "stufe": "intern"
+        }
+      ]
     },
     {
       "nummer": 3,
       "titel": "Personalangelegenheit Geschäftsführung",
-      "oeffentlich": false
+      "oeffentlich": false,
+      "unterlagen": [
+        {
+          "titel": "Personalvorlage Geschäftsführung",
+          "datei": "unterlagen/top3-personalvorlage.pdf",
+          "stufe": "vertraulich"
+        }
+      ]
     },
     {
       "nummer": 4,
-      "titel": "Feststellung des Jahresabschlusses 2026"
+      "titel": "Feststellung des Jahresabschlusses 2026",
+      "unterlagen": [
+        {
+          "titel": "Jahresabschluss 2026",
+          "datei": "unterlagen/top4-jahresabschluss.pdf",
+          "stufe": "intern"
+        },
+        {
+          "titel": "Prüfbericht des Abschlussprüfers",
+          "datei": "unterlagen/top4-pruefbericht.pdf",
+          "stufe": "vertraulich"
+        }
+      ]
     },
     {
       "nummer": 5,

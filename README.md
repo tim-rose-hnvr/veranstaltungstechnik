@@ -4,8 +4,8 @@ Eine Sitzung wird eröffnet, die Leitung führt durch die Tagesordnung, erteilt
 das Wort, das Mikrofon geht auf und die PTZ-Kamera fährt per VISCA over IP auf
 den Preset des Platzes. Dazu Abstimmung und Protokoll aus der Ereigniskette.
 
-Was noch fehlt: Ton, Bildregie, Transkript, Sitzungsmappe. Der Blick auf das
-Ganze steht in `dokumentation/blockschaltbild.html`.
+Was noch fehlt: Ton, Bildregie, Transkript. Der Blick auf das Ganze steht in
+`dokumentation/blockschaltbild.html`.
 
 ## Einmal ansehen
 
@@ -54,6 +54,7 @@ Andere Konfiguration: `-konfiguration pfad.yaml`.
 | `/testumgebung` | die drei Geräte nebeneinander in einem Fenster |
 | `/vorabcheck` | Selbsttest vor der Sitzung: Kette, Besetzung, jede Kamera |
 | `/protokoll.md` | Sitzungsprotokoll aus der Ereigniskette, als Markdown |
+| `/unterlage/{marke}` | eine Unterlage der Sitzungsmappe, nur gegen eine gültige Marke |
 | `/emulator` | Prüfstelle — nur bei `emulator: true`, sie gibt die PINs preis |
 
 Namensschild und Dolmetscherplatz lesen nur mit — sie melden keinen Platz an.
@@ -77,6 +78,19 @@ der Datenbank nur als bcrypt-Hash und geht nie an einen Client.
 
 Eine Teilnahme kann `"aufzeichnungswiderspruch": true` tragen; ein Punkt der
 Tagesordnung `"oeffentlich": false`. Fehlt die Angabe, ist der Punkt öffentlich.
+
+Ein Punkt kann `"unterlagen"` tragen — die Sitzungsmappe:
+
+```json
+{ "nummer": 3, "titel": "Personalangelegenheit", "oeffentlich": false,
+  "unterlagen": [
+    { "titel": "Personalvorlage", "datei": "unterlagen/vorlage.pdf", "stufe": "vertraulich" }
+  ] }
+```
+
+`datei` ist relativ zum Ordner der Sitzungsdatei; absolute Pfade und `..`
+werden abgewiesen. Fehlt eine Datei, bricht der Start ab — wer eine Mappe
+angibt, will sie auch ausliefern.
 
 ## Rollen
 
@@ -106,6 +120,39 @@ Zwei Regeln hängen daran:
   wechselt der Punkt nicht.
 
 Eine Sitzung ohne Tagesordnung läuft weiter wie bisher.
+
+## Sitzungsmappe
+
+Unterlagen hängen an einem Tagesordnungspunkt und tragen eine
+Vertraulichkeitsstufe. Wer was sieht, entscheidet die Rolle:
+
+| Stufe | sichtbar für |
+|---|---|
+| `oeffentlich` | alle im Saal, auch Gäste |
+| `intern` | alle Teilnehmenden, keine Gäste |
+| `vertraulich` | nur Stimmberechtigte — die Schriftführung hört die Beratung, bekommt aber das Papier nicht |
+| `geheim` | nur die zur Sitzungsleitung Berechtigten |
+
+Was eine Rolle nicht sehen darf, **steht nicht in ihrem Zustand** — es wird
+nicht ausgegraut, sondern nie gesendet. Eine unbekannte Stufe gilt als die
+strengste: ein Tippfehler in der Sitzungsdatei öffnet nichts.
+
+Der Abruf geht über eine **Marke**. HTTP kennt den Platz nicht, der WebSocket
+schon — also entscheidet der Kern über die Rechte und die Auslieferung bekommt
+nur noch eine kurzlebige Kennung (30 Sekunden, einmal einlösbar). Ein
+weitergegebener Verweis nützt nichts.
+
+Vor jeder Ausgabe wird die **Prüfsumme** der Datei nachgerechnet. Wurde sie
+unter dem laufenden System ausgetauscht, wird nicht ausgeliefert.
+
+Das **Zugriffsprotokoll ist die Ereigniskette**: `unterlage_geoeffnet` mit
+Person, Platz, Stufe und Zeit — und `unterlage_verweigert`, wenn jemand etwas
+anfragt, das er nicht sehen darf. Eine zweite Liste daneben könnte
+auseinanderlaufen, und nur die Kette ist fälschungssicher.
+
+Die ausgelieferte Datei trägt ein **Wasserzeichen** im Kopf `X-Wasserzeichen`:
+Person, Platz, Sitzung, Zeit. Es ist in die Datei selbst noch nicht
+eingebrannt — dafür bräuchte es eine PDF-Verarbeitung, die es hier nicht gibt.
 
 ## Abstimmung
 
@@ -166,6 +213,9 @@ Achtung: Die Testdatenbank wird dabei geleert.
   Kameranachführung übersprungen (`kamera_uebersprungen`); das Mikrofon geht
   trotzdem auf. Der Widerspruch hängt an der Teilnahme, nicht an einer
   Einstellung, die jemand vergessen kann.
+- **Eine Unterlage ohne Marke gibt es nicht.** `/unterlage/{marke}` prüft
+  nichts über den Abrufenden — die Marke ist der Beweis, und sie wurde vom
+  Kern nach der Rechteprüfung ausgegeben.
 - **Kamera-Attrappe.** `kamera_attrappe: true` startet simulierte Kameras, die
   wirklich auf UDP hören, den Rahmen zerlegen und mit Acknowledge und
   Completion antworten. Der Weg bleibt derselbe wie im Saal — es fehlt nur die

@@ -46,12 +46,27 @@ type pruefstand struct {
 	saalID       string
 	teilnahmen   []speicher.Teilnahmedaten
 	tagesordnung []speicher.Topdaten
+	mappenordner string
 }
 
 // aufbauen baut Saal, Sitzung und Kern über die Ablage im Arbeitsspeicher —
 // dieselben Wege wie im Betrieb, nur ohne Datenbank und ohne UDP.
 func aufbauen(t *testing.T, plaetze, maxOffen int, teilnahmen []speicher.Teilnahmedaten,
 	tagesordnung ...speicher.Topdaten) *pruefstand {
+	t.Helper()
+	return aufbauenIntern(t, plaetze, maxOffen, "", teilnahmen, tagesordnung)
+}
+
+// aufbauenMitMappe baut denselben Prüfstand samt Sitzungsmappe. mappenordner
+// ist der Ordner, gegen den die Pfade der Unterlagen aufgelöst werden.
+func aufbauenMitMappe(t *testing.T, mappenordner string, teilnahmen []speicher.Teilnahmedaten,
+	tagesordnung []speicher.Topdaten) *pruefstand {
+	t.Helper()
+	return aufbauenIntern(t, 6, 3, mappenordner, teilnahmen, tagesordnung)
+}
+
+func aufbauenIntern(t *testing.T, plaetze, maxOffen int, mappenordner string,
+	teilnahmen []speicher.Teilnahmedaten, tagesordnung []speicher.Topdaten) *pruefstand {
 	t.Helper()
 	ctx := context.Background()
 	ablage := speicher.NeuGedaechtnis()
@@ -71,7 +86,8 @@ func aufbauen(t *testing.T, plaetze, maxOffen int, teilnahmen []speicher.Teilnah
 	}
 
 	stand, err := ablage.SitzungImportieren(ctx, saalID, speicher.Sitzungsdaten{
-		Titel: "Probesitzung", Teilnahmen: teilnahmen, Tagesordnung: tagesordnung})
+		Titel: "Probesitzung", Teilnahmen: teilnahmen, Tagesordnung: tagesordnung,
+	}.MitVerzeichnis(mappenordner))
 	if err != nil {
 		t.Fatalf("sitzung einlesen: %v", err)
 	}
@@ -85,6 +101,7 @@ func aufbauen(t *testing.T, plaetze, maxOffen int, teilnahmen []speicher.Teilnah
 		Plaetze:        platzaufbau,
 		Teilnahmen:     stand.Teilnahmen,
 		Tagesordnung:   stand.Tagesordnung,
+		Unterlagen:     stand.Unterlagen,
 		MaxOffen:       maxOffen,
 		Zeitlimit:      100 * time.Millisecond,
 	}, kamera, ablage, nil)
@@ -92,7 +109,7 @@ func aufbauen(t *testing.T, plaetze, maxOffen int, teilnahmen []speicher.Teilnah
 		t.Fatalf("kern nicht aufgebaut: %v", err)
 	}
 	return &pruefstand{kern: k, kamera: kamera, ablage: ablage, saalID: saalID,
-		teilnahmen: teilnahmen, tagesordnung: tagesordnung}
+		teilnahmen: teilnahmen, tagesordnung: tagesordnung, mappenordner: mappenordner}
 }
 
 // neustarten baut den Kern neu auf, so wie es der Server nach einem Absturz
@@ -115,7 +132,8 @@ func neustarten(t *testing.T, p *pruefstand) *kern.Kern {
 		t.Fatalf("saal erneut einlesen: %v", err)
 	}
 	stand, err := p.ablage.SitzungImportieren(ctx, saalID, speicher.Sitzungsdaten{
-		Titel: "Probesitzung", Teilnahmen: p.teilnahmen, Tagesordnung: p.tagesordnung})
+		Titel: "Probesitzung", Teilnahmen: p.teilnahmen, Tagesordnung: p.tagesordnung,
+	}.MitVerzeichnis(p.mappenordner))
 	if err != nil {
 		t.Fatalf("sitzung erneut einlesen: %v", err)
 	}
@@ -132,8 +150,8 @@ func neustarten(t *testing.T, p *pruefstand) *kern.Kern {
 		SaalID: saalID, SitzungID: stand.SitzungID, Titel: stand.Titel,
 		SitzungZustand: stand.Zustand, Beginn: stand.Beginn, Plaetze: platzaufbau,
 		Teilnahmen: stand.Teilnahmen, Tagesordnung: stand.Tagesordnung,
-		Wortmeldungen: stand.Wortmeldungen,
-		Abstimmung:    abstimmung, LeitungPlatz: leitung,
+		Unterlagen: stand.Unterlagen, Wortmeldungen: stand.Wortmeldungen,
+		Abstimmung: abstimmung, LeitungPlatz: leitung,
 		MaxOffen: 3, Zeitlimit: 100 * time.Millisecond,
 	}, p.kamera, p.ablage, nil)
 	if err != nil {

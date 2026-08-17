@@ -23,6 +23,11 @@ const (
 	CodeTopUnbekannt   = "top_unbekannt"
 	CodeTopGeschlossen = "top_geschlossen"
 
+	// Aus Meilenstein 5.
+	CodeUnterlageUnbekannt  = "unterlage_unbekannt"
+	CodeUnterlageVeraendert = "unterlage_veraendert"
+	CodeFreigabeAbgelaufen  = "freigabe_abgelaufen"
+
 	// CodeSpeicherFehler meldet, dass ein Ereignis nicht in die Kette
 	// geschrieben werden konnte. Der Zustand bleibt dann unverändert — ein
 	// Zustandswechsel ohne Protokolleintrag darf es nicht geben.

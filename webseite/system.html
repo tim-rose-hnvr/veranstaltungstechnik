@@ -67,7 +67,8 @@
       <div class="karte">
         <h3>Sitzungsmappe</h3>
         <p class="leise">Unterlagen je Tagesordnungspunkt, mit Vertraulichkeitsstufe,
-          persönlichem Wasserzeichen und Zugriffsprotokoll. <span class="leise">Geplant.</span></p>
+          persönlichem Wasserzeichen und Zugriffsprotokoll in der Ereigniskette.
+          Was eine Rolle nicht sehen darf, wird nicht ausgegraut, sondern nie gesendet.</p>
       </div>
     </div>
   </div>
@@ -95,6 +96,10 @@
         selbst.</li>
       <li><b>Ein Beschluss gehört an einen Tagesordnungspunkt.</b> Ohne aufgerufenen Punkt
         keine Abstimmung, denn nachträglich ist die Zuordnung nicht mehr herstellbar.</li>
+      <li><b>Eine vertrauliche Unterlage wird nicht ausgegraut.</b> Was eine Rolle
+        nicht sehen darf, steht nicht in ihrem Zustand — es verlässt den Server nicht.
+        Und jeder Abruf steht mit Person, Platz und Zeit im Protokoll, der abgewiesene
+        Versuch ebenso.</li>
       <li><b>Ein Zustandswechsel ohne Protokolleintrag ist unmöglich.</b> Das Ereignis wird
         vor der Änderung geschrieben. Scheitert das, bleibt der Zustand, wie er war.</li>
     </ul>

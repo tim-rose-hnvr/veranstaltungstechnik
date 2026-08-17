@@ -179,6 +179,12 @@ func (s *Schreiber) zeile(e kern.Ereignis) string {
 		return "Stream und Aufzeichnung pausieren."
 	case "aufzeichnung_fortgesetzt":
 		return "Stream und Aufzeichnung laufen wieder."
+	case "unterlage_geoeffnet":
+		return fmt.Sprintf("%s öffnet die Unterlage „%s\" (%s).",
+			text(e.Nutzlast["person"]), text(e.Nutzlast["titel"]), text(e.Nutzlast["stufe"]))
+	case "unterlage_verweigert":
+		return fmt.Sprintf("%s fragt die Unterlage „%s\" (%s) an und wird abgewiesen.",
+			wer, text(e.Nutzlast["titel"]), text(e.Nutzlast["stufe"]))
 	case "kamera_uebersprungen":
 		return fmt.Sprintf("%s wird von der Kameranachführung übersprungen "+
 			"(Widerspruch gegen die Aufzeichnung).", wer)

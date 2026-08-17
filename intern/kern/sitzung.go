@@ -118,4 +118,7 @@ type IchZustand struct {
 	Person string   `json:"person"`
 	Rolle  Rolle    `json:"rolle"`
 	Darf   []string `json:"darf"`
+	// Unterlagen ist die Sitzungsmappe aus der Sicht dieses Platzes. Was die
+	// Rolle nicht sehen darf, steht hier nicht — auch nicht ausgegraut.
+	Unterlagen []UnterlageZustand `json:"unterlagen"`
 }

@@ -12,7 +12,7 @@ Betrieben wird es beim Kunden auf eigener Hardware. Kein Cloud-Zwang, keine Abh�
 
 **Produktname:** ConferenceCue.
 
-**Stand:** Kern, Kameranachführung, Redeliste, Tagesordnung, Abstimmung, Protokoll und Vorabcheck laufen und sind geprüft. Ton, Bildregie, Transkript und Sitzungsmappe sind nicht gebaut. Vorführbetrieb ohne Datenbank: `go run ./cmd/server -konfiguration vorfuehrung/config.yaml`.
+**Stand:** Kern, Kameranachführung, Redeliste, Tagesordnung, Abstimmung, Sitzungsmappe, Protokoll und Vorabcheck laufen und sind geprüft. Ton, Bildregie und Transkript sind nicht gebaut. Vorführbetrieb ohne Datenbank: `go run ./cmd/server -konfiguration vorfuehrung/config.yaml`.
 
 ---
 
@@ -112,11 +112,11 @@ Zustandsketten:
 
 ## Baureihenfolge
 
-**Erledigt:** Kern (Sitzungszustand, Rollen, Rechte), Kamerasteuerung über VISCA, Sprechstelle, Redeliste, Abstimmung, Protokoll, Vorabcheck, Tagesordnung mit automatischer Aufzeichnungspause.
+**Erledigt:** Kern (Sitzungszustand, Rollen, Rechte), Kamerasteuerung über VISCA, Sprechstelle, Redeliste, Abstimmung, Protokoll, Vorabcheck, Tagesordnung mit automatischer Aufzeichnungspause, Sitzungsmappe mit Vertraulichkeitsstufen.
 
 **Jetzt:** Ton (Automixer, Mix-Minus, Einmessung) — braucht einen echten Raum, keinen Schreibtisch.
 
-**Danach:** Sitzungsmappe → Transkript → Kompositor.
+**Danach:** Transkript → Kompositor.
 
 **Nicht zuerst:** Kompositor, Dolmetschen, Hauptversammlungsmodus, Teams-Media-Bot, eigene Hardware. Alles additiv, alles später.
 

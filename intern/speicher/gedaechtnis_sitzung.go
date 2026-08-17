@@ -137,6 +137,21 @@ func (g *Gedaechtnis) SitzungImportieren(ctx context.Context, saalID string, d S
 			ID: top.id, Nummer: top.nummer, Titel: top.titel,
 			Oeffentlich: top.oeffentlich, Zustand: top.zustand,
 		})
+
+		unterlagen, err := unterlagenLesen(d.Verzeichnis(), t)
+		if err != nil {
+			return Sitzungsstand{}, err
+		}
+		for _, u := range unterlagen {
+			schluessel := sitzung.id + "|" + u.Datei
+			id, bekannt := g.unterlagen[schluessel]
+			if !bekannt {
+				id = g.id()
+				g.unterlagen[schluessel] = id
+			}
+			u.ID = id
+			stand.Unterlagen = append(stand.Unterlagen, u)
+		}
 	}
 	sort.Slice(stand.Tagesordnung, func(i, j int) bool {
 		return stand.Tagesordnung[i].Nummer < stand.Tagesordnung[j].Nummer

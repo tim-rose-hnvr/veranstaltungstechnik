@@ -91,6 +91,7 @@ type Aufbau struct {
 	Plaetze        []Platzaufbau
 	Teilnahmen     []Teilnahmeaufbau
 	Tagesordnung   []Tagesordnungspunkt
+	Unterlagen     []Unterlage
 	Wortmeldungen  []Wortmeldung // offene aus der Datenbank
 	Abstimmung     *Abstimmung   // laufende oder zuletzt beendete
 	LeitungPlatz   int           // 0: aus der Rolle ableiten
@@ -116,6 +117,8 @@ type Kern struct {
 	plaetze      []*platz
 	nach         map[int]*platz
 	tagesordnung []*Tagesordnungspunkt
+	unterlagen   []*Unterlage
+	freigaben    map[string]*freigabe
 	aufzeichnung bool
 	leitungPlatz int
 	redeliste    []*Wortmeldung
@@ -150,6 +153,7 @@ func Neu(a Aufbau, steuerung Kamerasteuerung, ablage Ablage, protokoll *slog.Log
 		protokoll: protokoll,
 		sitzung:   a.SitzungZustand,
 		nach:      make(map[int]*platz, len(a.Plaetze)),
+		freigaben: make(map[string]*freigabe),
 		melder:    func() {},
 	}
 
@@ -206,6 +210,20 @@ func Neu(a Aufbau, steuerung Kamerasteuerung, ablage Ablage, protokoll *slog.Log
 		return nil, fmt.Errorf("%d tagesordnungspunkte stehen auf laufend, höchstens einer darf es", laufend)
 	}
 	k.aufzeichnung = k.aufzeichnungSollIntern()
+
+	for i := range a.Unterlagen {
+		u := a.Unterlagen[i]
+		if u.Stufe == "" {
+			u.Stufe = StufeIntern
+		}
+		k.unterlagen = append(k.unterlagen, &u)
+	}
+	sort.Slice(k.unterlagen, func(i, j int) bool {
+		if k.unterlagen[i].TopNummer != k.unterlagen[j].TopNummer {
+			return k.unterlagen[i].TopNummer < k.unterlagen[j].TopNummer
+		}
+		return k.unterlagen[i].Nummer < k.unterlagen[j].Nummer
+	})
 
 	for i := range a.Wortmeldungen {
 		w := a.Wortmeldungen[i]
@@ -264,6 +282,17 @@ func (k *Kern) Ich(nummer int) *IchZustand {
 		if k.darfIntern(p, aktion) == nil {
 			ich.Darf = append(ich.Darf, aktion)
 		}
+	}
+	// Die Sitzungsmappe ist je Rolle verschieden und gehört deshalb hierhin
+	// und nicht in den gemeinsamen Zustand.
+	for _, u := range k.unterlagen {
+		if !u.Stufe.DarfSehen(p.teilnahme.Rolle) {
+			continue
+		}
+		ich.Unterlagen = append(ich.Unterlagen, UnterlageZustand{
+			ID: u.ID, TopNummer: u.TopNummer, Titel: u.Titel, Dateiname: u.Dateiname,
+			Typ: u.Typ, Groesse: u.Groesse, Stufe: u.Stufe,
+		})
 	}
 	return ich
 }

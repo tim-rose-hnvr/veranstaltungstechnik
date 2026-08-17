@@ -91,6 +91,7 @@
 
   #fehler { margin-bottom: 1rem; padding: .75rem 1rem; border-radius: .5rem;
             background: var(--an); color: #fff; display: none; }
+  #fehler.gut { background: var(--frei); }
 
   dialog { border: 1px solid var(--rand); border-radius: .75rem; background: var(--karte);
            color: var(--schrift); padding: 1.25rem; min-width: 16rem; }
@@ -127,6 +128,12 @@
       <h2>Tagesordnung</h2>
       <ol id="tagesordnung"></ol>
       <div class="knoepfe" id="topknoepfe" style="margin-top:.5rem"></div>
+    </aside>
+    <aside id="mappenkarte" hidden>
+      <h2>Sitzungsmappe</h2>
+      <ol id="mappe"></ol>
+      <p class="leise" style="margin:.5rem 0 0;font-size:.78rem">
+        Jeder Abruf steht mit Person, Platz und Zeit im Protokoll.</p>
     </aside>
     <aside>
       <h2>Redeliste</h2>
@@ -175,6 +182,8 @@ const knoten = {
   topkarte: document.getElementById("topkarte"),
   tagesordnung: document.getElementById("tagesordnung"),
   topknoepfe: document.getElementById("topknoepfe"),
+  mappenkarte: document.getElementById("mappenkarte"),
+  mappe: document.getElementById("mappe"),
   aufzeichnung: document.getElementById("aufzeichnungzeile"),
   sitzungsknoepfe: document.getElementById("sitzungsknoepfe"),
   abstimmung: document.getElementById("abstimmung"),
@@ -211,6 +220,7 @@ function verbinden() {
     try { n = JSON.parse(e.data); } catch (_) { return; }
     if (n.typ === "zustand") zustand(n);
     else if (n.typ === "fehler") fehlerZeigen(n.text || n.code);
+    else if (n.typ === "unterlage") unterlageOeffnen(n);
   };
 }
 
@@ -228,8 +238,9 @@ function darf(aktion) {
   return false;
 }
 
-function fehlerZeigen(text) {
+function fehlerZeigen(text, gut) {
   knoten.fehler.textContent = text;
+  knoten.fehler.className = gut ? "gut" : "";
   knoten.fehler.style.display = "block";
   clearTimeout(fehlerZeigen.uhr);
   fehlerZeigen.uhr = setTimeout(function () {
@@ -271,6 +282,7 @@ function zustand(n) {
   knoten.aufzeichnung.style.color = n.aufzeichnung ? "" : "var(--an)";
 
   zeichnen(n, offen);
+  mappe(n);
   tagesordnung(n);
   redeliste(n);
   sitzungsknoepfe(n);
@@ -476,6 +488,58 @@ function zeichnen(n, offen) {
 function aufDerListe(n, nummer) {
   for (let i = 0; i < n.redeliste.length; i++) if (n.redeliste[i].platz === nummer) return true;
   return false;
+}
+
+// mappe zeigt nur, was die eigene Rolle sehen darf. Die Auswahl trifft der
+// Kern — was hier fehlt, wurde nie gesendet.
+function mappe(n) {
+  const liste = (n.ich && n.ich.unterlagen) || [];
+  knoten.mappenkarte.hidden = liste.length === 0;
+  if (liste.length === 0) return;
+
+  const neu = document.createDocumentFragment();
+  for (let i = 0; i < liste.length; i++) {
+    const u = liste[i];
+    const zeile = document.createElement("li");
+
+    const links = document.createElement("span");
+    links.style.minWidth = "0";
+    const titel = document.createElement("span");
+    titel.textContent = (u.top ? "TOP " + u.top + " · " : "") + u.titel;
+    const unten = document.createElement("div");
+    unten.className = "lage";
+    unten.textContent = u.stufe + " · " + Math.max(1, Math.round(u.groesse / 1024)) + " kB";
+    if (u.stufe === "vertraulich" || u.stufe === "geheim") unten.style.color = "var(--an)";
+    links.appendChild(titel);
+    links.appendChild(unten);
+
+    const knopf = document.createElement("button");
+    knopf.textContent = "öffnen";
+    knopf.style.flex = "none";
+    knopf.onclick = function () { senden({ typ: "unterlage_abrufen", unterlage: u.id }); };
+
+    zeile.appendChild(links);
+    zeile.appendChild(knopf);
+    neu.appendChild(zeile);
+  }
+  knoten.mappe.replaceChildren(neu);
+}
+
+// unterlageOeffnen löst die Freigabe ein. Sie gilt einmal und kurz, deshalb
+// wird sie sofort geöffnet und nicht aufgehoben.
+//
+// Der Verweis wird als Element angeklickt statt über window.open: mit
+// "noopener" gibt window.open laut Spezifikation immer null zurück, ein
+// Rückgabewert taugt dort also nicht als Erfolgsprüfung.
+function unterlageOeffnen(n) {
+  const verweis = document.createElement("a");
+  verweis.href = "/unterlage/" + n.marke;
+  verweis.target = "_blank";
+  verweis.rel = "noopener";
+  document.body.appendChild(verweis);
+  verweis.click();
+  verweis.remove();
+  fehlerZeigen("„" + n.titel + "\" geöffnet — Wasserzeichen: " + n.wasserzeichen, true);
 }
 
 function tagesordnung(n) {

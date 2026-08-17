@@ -58,6 +58,7 @@ type Gedaechtnis struct {
 	sitzungen     map[string]*gSitzung
 	teilnahmen    map[string]*gTeilnahme // sitzung_id|platz_id -> Teilnahme
 	tagesordnung  map[string]*gTop       // sitzung_id|nummer -> Punkt
+	unterlagen    map[string]string      // sitzung_id|datei -> id
 	wortmeldungen []*gWortmeldung
 }
 
@@ -74,6 +75,7 @@ func NeuGedaechtnis() *Gedaechtnis {
 		sitzungen:      map[string]*gSitzung{},
 		teilnahmen:     map[string]*gTeilnahme{},
 		tagesordnung:   map[string]*gTop{},
+		unterlagen:     map[string]string{},
 	}
 }
 
@@ -202,6 +204,8 @@ func (g *Gedaechtnis) Zaehlen(ctx context.Context, tabelle string) (int, error) 
 		return len(g.wortmeldungen), nil
 	case "tagesordnungspunkt":
 		return len(g.tagesordnung), nil
+	case "unterlage":
+		return len(g.unterlagen), nil
 	case "abstimmung":
 		return len(g.abstimmungen), nil
 	case "stimme":

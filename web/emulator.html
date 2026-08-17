@@ -287,7 +287,7 @@ function geraetAnschalten(nummer) {
   return new Promise(function (fertig) {
     const schema = location.protocol === "https:" ? "wss:" : "ws:";
     const sitz = new WebSocket(schema + "//" + location.host + "/ws");
-    const g = { sitz: sitz, rechte: [], verbunden: false, person: platz.person };
+    const g = { sitz: sitz, rechte: [], unterlagen: [], verbunden: false, person: platz.person };
     geraete.set(nummer, g);
 
     sitz.onopen = function () {
@@ -306,8 +306,14 @@ function geraetAnschalten(nummer) {
     sitz.onmessage = function (e) {
       let n;
       try { n = JSON.parse(e.data); } catch (_) { return; }
+      if (n.typ === "unterlage") {
+        melden("Unterlage frei", "„" + n.titel + "\" · Wasserzeichen: " + n.wasserzeichen, "gut");
+        window.open("/unterlage/" + n.marke, "_blank", "noopener");
+        return;
+      }
       if (n.typ === "zustand") {
         g.rechte = n.ich ? n.ich.darf : [];
+        g.unterlagen = (n.ich && n.ich.unterlagen) || [];
         if (!zustand || n.stand >= zustand.stand) zustand = n;
         if (ausgewaehlt === 0) ausgewaehlt = nummer;
         zeichnen();
@@ -477,6 +483,17 @@ function geraeteZeichnen() {
             function () { senden(a.nummer, { typ: "stimme_abgeben", wahl: wahl }); }));
         }
       }
+      // Die Sitzungsmappe je Gerät: was die Rolle nicht sehen darf, kommt gar
+      // nicht erst an — die Liste ist genau das, was der Kern gesendet hat.
+      const g = geraete.get(a.nummer);
+      for (const u of (g && g.unterlagen) || []) {
+        const knopf = knopf2(u.titel + " (" + u.stufe + ")", function () {
+          senden(a.nummer, { typ: "unterlage_abrufen", unterlage: u.id });
+        });
+        if (u.stufe === "vertraulich" || u.stufe === "geheim") knopf.className = "rot";
+        knoepfe.appendChild(knopf);
+      }
+
       // Die Leitung schaltet fremde Plätze: Wort erteilen, wo gemeldet ist.
       if (zustand && aufDerListe(a.nummer)) {
         for (const [nummer, g] of geraete) {
@@ -502,6 +519,13 @@ function marke(text, klasse) {
   s.className = "marke" + (klasse ? " " + klasse : "");
   s.textContent = text;
   return s;
+}
+
+function knopf2(text, tun) {
+  const b = document.createElement("button");
+  b.textContent = text;
+  b.onclick = tun;
+  return b;
 }
 
 function knopf(text, erlaubt, tun, klasse) {
@@ -979,6 +1003,28 @@ const ablaeufe = [
       await warten(600);
       senden(ersatz, { typ: "leitung_uebernehmen" });
       await warten(450);
+    }
+  },
+  {
+    name: "Sitzungsmappe und Vertraulichkeit",
+    was: "Dieselbe Mappe aus drei Rollen: die Leitung sieht alles, die Schriftführung nichts Vertrauliches, ein abgewiesener Versuch steht im Protokoll.",
+    schritte: async function () {
+      for (const platz of [1, 3, 12]) { await geraetAnschalten(platz); await warten(200); }
+      for (const platz of [1, 3, 12]) {
+        const g = geraete.get(platz);
+        const stufen = ((g && g.unterlagen) || []).map(function (u) { return u.stufe; });
+        melden("Mappe", "Platz " + platz + " sieht " + stufen.length + " Unterlagen: " +
+          (stufen.join(", ") || "keine"), "gut");
+        await warten(300);
+      }
+      // Die Schriftführung fragt die vertrauliche Unterlage der Leitung an.
+      const leitungsmappe = (geraete.get(1) || {}).unterlagen || [];
+      const vertraulich = leitungsmappe.find(function (u) { return u.stufe === "vertraulich"; });
+      if (vertraulich) {
+        senden(12, { typ: "unterlage_abrufen", unterlage: vertraulich.id });
+        await warten(600);
+        melden("nachgesehen", "Die Abweisung steht als unterlage_verweigert in der Kette.", "gut");
+      }
     }
   },
   {

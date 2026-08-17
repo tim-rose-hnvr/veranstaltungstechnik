@@ -245,7 +245,7 @@ func (p *Postgres) Zaehlen(ctx context.Context, tabelle string) (int, error) {
 		"platz": true, "preset": true, "ereignis": true,
 		"person": true, "sitzung": true, "teilnahme": true, "wortmeldung": true,
 		"abstimmung": true, "stimme": true, "stimmabgabe": true,
-		"tagesordnungspunkt": true,
+		"tagesordnungspunkt": true, "unterlage": true,
 	}
 	if !erlaubt[tabelle] {
 		return 0, fmt.Errorf("unbekannte tabelle %q", tabelle)
@@ -279,4 +279,5 @@ var Migrationen = []struct{ Datei, Waechter string }{
 	{"002_sitzung.sql", "wortmeldung"},
 	{"003_abstimmung.sql", "stimmabgabe"},
 	{"004_tagesordnung.sql", "tagesordnungspunkt"},
+	{"005_unterlage.sql", "unterlage"},
 }

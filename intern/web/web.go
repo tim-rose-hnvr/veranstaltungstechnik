@@ -5,9 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"log/slog"
 	"net/http"
 	"path/filepath"
+	"strconv"
 	"sync"
 	"time"
 
@@ -28,6 +30,8 @@ type Nachricht struct {
 	Art   string `json:"art"`
 	Wahl  string `json:"wahl"`
 	Top   int    `json:"top"`
+	// Unterlage ist die Kennung eines Dokuments der Sitzungsmappe.
+	Unterlage string `json:"unterlage"`
 }
 
 // Fehlernachricht geht an genau den Client, dessen Befehl scheiterte.
@@ -93,6 +97,7 @@ func (s *Server) Handler() http.Handler {
 	weiche.Handle("GET /vorabcheck", s.seite("vorabcheck.html"))
 	weiche.HandleFunc("POST /vorabcheck", s.vorabcheck)
 	weiche.HandleFunc("GET /protokoll.md", s.protokollSeite)
+	weiche.HandleFunc("GET /unterlage/{marke}", s.unterlage)
 	// Die Prüfstelle gibt die PINs preis. Ohne Freischaltung in der
 	// Konfiguration gibt es ihre Adressen nicht.
 	if s.emulator != nil {
@@ -273,6 +278,9 @@ func (v *verbindung) ausfuehren(ctx context.Context, n Nachricht) {
 	case "anmelden":
 		v.anmelden(ctx, n)
 		return
+	case "unterlage_abrufen":
+		v.unterlageAbrufen(ctx, n)
+		return
 	case "mikro_an":
 		err = s.kern.MikroAn(ctx, absender, n.Platz)
 	case "mikro_aus":
@@ -323,6 +331,55 @@ func (v *verbindung) ausfuehren(ctx context.Context, n Nachricht) {
 		return
 	}
 	v.antworten(n, err)
+}
+
+// unterlageAbrufen holt eine Freigabe und schickt sie an genau diesen Client.
+// Die Rechtefrage beantwortet der Kern; hier wird nur weitergereicht.
+func (v *verbindung) unterlageAbrufen(ctx context.Context, n Nachricht) {
+	freigabe, err := v.server.kern.UnterlageAbrufen(ctx, v.eigenerPlatz(), n.Unterlage)
+	if err != nil {
+		v.antworten(n, err)
+		return
+	}
+	roh, err := json.Marshal(struct {
+		Typ string `json:"typ"`
+		*kern.Freigabe
+	}{Typ: "unterlage", Freigabe: freigabe})
+	if err != nil {
+		v.server.protokoll.Error("freigabe nicht verpackbar", "grund", err)
+		return
+	}
+	v.abschicken(roh)
+}
+
+// unterlage liefert das Dokument gegen eine Marke aus. Die Marke gilt einmal
+// und kurz; wer sie weitergibt, gibt nichts Brauchbares weiter.
+func (s *Server) unterlage(w http.ResponseWriter, r *http.Request) {
+	inhalt, unterlage, wasserzeichen, err := s.kern.UnterlageOeffnen(r.PathValue("marke"))
+	if err != nil {
+		var f *kern.Fehler
+		if errors.As(err, &f) {
+			http.Error(w, f.Text, http.StatusForbidden)
+			return
+		}
+		http.Error(w, "Die Unterlage ist nicht verfügbar.", http.StatusInternalServerError)
+		return
+	}
+	defer inhalt.Close()
+
+	w.Header().Set("Content-Type", unterlage.Typ)
+	w.Header().Set("Content-Length", strconv.FormatInt(unterlage.Groesse, 10))
+	w.Header().Set("Cache-Control", "no-store, no-cache, must-revalidate, private")
+	w.Header().Set("Content-Disposition", "inline; filename=\""+unterlage.Dateiname+"\"")
+	// Das Wasserzeichen steht auch im Kopf: wer die Datei speichert und später
+	// vorlegt, hat den Beleg mitgespeichert.
+	w.Header().Set("X-Wasserzeichen", wasserzeichen)
+	w.Header().Set("X-Vertraulichkeit", string(unterlage.Stufe))
+
+	if _, err := io.Copy(w, inhalt); err != nil {
+		s.protokoll.Warn("unterlage nicht vollständig gesendet",
+			"unterlage", unterlage.ID, "grund", err)
+	}
 }
 
 func (v *verbindung) anmelden(ctx context.Context, n Nachricht) {

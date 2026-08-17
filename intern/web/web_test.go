@@ -6,6 +6,8 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -39,12 +41,20 @@ type nachricht struct {
 		LeitungPlatz int    `json:"leitung_platz"`
 	} `json:"sitzung"`
 	Ich *struct {
-		Platz  int      `json:"platz"`
-		Person string   `json:"person"`
-		Rolle  string   `json:"rolle"`
-		Darf   []string `json:"darf"`
+		Platz      int      `json:"platz"`
+		Person     string   `json:"person"`
+		Rolle      string   `json:"rolle"`
+		Darf       []string `json:"darf"`
+		Unterlagen []struct {
+			ID    string `json:"id"`
+			Titel string `json:"titel"`
+			Stufe string `json:"stufe"`
+		} `json:"unterlagen"`
 	} `json:"ich"`
-	Plaetze []struct {
+	// Antwort auf unterlage_abrufen.
+	Marke         string `json:"marke"`
+	Wasserzeichen string `json:"wasserzeichen"`
+	Plaetze       []struct {
 		Nummer  int    `json:"nummer"`
 		Person  string `json:"person"`
 		Mikro   bool   `json:"mikro"`
@@ -60,16 +70,27 @@ type nachricht struct {
 
 func aufstellen(t *testing.T) *httptest.Server {
 	t.Helper()
-	return aufbauenMit(t, false)
+	return aufbauenMit(t, false, "")
+}
+
+// aufstellenMitMappe legt eine Unterlage auf der Platte an und hängt sie an
+// den ersten Tagesordnungspunkt.
+func aufstellenMitMappe(t *testing.T) *httptest.Server {
+	t.Helper()
+	ordner := t.TempDir()
+	if err := os.WriteFile(filepath.Join(ordner, "vorlage.pdf"), []byte("Beschlussvorlage"), 0o600); err != nil {
+		t.Fatalf("unterlage schreiben: %v", err)
+	}
+	return aufbauenMit(t, false, ordner)
 }
 
 // aufstellenMitPruefstelle schaltet zusätzlich /emulator frei.
 func aufstellenMitPruefstelle(t *testing.T) *httptest.Server {
 	t.Helper()
-	return aufbauenMit(t, true)
+	return aufbauenMit(t, true, "")
 }
 
-func aufbauenMit(t *testing.T, pruefstelle bool) *httptest.Server {
+func aufbauenMit(t *testing.T, pruefstelle bool, mappenordner string) *httptest.Server {
 	t.Helper()
 	ctx := context.Background()
 	ablage := speicher.NeuGedaechtnis()
@@ -87,14 +108,22 @@ func aufbauenMit(t *testing.T, pruefstelle bool) *httptest.Server {
 		t.Fatalf("saal einlesen: %v", err)
 	}
 
+	var tagesordnung []speicher.Topdaten
+	if mappenordner != "" {
+		tagesordnung = []speicher.Topdaten{{Nummer: 1, Titel: "Beschluss",
+			Unterlagen: []speicher.Unterlagedaten{
+				{Titel: "Beschlussvorlage", Datei: "vorlage.pdf", Stufe: "vertraulich"}}}}
+	}
+
 	stand, err := ablage.SitzungImportieren(ctx, saalID, speicher.Sitzungsdaten{
-		Titel: "Probesitzung",
+		Titel:        "Probesitzung",
+		Tagesordnung: tagesordnung,
 		Teilnahmen: []speicher.Teilnahmedaten{
 			{Platz: 1, Person: "Anke Bergmann", Rolle: "leitung", Pin: "1111"},
 			{Platz: 2, Person: "Jonas Öztürk", Rolle: "delegierter", Pin: "2222"},
 			{Platz: 3, Person: "Rita Falk", Rolle: "schriftfuehrung", Pin: "3333"},
 		},
-	})
+	}.MitVerzeichnis(mappenordner))
 	if err != nil {
 		t.Fatalf("sitzung einlesen: %v", err)
 	}
@@ -102,6 +131,7 @@ func aufbauenMit(t *testing.T, pruefstelle bool) *httptest.Server {
 	aufbau := kern.Aufbau{
 		SaalID: saalID, SitzungID: stand.SitzungID, Titel: stand.Titel,
 		SitzungZustand: stand.Zustand, Plaetze: plaetze, Teilnahmen: stand.Teilnahmen,
+		Tagesordnung: stand.Tagesordnung, Unterlagen: stand.Unterlagen,
 		MaxOffen: 3, Zeitlimit: 50 * time.Millisecond,
 	}
 	k, err := kern.Neu(aufbau, stilleKamera{}, ablage, nil)
@@ -401,5 +431,73 @@ func TestPruefstelleNurMitSchalter(t *testing.T) {
 		if pfad == "/emulator/aufbau.json" && !strings.Contains(string(roh), `"pin":"1111"`) {
 			t.Errorf("die prüfstelle liefert die pin nicht: %s", roh)
 		}
+	}
+}
+
+// TestUnterlageNurGegenMarke: die Auslieferung kennt den Platz nicht, sie
+// kennt nur die Marke. Ohne gültige Marke gibt es die Datei nicht.
+func TestUnterlageNurGegenMarke(t *testing.T) {
+	dienst := aufstellen(t)
+
+	for _, marke := range []string{"erfunden", "0000000000000000"} {
+		antwort, err := http.Get(dienst.URL + "/unterlage/" + marke)
+		if err != nil {
+			t.Fatalf("abruf: %v", err)
+		}
+		antwort.Body.Close()
+		if antwort.StatusCode == http.StatusOK {
+			t.Errorf("marke %q lieferte eine unterlage aus", marke)
+		}
+	}
+}
+
+// TestUnterlageUeberDenGanzenWeg: anmelden, Mappe im Zustand sehen, Freigabe
+// holen, Datei abrufen — und die Marke ist danach verbraucht.
+func TestUnterlageUeberDenGanzenWeg(t *testing.T) {
+	dienst := aufstellenMitMappe(t)
+	k := verbinden(t, dienst)
+
+	angemeldet := k.anmelden(1, "1111")
+	if angemeldet.Ich == nil || len(angemeldet.Ich.Unterlagen) != 1 {
+		t.Fatalf("die sitzungsmappe steht nicht im zustand: %+v", angemeldet.Ich)
+	}
+	unterlage := angemeldet.Ich.Unterlagen[0]
+
+	k.schicken(map[string]any{"typ": "unterlage_abrufen", "unterlage": unterlage.ID})
+	freigabe := k.warte(func(n nachricht) bool { return n.Typ == "unterlage" })
+	if freigabe.Marke == "" {
+		t.Fatalf("keine marke bekommen: %+v", freigabe)
+	}
+	if !strings.Contains(freigabe.Wasserzeichen, "Anke Bergmann") {
+		t.Errorf("das wasserzeichen %q nennt die person nicht", freigabe.Wasserzeichen)
+	}
+
+	antwort, err := http.Get(dienst.URL + "/unterlage/" + freigabe.Marke)
+	if err != nil {
+		t.Fatalf("abruf: %v", err)
+	}
+	roh, _ := io.ReadAll(antwort.Body)
+	antwort.Body.Close()
+	if antwort.StatusCode != http.StatusOK {
+		t.Fatalf("HTTP 200 erwartet, %d bekommen: %s", antwort.StatusCode, roh)
+	}
+	if string(roh) != "Beschlussvorlage" {
+		t.Errorf("inhalt %q bekommen", roh)
+	}
+	if kopf := antwort.Header.Get("X-Wasserzeichen"); kopf != freigabe.Wasserzeichen {
+		t.Errorf("das wasserzeichen fehlt im kopf: %q", kopf)
+	}
+	if kopf := antwort.Header.Get("Cache-Control"); !strings.Contains(kopf, "no-store") {
+		t.Errorf("eine vertrauliche unterlage darf nicht zwischengespeichert werden: %q", kopf)
+	}
+
+	// Zweiter Abruf mit derselben Marke: nichts mehr.
+	zweite, err := http.Get(dienst.URL + "/unterlage/" + freigabe.Marke)
+	if err != nil {
+		t.Fatalf("zweiter abruf: %v", err)
+	}
+	zweite.Body.Close()
+	if zweite.StatusCode == http.StatusOK {
+		t.Error("die marke ließ sich ein zweites mal einlösen")
 	}
 }

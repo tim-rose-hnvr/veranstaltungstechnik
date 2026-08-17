@@ -49,6 +49,9 @@
         Hash-Kette, nur anfügbar; der Protokollentwurf entsteht aus ihr.</span></li>
       <li><span class="zeichen fertig">läuft</span><span><b>Vorabcheck.</b>
         Selbsttest über Kette, Besetzung und jede Kamera.</span></li>
+      <li><span class="zeichen fertig">läuft</span><span><b>Sitzungsmappe.</b>
+        Unterlagen je Punkt, vier Vertraulichkeitsstufen, kurzlebige Freigabe,
+        Prüfsumme vor jeder Ausgabe, Zugriffsprotokoll in der Kette.</span></li>
     </ul>
   </div>
 </section>
@@ -63,8 +66,9 @@
         Kachelraster, Mindeststandzeit im Bild.</span></li>
       <li><span class="zeichen offen">offen</span><span><b>Transkript.</b> Segmente,
         Korrekturen, Untertitel.</span></li>
-      <li><span class="zeichen offen">offen</span><span><b>Sitzungsmappe.</b> Unterlagen,
-        Wasserzeichen, Zugriffsprotokoll.</span></li>
+      <li><span class="zeichen offen">offen</span><span><b>Wasserzeichen in der Datei.</b>
+        Heute steht es im Kopf der Auslieferung und im Protokoll, nicht in der PDF
+        selbst — dafür fehlt eine PDF-Verarbeitung.</span></li>
       <li><span class="zeichen offen">offen</span><span><b>Zuschaltung und Dolmetschen.</b>
         Externe Teilnehmer, Kanäle, Kabinen.</span></li>
       <li><span class="zeichen offen">offen</span><span><b>Hauptversammlungsmodus.</b>
@@ -80,7 +84,8 @@
     <span class="marke">Selbst ansehen</span>
     <h2>Es läuft mit einem Befehl</h2>
     <p class="gross">Der Vorführbetrieb braucht keine Datenbank und keine Einrichtung:
-      zwölf Plätze, zwei simulierte Kameras, eine vollständige Tagesordnung.</p>
+      zwölf Plätze, zwei simulierte Kameras, eine vollständige Tagesordnung mit
+      Sitzungsmappe.</p>
     <pre><code>go run ./cmd/server -konfiguration vorfuehrung/config.yaml</code></pre>
     <p>Dann <code>localhost:8080</code> öffnen — Platz 1 hat die PIN <code>0101</code>,
       Platz 2 die <code>0202</code> und so weiter. Unter <code>/emulator</code> liegt eine

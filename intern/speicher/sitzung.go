@@ -7,6 +7,8 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/jackc/pgx/v5"
@@ -21,14 +23,38 @@ type Sitzungsdaten struct {
 	Titel        string           `json:"titel"`
 	Tagesordnung []Topdaten       `json:"tagesordnung"`
 	Teilnahmen   []Teilnahmedaten `json:"teilnahmen"`
+
+	// verzeichnis ist der Ordner der Sitzungsdatei. Er wird beim Lesen gesetzt
+	// und dient dazu, die Pfade der Unterlagen aufzulösen.
+	verzeichnis string
+}
+
+// Verzeichnis ist der Ordner, gegen den die Pfade der Unterlagen aufgelöst
+// werden.
+func (d Sitzungsdaten) Verzeichnis() string { return d.verzeichnis }
+
+// MitVerzeichnis setzt den Ordner. Für Tests, die keine Datei einlesen.
+func (d Sitzungsdaten) MitVerzeichnis(pfad string) Sitzungsdaten {
+	d.verzeichnis = pfad
+	return d
 }
 
 // Topdaten ist ein Punkt der Tagesordnung. oeffentlich fehlt in der Datei
 // selten — deshalb ein Zeiger: nicht angegeben bedeutet öffentlich.
 type Topdaten struct {
-	Nummer      int    `json:"nummer"`
-	Titel       string `json:"titel"`
-	Oeffentlich *bool  `json:"oeffentlich,omitempty"`
+	Nummer      int              `json:"nummer"`
+	Titel       string           `json:"titel"`
+	Oeffentlich *bool            `json:"oeffentlich,omitempty"`
+	Unterlagen  []Unterlagedaten `json:"unterlagen,omitempty"`
+}
+
+// Unterlagedaten ist ein Dokument der Sitzungsmappe. datei ist der Pfad
+// relativ zum Verzeichnis der Sitzungsdatei — dann bleibt die Mappe
+// verschiebbar.
+type Unterlagedaten struct {
+	Titel string `json:"titel"`
+	Datei string `json:"datei"`
+	Stufe string `json:"stufe,omitempty"`
 }
 
 // IstOeffentlich sagt, ob Stream und Aufzeichnung bei diesem Punkt
@@ -54,7 +80,69 @@ type Sitzungsstand struct {
 	Beginn        *time.Time // Nullpunkt der Zeitachse, solange nicht eröffnet: nil
 	Teilnahmen    []kern.Teilnahmeaufbau
 	Tagesordnung  []kern.Tagesordnungspunkt
+	Unterlagen    []kern.Unterlage
 	Wortmeldungen []kern.Wortmeldung
+}
+
+// unterlagenLesen prüft jede Datei der Mappe und bildet ihre Prüfsumme. Eine
+// Unterlage, die es nicht gibt, ist ein Fehler beim Start und keine leere
+// Zeile in der Sitzung: wer eine Mappe angibt, will sie auch ausliefern.
+func unterlagenLesen(verzeichnis string, t Topdaten) ([]kern.Unterlage, error) {
+	gelesen := make([]kern.Unterlage, 0, len(t.Unterlagen))
+	for i, u := range t.Unterlagen {
+		pfad := filepath.Join(verzeichnis, u.Datei)
+		lage, err := os.Stat(pfad)
+		if err != nil {
+			return nil, fmt.Errorf("tagesordnungspunkt %d: unterlage %s: %w", t.Nummer, u.Datei, err)
+		}
+		if lage.IsDir() {
+			return nil, fmt.Errorf("tagesordnungspunkt %d: unterlage %s ist ein verzeichnis", t.Nummer, u.Datei)
+		}
+		pruefsumme, err := kern.DateiPruefsumme(pfad)
+		if err != nil {
+			return nil, fmt.Errorf("tagesordnungspunkt %d: unterlage %s: %w", t.Nummer, u.Datei, err)
+		}
+
+		stufe := kern.StufeIntern
+		if u.Stufe != "" {
+			if stufe, err = kern.StufeLesen(u.Stufe); err != nil {
+				return nil, err
+			}
+		}
+		titel := u.Titel
+		if titel == "" {
+			titel = filepath.Base(u.Datei)
+		}
+		gelesen = append(gelesen, kern.Unterlage{
+			Nummer: i + 1, TopNummer: t.Nummer, Titel: titel,
+			Datei: pfad, Dateiname: filepath.Base(u.Datei),
+			Typ: mimeTyp(u.Datei), Groesse: lage.Size(),
+			Stufe: stufe, Pruefsumme: pruefsumme,
+		})
+	}
+	return gelesen, nil
+}
+
+// mimeTyp rät den Typ aus der Endung. Die Liste ist kurz und absichtlich
+// abschließend: was nicht daraufsteht, wird als Binärstrom ausgeliefert und
+// vom Browser heruntergeladen statt angezeigt.
+func mimeTyp(datei string) string {
+	switch strings.ToLower(filepath.Ext(datei)) {
+	case ".pdf":
+		return "application/pdf"
+	case ".txt":
+		return "text/plain; charset=utf-8"
+	case ".md":
+		return "text/markdown; charset=utf-8"
+	case ".png":
+		return "image/png"
+	case ".jpg", ".jpeg":
+		return "image/jpeg"
+	case ".csv":
+		return "text/csv; charset=utf-8"
+	default:
+		return "application/octet-stream"
+	}
 }
 
 // SitzungLesen liest die Sitzungsdatei und prüft sie.
@@ -70,6 +158,7 @@ func SitzungLesen(pfad string) (Sitzungsdaten, error) {
 	if err := entschluessler.Decode(&d); err != nil {
 		return Sitzungsdaten{}, fmt.Errorf("sitzungsdatei %s nicht lesbar: %w", pfad, err)
 	}
+	d.verzeichnis = filepath.Dir(pfad)
 	if err := d.Pruefen(); err != nil {
 		return Sitzungsdaten{}, fmt.Errorf("sitzungsdatei %s: %w", pfad, err)
 	}
@@ -96,6 +185,22 @@ func (d Sitzungsdaten) Pruefen() error {
 		nummern[t.Nummer] = true
 		if t.Titel == "" {
 			return fmt.Errorf("tagesordnungspunkt %d ohne titel", t.Nummer)
+		}
+		for _, u := range t.Unterlagen {
+			if u.Datei == "" {
+				return fmt.Errorf("tagesordnungspunkt %d: unterlage ohne datei", t.Nummer)
+			}
+			// Ein Pfad, der aus dem Mappenverzeichnis hinausführt, ist keine
+			// Unterlage, sondern ein Versuch.
+			if filepath.IsAbs(u.Datei) || strings.Contains(u.Datei, "..") {
+				return fmt.Errorf("tagesordnungspunkt %d: unterlage %q muss ein relativer pfad ohne \"..\" sein",
+					t.Nummer, u.Datei)
+			}
+			if u.Stufe != "" {
+				if _, err := kern.StufeLesen(u.Stufe); err != nil {
+					return fmt.Errorf("tagesordnungspunkt %d, unterlage %q: %w", t.Nummer, u.Datei, err)
+				}
+			}
 		}
 	}
 
@@ -229,6 +334,29 @@ func (p *Postgres) SitzungImportieren(ctx context.Context, saalID string, d Sitz
 				ID: id, Nummer: t.Nummer, Titel: t.Titel,
 				Oeffentlich: t.IstOeffentlich(), Zustand: gelesen,
 			})
+
+			unterlagen, err := unterlagenLesen(d.verzeichnis, t)
+			if err != nil {
+				return err
+			}
+			for _, u := range unterlagen {
+				var unterlageID string
+				if err := tx.QueryRow(ctx, `
+					INSERT INTO unterlage (sitzung_id, top_id, nummer, titel, datei, dateiname,
+					                       typ, groesse, stufe, pruefsumme)
+					VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+					ON CONFLICT (sitzung_id, datei) DO UPDATE SET
+					  top_id = EXCLUDED.top_id, nummer = EXCLUDED.nummer, titel = EXCLUDED.titel,
+					  dateiname = EXCLUDED.dateiname, typ = EXCLUDED.typ, groesse = EXCLUDED.groesse,
+					  stufe = EXCLUDED.stufe, pruefsumme = EXCLUDED.pruefsumme
+					RETURNING id::text`,
+					stand.SitzungID, id, u.Nummer, u.Titel, u.Datei, u.Dateiname,
+					u.Typ, u.Groesse, string(u.Stufe), u.Pruefsumme).Scan(&unterlageID); err != nil {
+					return fmt.Errorf("unterlage %s: %w", u.Datei, err)
+				}
+				u.ID = unterlageID
+				stand.Unterlagen = append(stand.Unterlagen, u)
+			}
 		}
 		return nil
 	})

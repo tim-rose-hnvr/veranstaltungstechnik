@@ -122,7 +122,8 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 	}
 	protokoll.Info("sitzung eingelesen",
 		"titel", stand.Titel, "zustand", stand.Zustand,
-		"teilnahmen", len(stand.Teilnahmen), "redeliste", len(stand.Wortmeldungen))
+		"teilnahmen", len(stand.Teilnahmen), "tagesordnung", len(stand.Tagesordnung),
+		"unterlagen", len(stand.Unterlagen), "redeliste", len(stand.Wortmeldungen))
 
 	// Simulierte Kameras hören auf denselben Adressen wie die echten. Die
 	// Steuerung merkt keinen Unterschied — sie schickt UDP und wartet auf die
@@ -150,6 +151,7 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 		Plaetze:        plaetze,
 		Teilnahmen:     stand.Teilnahmen,
 		Tagesordnung:   stand.Tagesordnung,
+		Unterlagen:     stand.Unterlagen,
 		Wortmeldungen:  stand.Wortmeldungen,
 		Abstimmung:     abstimmung,
 		LeitungPlatz:   leitungPlatz,

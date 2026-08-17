@@ -140,8 +140,8 @@
 
   <figure>
     <div class="rahmen">
-      <svg viewBox="0 0 1180 700" role="img"
-           aria-label="Blockschaltbild: Geräte im Saal verbinden sich über WebSocket mit dem Server. Im Server reicht das Paket web Befehle an den Kern weiter, der Rechte prüft, den Zustand hält und Ereignisse schreibt. Der Kern steuert über das Paket kamera die PTZ-Kameras per VISCA und legt über das Paket speicher alles in PostgreSQL ab. Vorabcheck und Protokoll hängen daran. Ton, Video, Dolmetschen, Transkript und Sitzungsmappe fehlen noch.">
+      <svg viewBox="0 0 1180 770" role="img"
+           aria-label="Blockschaltbild: Geräte im Saal verbinden sich über WebSocket mit dem Server. Im Server reicht das Paket web Befehle an den Kern weiter, der Rechte prüft, den Zustand hält und Ereignisse schreibt. Der Kern steuert über das Paket kamera die PTZ-Kameras per VISCA und legt über das Paket speicher alles in PostgreSQL ab. Vorabcheck, Protokoll, Tagesordnung und Sitzungsmappe hängen daran. Ton, Video, Dolmetschen und Transkript fehlen noch.">
         <defs>
           <marker id="spitze" viewBox="0 0 10 10" refX="9" refY="5"
                   markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -165,7 +165,7 @@
         </g>
 
         <!-- Serverrahmen -->
-        <rect x="288" y="42" width="712" height="356" rx="2" fill="none"
+        <rect x="288" y="42" width="712" height="436" rx="2" fill="none"
               stroke="var(--blau)" stroke-width="1" stroke-dasharray="3 4" opacity=".55"/>
 
         <!-- Geräte -->
@@ -210,7 +210,7 @@
         </g>
 
         <!-- kern -->
-        <rect x="530" y="70" width="250" height="260" rx="2" fill="var(--flaeche)"
+        <rect x="530" y="70" width="250" height="340" rx="2" fill="var(--flaeche)"
               stroke="currentColor" stroke-width="2"/>
         <text x="548" y="98" font-size="15" font-weight="700" fill="currentColor">kern</text>
         <text x="548" y="115" font-size="11" fill="var(--leise)">die einzige Stelle, die entscheidet</text>
@@ -220,13 +220,17 @@
           <line x1="530" y1="208" x2="780" y2="208"/>
           <line x1="530" y1="248" x2="780" y2="248"/>
           <line x1="530" y1="288" x2="780" y2="288"/>
+          <line x1="530" y1="328" x2="780" y2="328"/>
+          <line x1="530" y1="368" x2="780" y2="368"/>
         </g>
         <g font-size="12.5" fill="currentColor">
           <text x="548" y="153">Rollen und Rechte</text>
           <text x="548" y="193">Sitzung, Redeliste</text>
-          <text x="548" y="233">Abstimmung, Quorum</text>
-          <text x="548" y="273">Ereigniskette, Zeitachse</text>
-          <text x="548" y="313">Grenze offener Mikrofone</text>
+          <text x="548" y="233">Tagesordnung, Aufzeichnung</text>
+          <text x="548" y="273">Abstimmung, Quorum</text>
+          <text x="548" y="313">Sitzungsmappe, Stufen</text>
+          <text x="548" y="353">Ereigniskette, Zeitachse</text>
+          <text x="548" y="393">Grenze offener Mikrofone</text>
         </g>
 
         <!-- Pfeile web ↔ kern -->
@@ -289,53 +293,49 @@
         <text x="332" y="312" font-size="13" font-weight="600" fill="currentColor">vorabcheck</text>
         <text x="332" y="330" font-size="11" fill="var(--leise)">fährt jeden Platz an</text>
 
-        <rect x="530" y="352" width="250" height="34" rx="2" fill="var(--flaeche)"
+        <rect x="530" y="422" width="250" height="34" rx="2" fill="var(--flaeche)"
               stroke="currentColor" stroke-width="1.4"/>
-        <text x="548" y="374" font-size="13" font-weight="600" fill="currentColor">protokoll</text>
-        <text x="640" y="374" font-size="11" fill="var(--leise)">Sitzungsprotokoll aus der Kette</text>
+        <text x="548" y="444" font-size="13" font-weight="600" fill="currentColor">protokoll</text>
+        <text x="640" y="444" font-size="11" fill="var(--leise)">Sitzungsprotokoll aus der Kette</text>
 
-        <path d="M 466 312 L 500 312 L 500 108 L 524 108" fill="none" stroke="var(--blau)"
+        <path d="M 466 382 L 500 382 L 500 178 L 524 178" fill="none" stroke="var(--blau)"
               stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#spitzeBlau)"/>
-        <path d="M 780 369 L 900 369 L 900 268" fill="none" stroke="var(--blau)"
+        <path d="M 780 439 L 900 439 L 900 338" fill="none" stroke="var(--blau)"
               stroke-width="1.2" stroke-dasharray="4 3" marker-end="url(#spitzeBlau)"/>
-        <text x="806" y="362" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+        <text x="806" y="432" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
               font-size="10.5" fill="var(--blau)">liest die Kette</text>
 
         <!-- Was fehlt -->
-        <line x1="40" y1="440" x2="1150" y2="440" stroke="var(--riss)" stroke-width="1"/>
-        <text x="40" y="468" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
+        <line x1="40" y1="510" x2="1150" y2="510" stroke="var(--riss)" stroke-width="1"/>
+        <text x="40" y="538" font-family="ui-monospace, SFMono-Regular, Menlo, monospace"
               font-size="11" letter-spacing="1.4" fill="var(--offen)">NOCH NICHT GEBAUT</text>
 
         <g fill="none" stroke="var(--offen)" stroke-width="1.3" stroke-dasharray="5 4" opacity=".85">
-          <rect x="40" y="488" width="205" height="80" rx="2"/>
-          <rect x="265" y="488" width="205" height="80" rx="2"/>
-          <rect x="490" y="488" width="205" height="80" rx="2"/>
-          <rect x="715" y="488" width="205" height="80" rx="2"/>
-          <rect x="940" y="488" width="210" height="80" rx="2"/>
+          <rect x="40" y="558" width="262" height="80" rx="2"/>
+          <rect x="322" y="558" width="262" height="80" rx="2"/>
+          <rect x="604" y="558" width="262" height="80" rx="2"/>
+          <rect x="886" y="558" width="264" height="80" rx="2"/>
         </g>
         <g font-size="13" font-weight="600" fill="var(--offen)">
-          <text x="56" y="514">Ton</text>
-          <text x="281" y="514">Video</text>
-          <text x="506" y="514">Dolmetschen</text>
-          <text x="731" y="514">Transkript</text>
-          <text x="956" y="514">Sitzungsmappe</text>
+          <text x="56" y="584">Ton</text>
+          <text x="338" y="584">Video</text>
+          <text x="620" y="584">Dolmetschen</text>
+          <text x="902" y="584">Transkript</text>
         </g>
         <g font-size="11" fill="var(--leise)">
-          <text x="56" y="534">Automixer, Mix-Minus,</text>
-          <text x="56" y="550">Einmessung</text>
-          <text x="281" y="534">Kompositor, NDI,</text>
-          <text x="281" y="550">Zuschaltung</text>
-          <text x="506" y="534">Kanäle, Relais,</text>
-          <text x="506" y="550">Hörunterstützung</text>
-          <text x="731" y="534">Spracherkennung,</text>
-          <text x="731" y="550">Korrekturebene</text>
-          <text x="956" y="534">Dokumente je</text>
-          <text x="956" y="550">Tagesordnungspunkt</text>
+          <text x="56" y="604">Automixer, Mix-Minus,</text>
+          <text x="56" y="620">Einmessung</text>
+          <text x="338" y="604">Kompositor, NDI,</text>
+          <text x="338" y="620">Zuschaltung</text>
+          <text x="620" y="604">Kanäle, Relais,</text>
+          <text x="620" y="620">Hörunterstützung</text>
+          <text x="902" y="604">Spracherkennung,</text>
+          <text x="902" y="620">Korrekturebene</text>
         </g>
 
         <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="10.5"
            fill="var(--leise)">
-          <text x="40" y="606">Alles links der Peripherie läuft ohne Internet. Kein CDN, keine externe Schriftart, kein Lizenzabruf.</text>
+          <text x="40" y="676">Alles links der Peripherie läuft ohne Internet. Kein CDN, keine externe Schriftart, kein Lizenzabruf.</text>
         </g>
       </svg>
     </div>
@@ -469,13 +469,13 @@
   <span class="marke">Abschnitt 04</span>
   <h2>Was fehlt — und warum</h2>
   <p class="satz">Die gestrichelten Kästen unten im Bild sind keine Lücken aus Nachlässigkeit.
-    Vier davon lassen sich am Schreibtisch nicht abnehmen.</p>
+    Alle vier lassen sich am Schreibtisch nicht abnehmen — sie brauchen einen Raum
+    mit Lautsprechern.</p>
   <ul class="liste">
     <li><span class="was">Ton</span><span class="warum">Automixer, Mix-Minus und Einmessung prüft man in einem Raum mit Lautsprechern, nicht im Editor. Ein Meilenstein, dessen Abnahme niemand abhaken kann, versandet.</span></li>
     <li><span class="was">Video</span><span class="warum">Kompositor und Zuschaltung setzen den Ton voraus. Wer mit dem Kompositor anfängt, versandet — das steht so in der Projektanweisung.</span></li>
     <li><span class="was">Dolmetschen</span><span class="warum">Baut vollständig auf dem Audiopfad auf. Der Dolmetscherplatz zeigt heute nur, wer spricht, und sagt das auch.</span></li>
     <li><span class="was">Transkript</span><span class="warum">Braucht Sprachaufnahme. Die Zuordnung Sprecher zu Person ist dagegen schon exakt vorhanden — über den Platz.</span></li>
-    <li><span class="was">Sitzungsmappe</span><span class="warum">Reine Software, ohne Hardware baubar. Der nächste sinnvolle Schritt, zusammen mit der Tagesordnung.</span></li>
   </ul>
 </section>
 
@@ -494,7 +494,7 @@
 </section>
 
 <div class="fussnote">
-  <strong>Stand:</strong> 47 Tests über sechs Pakete, grün ohne Datenbank, gegen PostgreSQL 16
+  <strong>Stand:</strong> 76 Tests über sechs Pakete, grün ohne Datenbank, gegen PostgreSQL 16
   und mit Wettlaufprüfung; bei jedem Push automatisch geprüft. Was hier gestrichelt
   steht, ist noch nicht gebaut — und wird deshalb auch nicht behauptet.
 </div>
