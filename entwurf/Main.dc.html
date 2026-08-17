@@ -1,0 +1,260 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+    a { color: #2563eb; } a:hover { color: #1d4ed8; }
+    .wurzel {
+      --grund: #f4f4f5; --karte: #ffffff; --rand: #d4d4d8;
+      --schrift: #18181b; --leise: #71717a; --vertieft: #ececef;
+      --an: #c8102e; --frei: #16a34a; --wort: #2563eb; --achtung: #8a5a00;
+    }
+    .wurzel.dunkel {
+      --grund: #09090b; --karte: #18181b; --rand: #3f3f46;
+      --schrift: #fafafa; --leise: #a1a1aa; --vertieft: #101013;
+      --an: #f0576a; --frei: #3fbc6d; --wort: #7ba4f5; --achtung: #d9a648;
+    }
+    .titelzeile { font-size: 11px; font-weight: 650; letter-spacing: .1em;
+                  text-transform: uppercase; color: var(--leise); }
+    .zahl { font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div class="wurzel {{modus}}" style="width: 1194px; height: 834px; display: flex; flex-direction: column;
+     background: var(--grund); color: var(--schrift); overflow: hidden;">
+
+  <!-- Statusband: was gerade im Saal gilt -->
+  <div style="display: flex; align-items: center; gap: 20px; height: 60px; flex: none;
+              padding: 0 24px; background: var(--karte); border-bottom: 1px solid var(--rand);">
+    <div style="display: flex; align-items: center; gap: 9px;">
+      <span style="width: 9px; height: 9px; border-radius: 50%; background: var(--an); flex: none;"></span>
+      <span style="font-weight: 700; letter-spacing: -.01em;">ConferenceCue</span>
+    </div>
+    <div style="width: 1px; height: 22px; background: var(--rand);"></div>
+    <div style="display: flex; flex-direction: column; gap: 1px; min-width: 0;">
+      <span class="titelzeile">Tagesordnungspunkt 4</span>
+      <span style="font-weight: 600; font-size: 15px;">Feststellung des Jahresabschlusses 2026</span>
+    </div>
+    <div style="margin-left: auto; display: flex; align-items: center; gap: 18px;">
+      <span style="display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--leise);">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M15 10l4.5-2.6v9.2L15 14"></path><rect x="3" y="6" width="12" height="12" rx="2"></rect>
+        </svg>
+        Aufzeichnung läuft
+      </span>
+      <span style="display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--leise);">
+        <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--frei);"></span>
+        verbunden
+      </span>
+      <span class="zahl" style="font-size: 13px; color: var(--leise);">14:38</span>
+    </div>
+  </div>
+
+  <div style="flex: 1; display: flex; min-height: 0;">
+
+    <!-- Links: mein Platz und der Saalplan -->
+    <div style="flex: 1; display: flex; flex-direction: column; gap: 18px; padding: 20px 20px 20px 24px; min-width: 0;">
+
+      <!-- Der eine Block, der zählt: mein Zustand und meine eine Handlung -->
+      <div style="display: flex; align-items: stretch; gap: 20px; background: var(--karte);
+                  border: 1px solid var(--rand); border-radius: 14px; padding: 20px 22px;">
+        <div style="flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0;">
+          <span class="titelzeile">Mein Platz</span>
+          <span style="font-size: 30px; font-weight: 700; letter-spacing: -.02em; line-height: 1.1;">Jonas Öztürk</span>
+          <span class="zahl" style="color: var(--leise); font-size: 14px;">Platz 3 · Delegierter · Stimmrecht</span>
+        </div>
+        <div style="display: flex; flex-direction: column; justify-content: center; gap: 8px; flex: none; width: 300px;">
+          <button style="height: 64px; font: inherit; font-size: 17px; font-weight: 650; cursor: pointer;
+                         border-radius: 12px; border: 1px solid var(--schrift);
+                         background: var(--schrift); color: var(--grund);">Wort melden</button>
+          <span style="text-align: center; font-size: 13px; color: var(--leise);">
+            Das Mikrofon geht auf, sobald die Leitung das Wort erteilt.</span>
+        </div>
+      </div>
+
+      <!-- Synoptik: der Saal, wie er dasteht -->
+      <div style="flex: 1; display: flex; flex-direction: column; gap: 12px; background: var(--karte);
+                  border: 1px solid var(--rand); border-radius: 14px; padding: 18px 20px; min-height: 0;">
+        <div style="display: flex; align-items: baseline; gap: 12px;">
+          <span class="titelzeile">Saalplan</span>
+          <span class="zahl" style="font-size: 13px; color: var(--leise);">7 von 12 besetzt · 1 von 3 Mikrofonen offen</span>
+        </div>
+
+        <div style="flex: 1; display: grid; gap: 8px; min-height: 0;
+                    grid-template-columns: 118px repeat(5, minmax(0, 1fr)) 118px;
+                    grid-template-rows: minmax(0,1fr) minmax(0,1.15fr) minmax(0,1fr);">
+
+          <sc-for list="{{obenreihe}}" as="p" hint-placeholder-count="5">
+            <div style="grid-row: 1; display: flex; flex-direction: column; justify-content: center; gap: 3px;
+                        border: 1px solid var(--rand); border-radius: 10px; padding: 8px 10px; background: var(--vertieft);">
+              <span class="zahl" style="font-size: 11px; color: var(--leise); font-weight: 650;">{{p.nr}}</span>
+              <span style="font-size: 13px; font-weight: 550; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{p.name}}</span>
+              <span style="font-size: 11px; color: var(--leise);">{{p.lage}}</span>
+            </div>
+          </sc-for>
+
+          <!-- Kopfende links: Sitzungsleitung -->
+          <div style="grid-column: 1; grid-row: 2; display: flex; flex-direction: column; justify-content: center; gap: 3px;
+                      border: 1px solid var(--wort); border-radius: 10px; padding: 8px 10px; background: var(--karte);">
+            <span class="zahl" style="font-size: 11px; color: var(--wort); font-weight: 650;">1 · Vorsitz</span>
+            <span style="font-size: 13px; font-weight: 600;">Anke Bergmann</span>
+            <span style="font-size: 11px; color: var(--wort);">führt die Sitzung</span>
+          </div>
+
+          <div style="grid-column: 2 / 7; grid-row: 2; display: flex; align-items: center; justify-content: center;
+                      border: 1px dashed var(--rand); border-radius: 10px; color: var(--leise); font-size: 12px;
+                      letter-spacing: .12em; text-transform: uppercase;">Vorstandszimmer</div>
+
+          <div style="grid-column: 7; grid-row: 2; display: flex; flex-direction: column; justify-content: center; gap: 3px;
+                      border: 1px solid var(--rand); border-radius: 10px; padding: 8px 10px; background: var(--vertieft);">
+            <span class="zahl" style="font-size: 11px; color: var(--leise); font-weight: 650;">2 · Stellv.</span>
+            <span style="font-size: 13px; font-weight: 550;">Mark Voss</span>
+            <span style="font-size: 11px; color: var(--leise);">am Platz</span>
+          </div>
+
+          <!-- Eigener Platz: der einzige mit voller Kontur -->
+          <div style="grid-column: 2; grid-row: 3; display: flex; flex-direction: column; justify-content: center; gap: 3px;
+                      border: 2px solid var(--schrift); border-radius: 10px; padding: 7px 9px; background: var(--karte);">
+            <span class="zahl" style="font-size: 11px; font-weight: 650;">3 · ich</span>
+            <span style="font-size: 13px; font-weight: 650;">Jonas Öztürk</span>
+            <span style="font-size: 11px; color: var(--leise);">gemeldet, Platz 2</span>
+          </div>
+
+          <sc-for list="{{untenreihe}}" as="p" hint-placeholder-count="4">
+            <div style="grid-row: 3; display: flex; flex-direction: column; justify-content: center; gap: 3px;
+                        border: 1px solid var(--rand); border-radius: 10px; padding: 8px 10px; background: var(--vertieft);">
+              <span class="zahl" style="font-size: 11px; color: var(--leise); font-weight: 650;">{{p.nr}}</span>
+              <span style="font-size: 13px; font-weight: 550; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{p.name}}</span>
+              <span style="font-size: 11px; color: var(--leise);">{{p.lage}}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; color: var(--leise);">
+          <span style="display: inline-flex; align-items: center; gap: 6px;">
+            <span style="width: 10px; height: 10px; border-radius: 3px; border: 2px solid var(--an);"></span>spricht</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px;">
+            <span style="width: 10px; height: 10px; border-radius: 3px; border: 2px solid var(--wort);"></span>hat das Wort</span>
+          <span style="display: inline-flex; align-items: center; gap: 6px;">
+            <span style="width: 10px; height: 10px; border-radius: 3px; border: 2px solid var(--achtung);"></span>kein Bild — Widerspruch</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rechts: Reihenfolge, Tagesordnung, Mappe -->
+    <div style="flex: none; width: 372px; display: flex; flex-direction: column; gap: 14px;
+                padding: 20px 24px 20px 0; min-height: 0;">
+
+      <div style="background: var(--karte); border: 1px solid var(--rand); border-radius: 14px; padding: 16px 18px;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px;">
+          <span class="titelzeile">Redeliste</span>
+          <span class="zahl" style="font-size: 12px; color: var(--leise);">3 Meldungen</span>
+        </div>
+        <div style="display: flex; flex-direction: column;">
+          <div style="display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--rand);">
+            <span class="zahl" style="width: 18px; color: var(--an); font-weight: 700;">1</span>
+            <span style="flex: 1; font-weight: 600;">Ida Peters</span>
+            <span style="font-size: 12px; color: var(--an); font-weight: 650;">spricht</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--rand);
+                      background: var(--vertieft); margin: 0 -18px; padding-left: 18px; padding-right: 18px;">
+            <span class="zahl" style="width: 18px; font-weight: 700;">2</span>
+            <span style="flex: 1; font-weight: 650;">Jonas Öztürk — ich</span>
+            <span style="font-size: 12px; color: var(--leise);">gemeldet</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 10px; padding: 9px 0;">
+            <span class="zahl" style="width: 18px; color: var(--leise); font-weight: 700;">3</span>
+            <span style="flex: 1;">Nadja Simon</span>
+            <span style="font-size: 12px; color: var(--leise);">gemeldet</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: var(--karte); border: 1px solid var(--rand); border-radius: 14px; padding: 16px 18px;">
+        <div class="titelzeile" style="margin-bottom: 10px;">Tagesordnung</div>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <sc-for list="{{tagesordnung}}" as="t" hint-placeholder-count="5">
+            <div style="display: flex; align-items: baseline; gap: 10px; padding: 7px 0;">
+              <span class="zahl" style="width: 14px; color: var(--leise); font-size: 13px;">{{t.nr}}</span>
+              <span style="flex: 1; font-size: 14px; color: {{t.farbe}}; font-weight: {{t.gewicht}};">{{t.titel}}</span>
+              <span style="font-size: 11px; color: var(--leise);">{{t.lage}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+
+      <div style="flex: 1; background: var(--karte); border: 1px solid var(--rand); border-radius: 14px;
+                  padding: 16px 18px; min-height: 0;">
+        <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px;">
+          <span class="titelzeile">Sitzungsmappe</span>
+          <span style="font-size: 12px; color: var(--leise);">3 für mich</span>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <sc-for list="{{mappe}}" as="u" hint-placeholder-count="3">
+            <div style="display: flex; align-items: center; gap: 11px; border: 1px solid var(--rand);
+                        border-radius: 10px; padding: 10px 12px; min-height: 46px;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="{{u.farbe}}" stroke-width="1.8"
+                   stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;">
+                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path>
+              </svg>
+              <span style="flex: 1; min-width: 0;">
+                <span style="display: block; font-size: 14px; font-weight: 550; overflow: hidden;
+                             text-overflow: ellipsis; white-space: nowrap;">{{u.titel}}</span>
+                <span class="zahl" style="display: block; font-size: 11px; color: {{u.farbe}};">{{u.stufe}}</span>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+        <p style="margin: 12px 0 0; font-size: 11px; color: var(--leise); line-height: 1.45;">
+          Jeder Abruf steht mit Person, Platz und Zeit im Protokoll.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"dunkel":{"editor":"boolean","default":false,"section":"Ansicht"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const dunkel = this.props.dunkel ?? false;
+    return {
+      modus: dunkel ? 'dunkel' : '',
+      obenreihe: [
+        { nr: '4', name: 'Ida Peters', lage: 'spricht' },
+        { nr: '5', name: 'Lars Krüger', lage: 'am Platz' },
+        { nr: '6', name: 'Nadja Simon', lage: 'gemeldet' },
+        { nr: '7', name: 'Timo Hofer', lage: 'am Platz' },
+        { nr: '8', name: 'Elif Yilmaz', lage: 'frei' },
+      ],
+      untenreihe: [
+        { nr: '9', name: 'Bernd Ritter', lage: 'kein Bild' },
+        { nr: '10', name: 'Sara Lindner', lage: 'frei' },
+        { nr: '11', name: 'Paul Weber', lage: 'frei' },
+        { nr: '12', name: 'Rita Falk', lage: 'Schriftführung' },
+      ],
+      tagesordnung: [
+        { nr: '1', titel: 'Begrüßung, Beschlussfähigkeit', lage: 'erledigt', farbe: 'var(--leise)', gewicht: '400' },
+        { nr: '2', titel: 'Protokoll der letzten Sitzung', lage: 'erledigt', farbe: 'var(--leise)', gewicht: '400' },
+        { nr: '3', titel: 'Personalangelegenheit', lage: 'erledigt', farbe: 'var(--leise)', gewicht: '400' },
+        { nr: '4', titel: 'Jahresabschluss 2026', lage: 'läuft', farbe: 'var(--schrift)', gewicht: '650' },
+        { nr: '5', titel: 'Verschiedenes', lage: 'offen', farbe: 'var(--schrift)', gewicht: '400' },
+      ],
+      mappe: [
+        { titel: 'Anwesenheitsliste', stufe: 'öffentlich', farbe: 'var(--leise)' },
+        { titel: 'Jahresabschluss 2026', stufe: 'intern', farbe: 'var(--leise)' },
+        { titel: 'Prüfbericht des Abschlussprüfers', stufe: 'vertraulich', farbe: 'var(--an)' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

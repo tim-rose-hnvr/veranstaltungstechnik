@@ -1,0 +1,120 @@
+{
+  "pages": [
+    {
+      "id": "saal",
+      "name": "Sitzungsoberfläche"
+    },
+    {
+      "id": "web",
+      "name": "Webseite"
+    },
+    {
+      "id": "bau",
+      "name": "Bausteine"
+    }
+  ],
+  "artboards": [
+    {
+      "file": "Main.dc.html",
+      "page": "saal",
+      "title": "Sprechstelle — Delegierter",
+      "x": 0,
+      "y": 0,
+      "w": 1194,
+      "h": 834
+    },
+    {
+      "file": "Leitung.dc.html",
+      "page": "saal",
+      "title": "Sprechstelle — Sitzungsleitung",
+      "x": 1274,
+      "y": 0,
+      "w": 1194,
+      "h": 834
+    },
+    {
+      "file": "Abstimmung.dc.html",
+      "page": "saal",
+      "title": "Abstimmung läuft",
+      "x": 2548,
+      "y": 0,
+      "w": 1194,
+      "h": 834
+    },
+    {
+      "file": "Namensschild.dc.html",
+      "page": "saal",
+      "title": "Namensschild — drei Zustände",
+      "x": 0,
+      "y": 934,
+      "w": 852,
+      "h": 1245
+    },
+    {
+      "file": "Dolmetscher.dc.html",
+      "page": "saal",
+      "title": "Dolmetscherplatz",
+      "x": 932,
+      "y": 934,
+      "w": 393,
+      "h": 852
+    },
+    {
+      "file": "Webseite-Start.dc.html",
+      "page": "web",
+      "title": "Webseite — Start",
+      "x": 0,
+      "y": 0,
+      "w": 1280,
+      "h": 2430
+    },
+    {
+      "file": "Webseite-System.dc.html",
+      "page": "web",
+      "title": "Webseite — System",
+      "x": 1360,
+      "y": 0,
+      "w": 1280,
+      "h": 3010
+    },
+    {
+      "file": "Bausteine.dc.html",
+      "page": "bau",
+      "title": "Farben, Schrift, Zustände",
+      "x": 0,
+      "y": 0,
+      "w": 1200,
+      "h": 1440
+    }
+  ],
+  "annotations": [
+    {
+      "id": "leitsatz",
+      "page": "saal",
+      "x": 0,
+      "y": -230,
+      "w": 620,
+      "text": "Der Platz trägt die Identität, nicht das Gerät. Deshalb steht auf jedem Schirm zuerst der Platz — Nummer, Name, Rolle —, und erst danach, was er gerade tun darf."
+    },
+    {
+      "id": "grenze",
+      "page": "saal",
+      "x": 2548,
+      "y": -230,
+      "w": 620,
+      "text": "Während einer Abstimmung tritt alles zurück: ein Vollbild, drei Flächen, kein anderer Weg. Die Zählung bleibt bis zum Auszählen verborgen — ein Zwischenstand würde die ausstehenden Stimmen beeinflussen."
+    },
+    {
+      "id": "webton",
+      "page": "web",
+      "x": 0,
+      "y": -230,
+      "w": 620,
+      "text": "Dunkel wie ein Regieplatz, ein einziger Akzent: das Tally-Rot der offenen Kamera. Der Saalplan im Kopf ist kein Schmuck — er zeigt das Produkt in einem Bild."
+    }
+  ],
+  "launch": {
+    "view": "canvas",
+    "page": "saal"
+  }
+}

@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+    a { color: #c8102e; } a:hover { color: #9d0c24; }
+    .marke { font-size: 11px; font-weight: 650; letter-spacing: .12em;
+             text-transform: uppercase; color: #71717a; }
+    .zahl { font-variant-numeric: tabular-nums; }
+    .feld { border: 1px solid #d4d4d8; border-radius: 14px; padding: 22px 24px; background: #ffffff; }
+    .probe { display: flex; flex-direction: column; gap: 7px; }
+    .klecks { height: 62px; border-radius: 10px; border: 1px solid rgba(0,0,0,.12); }
+    .hex { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; color: #71717a; }
+  </style>
+</helmet>
+
+<div style="width: 1200px; background: #f4f4f5; color: #18181b; padding: 40px 44px 48px;">
+
+  <div style="display: flex; align-items: baseline; gap: 16px; padding-bottom: 20px;
+              border-bottom: 2px solid #18181b; margin-bottom: 32px;">
+    <span style="display: inline-flex; align-items: center; gap: 9px; font-size: 22px; font-weight: 700;
+                 letter-spacing: -.02em;">
+      <span style="width: 10px; height: 10px; border-radius: 50%; background: #c8102e;"></span>
+      ConferenceCue — Bausteine</span>
+    <span style="margin-left: auto; font-size: 14px; color: #71717a;">
+      Farben, Schrift und Zustände, wie sie im Repository stehen</span>
+  </div>
+
+  <!-- Zustandsfarben zuerst: sie tragen im Saal eine Bedeutung, keine Stimmung. -->
+  <div class="feld" style="margin-bottom: 20px;">
+    <div class="marke" style="margin-bottom: 6px;">Zustandsfarben</div>
+    <p style="margin: 0 0 20px; font-size: 15px; color: #71717a; max-width: 76ch;">
+      Jede dieser Farben bedeutet genau eine Sache — quer durch Sprechstelle, Namensschild,
+      Dolmetscherplatz und Prüfstelle. Eine Farbe wird nie für zwei Aussagen benutzt, und
+      keine Aussage hängt allein an der Farbe: daneben steht immer ein Wort.</p>
+    <div style="display: grid; grid-template-columns: repeat(5, minmax(0,1fr)); gap: 14px;">
+      <sc-for list="{{zustaende}}" as="z" hint-placeholder-count="5">
+        <div class="probe">
+          <div class="klecks" style="background: {{z.hell}};"></div>
+          <span style="font-weight: 650; font-size: 15px;">{{z.name}}</span>
+          <span style="font-size: 13px; color: #71717a;">{{z.bedeutung}}</span>
+          <span class="hex">{{z.werte}}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0,1.15fr) minmax(0,1fr); gap: 20px; margin-bottom: 20px; align-items: start;">
+
+    <div class="feld">
+      <div class="marke" style="margin-bottom: 6px;">Grundflächen</div>
+      <p style="margin: 0 0 18px; font-size: 15px; color: #71717a;">
+        Zwei Welten, ein Rot: die Webseite ist dunkel wie ein Regieplatz, der Saal ist hell,
+        weil dort bei Licht gearbeitet wird.</p>
+
+      <div class="marke" style="margin-bottom: 10px; letter-spacing: .1em;">Webseite — dunkel</div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px; margin-bottom: 22px;">
+        <sc-for list="{{webseite}}" as="w" hint-placeholder-count="4">
+          <div class="probe">
+            <div class="klecks" style="background: {{w.wert}}; height: 48px;"></div>
+            <span style="font-size: 13px; font-weight: 600;">{{w.name}}</span>
+            <span class="hex">{{w.wert}}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <div class="marke" style="margin-bottom: 10px; letter-spacing: .1em;">Saaloberfläche — hell und dunkel</div>
+      <div style="display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 10px;">
+        <sc-for list="{{saal}}" as="s" hint-placeholder-count="4">
+          <div class="probe">
+            <div style="height: 48px; border-radius: 10px; border: 1px solid rgba(0,0,0,.12);
+                        display: flex; overflow: hidden;">
+              <span style="flex: 1; background: {{s.hell}};"></span>
+              <span style="flex: 1; background: {{s.dunkel}};"></span>
+            </div>
+            <span style="font-size: 13px; font-weight: 600;">{{s.name}}</span>
+            <span class="hex">{{s.werte}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div class="feld">
+      <div class="marke" style="margin-bottom: 6px;">Schrift</div>
+      <p style="margin: 0 0 18px; font-size: 15px; color: #71717a;">
+        Die Systemschrift des Geräts — keine externe Schriftart, weil der Saal von nichts abhängt.
+        Zahlen stehen überall in Tabellenziffern, damit Platznummern und Stimmen untereinander fluchten.</p>
+      <div style="display: flex; flex-direction: column; gap: 14px;">
+        <div style="border-bottom: 1px solid #d4d4d8; padding-bottom: 12px;">
+          <div style="font-size: 46px; font-weight: 700; letter-spacing: -.025em; line-height: 1.05;">
+            Jahresabschluss</div>
+          <span class="hex">Beschluss · 46px / 700 / −.025em</span>
+        </div>
+        <div style="border-bottom: 1px solid #d4d4d8; padding-bottom: 12px;">
+          <div style="font-size: 30px; font-weight: 700; letter-spacing: -.02em;">Jonas Öztürk</div>
+          <span class="hex">Mein Platz · 30px / 700 / −.02em</span>
+        </div>
+        <div style="border-bottom: 1px solid #d4d4d8; padding-bottom: 12px;">
+          <div style="font-size: 16px;">Das Wort wurde noch nicht erteilt.</div>
+          <span class="hex">Fließtext · 16px / 400 / 1.5</span>
+        </div>
+        <div style="border-bottom: 1px solid #d4d4d8; padding-bottom: 12px;">
+          <div class="marke" style="font-size: 11px;">Tagesordnungspunkt 4</div>
+          <span class="hex">Titelzeile · 11px / 650 / .1em / Versalien</span>
+        </div>
+        <div>
+          <div class="zahl" style="font-size: 24px; font-weight: 700;">7 von 11 · Quorum 6</div>
+          <span class="hex">Zahlen · font-variant-numeric: tabular-nums</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: 20px; align-items: start;">
+    <div class="feld">
+      <div class="marke" style="margin-bottom: 16px;">Maße</div>
+      <div style="display: flex; flex-direction: column; gap: 11px; font-size: 15px;">
+        <sc-for list="{{masse}}" as="m" hint-placeholder-count="6">
+          <div style="display: flex; gap: 14px; align-items: baseline;">
+            <span style="flex: 1; color: #71717a;">{{m.was}}</span>
+            <span class="hex" style="color: #18181b; font-size: 13px;">{{m.wert}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <!-- Ein echter Fund beim Aufräumen, kein Schmuck. -->
+    <div class="feld" style="border-color: #c8102e;">
+      <div class="marke" style="margin-bottom: 6px; color: #c8102e;">Zu entscheiden</div>
+      <div style="font-size: 19px; font-weight: 650; margin-bottom: 10px;">Es gibt zwei Rot.</div>
+      <p style="margin: 0 0 16px; font-size: 15px; color: #52525b; max-width: 62ch;">
+        Die Webseite, das Namensschild und der Dolmetscherplatz benutzen
+        <span class="hex" style="color: #c8102e;">#c8102e</span>; die Sprechstelle benutzt für dasselbe
+        — ein offenes Mikrofon — <span class="hex" style="color: #dc2626;">#dc2626</span>.
+        Das ist ein Versehen aus der Bauzeit, kein Entwurf. Mein Vorschlag: überall
+        <span class="hex" style="color: #c8102e;">#c8102e</span>, weil das die Farbe der Tally-Lampe
+        ist und im Saal quer durch den Raum getroffen werden muss.</p>
+      <div style="display: flex; gap: 14px;">
+        <div style="flex: 1;">
+          <div style="height: 44px; border-radius: 10px; background: #c8102e;"></div>
+          <div style="margin-top: 7px; font-size: 13px; font-weight: 600;">#c8102e — behalten</div>
+        </div>
+        <div style="flex: 1;">
+          <div style="height: 44px; border-radius: 10px; background: #dc2626; opacity: .5;"></div>
+          <div style="margin-top: 7px; font-size: 13px; color: #71717a;">#dc2626 — ablösen</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      zustaende: [
+        { name: 'Offen', bedeutung: 'Das Mikrofon ist auf. Nur hierfür.',
+          hell: '#c8102e', werte: '#c8102e · dunkel #f0576a' },
+        { name: 'Wort', bedeutung: 'Erteilt oder gemeldet, noch stumm.',
+          hell: '#2563eb', werte: '#2563eb · dunkel #7ba4f5' },
+        { name: 'In Ordnung', bedeutung: 'Verbunden, beschlussfähig, geprüft.',
+          hell: '#16a34a', werte: '#16a34a · dunkel #3fbc6d' },
+        { name: 'Achtung', bedeutung: 'Nicht öffentlich, Widerspruch, vertraulich.',
+          hell: '#8a5a00', werte: '#8a5a00 · dunkel #d9a648' },
+        { name: 'Ruhend', bedeutung: 'Frei, erledigt, abgeschaltet.',
+          hell: '#71717a', werte: '#71717a · dunkel #a1a1aa' },
+      ],
+      webseite: [
+        { name: 'Grund', wert: '#08080a' },
+        { name: 'Karte', wert: '#121216' },
+        { name: 'Rand', wert: '#26262c' },
+        { name: 'Schrift', wert: '#f6f6f8' },
+      ],
+      saal: [
+        { name: 'Grund', hell: '#f4f4f5', dunkel: '#09090b', werte: '#f4f4f5 / #09090b' },
+        { name: 'Karte', hell: '#ffffff', dunkel: '#18181b', werte: '#ffffff / #18181b' },
+        { name: 'Rand', hell: '#d4d4d8', dunkel: '#3f3f46', werte: '#d4d4d8 / #3f3f46' },
+        { name: 'Schrift', hell: '#18181b', dunkel: '#fafafa', werte: '#18181b / #fafafa' },
+      ],
+      masse: [
+        { was: 'Karte, Radius', wert: '14 px' },
+        { was: 'Knopf, Radius', wert: '10 px' },
+        { was: 'Knopf im Saal, Höhe', wert: 'mindestens 44 px' },
+        { was: 'Hauptknopf am Platz, Höhe', wert: '64 px' },
+        { was: 'Abstände', wert: '7 · 14 · 20 px' },
+        { was: 'Textbahn Webseite', wert: '1088 px' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

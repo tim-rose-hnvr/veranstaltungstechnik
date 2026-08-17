@@ -1,0 +1,201 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+           background: #08080a; }
+    a { color: #f6f6f8; text-decoration: none; } a:hover { color: #ffffff; }
+    .bahn { width: 1088px; margin: 0 auto; }
+    .marke { font-size: 12px; letter-spacing: .15em; text-transform: uppercase; color: #989aa4; }
+    .karte { background: #121216; border: 1px solid #26262c; border-radius: 14px; padding: 22px 24px; }
+    .zahl { font-variant-numeric: tabular-nums; }
+    h1, h2, h3 { margin: 0; letter-spacing: -.025em; text-wrap: balance; }
+  </style>
+</helmet>
+
+<div style="width: 1280px; background: #08080a; color: #f6f6f8; padding-bottom: 64px;">
+
+  <!-- Kopfleiste: der Tally-Punkt vor dem Wort ist das ganze Zeichen, das
+       diese Marke braucht. Rot heisst im Saal: das Mikrofon ist offen. -->
+  <div style="border-bottom: 1px solid #26262c;">
+    <div class="bahn" style="display: flex; align-items: center; gap: 24px; height: 66px;">
+      <span style="display: inline-flex; align-items: center; gap: 9px; font-weight: 700; letter-spacing: -.01em;">
+        <span style="width: 9px; height: 9px; border-radius: 50%; background: #c8102e;"></span>ConferenceCue</span>
+      <div style="margin-left: auto; display: flex; gap: 22px; font-size: 15px; color: #989aa4;">
+        <span style="color: #f6f6f8; border-bottom: 1px solid #c8102e; padding-bottom: 3px;">System</span>
+        <span>Einsatz</span><span>Sicherheit</span><span>Stand</span><span>Kontakt</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kopf: Aussage links, das Produkt in einem Bild rechts -->
+  <div class="bahn" style="display: flex; gap: 56px; align-items: center; padding: 84px 0 72px;">
+    <div style="flex: 1; min-width: 0;">
+      <div class="marke" style="margin-bottom: 18px;">Sitzungssystem für Gremien</div>
+      <h1 style="font-size: 52px; line-height: 1.06; font-weight: 700;">Die Sitzung führen,<br>nicht die Technik.</h1>
+      <p style="margin: 22px 0 0; font-size: 20px; line-height: 1.55; color: #989aa4; max-width: 30ch;">
+        Sprechstelle, Kameranachführung, Abstimmung und Protokoll in einem System — betrieben auf
+        Ihrer eigenen Hardware, im Saal, ohne Cloud&#8209;Zwang.</p>
+      <div style="display: flex; gap: 12px; margin-top: 34px;">
+        <div style="padding: 14px 26px; border-radius: 10px; background: #f6f6f8; color: #08080a;
+                    font-weight: 600; font-size: 16px;">Vorführung anfragen</div>
+        <div style="padding: 14px 26px; border-radius: 10px; border: 1px solid #26262c;
+                    font-size: 16px;">Wie es arbeitet</div>
+      </div>
+    </div>
+
+    <!-- Der Saalplan mit einem offenen Mikrofon: was das Produkt tut, ohne ein Wort. -->
+    <div style="flex: none; width: 420px;">
+      <div class="karte" style="padding: 26px 26px 22px;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 18px;">
+          <span class="marke">Vorstandszimmer</span>
+          <span class="zahl" style="font-size: 12px; color: #989aa4;">1 von 3 Mikrofonen offen</span>
+        </div>
+        <div style="display: grid; gap: 7px; grid-template-columns: 58px repeat(4, minmax(0,1fr)) 58px;
+                    grid-template-rows: 46px 74px 46px;">
+          <sc-for list="{{oben}}" as="p" hint-placeholder-count="4">
+            <div style="grid-row: 1; border: 1px solid {{p.kontur}}; border-radius: 8px;
+                        display: flex; align-items: center; justify-content: center;
+                        color: {{p.farbe}}; font-size: 13px; font-weight: 650;" class="zahl">{{p.nr}}</div>
+          </sc-for>
+          <div style="grid-column: 1; grid-row: 2; border: 1px solid #26262c; border-radius: 8px;
+                      display: flex; align-items: center; justify-content: center; color: #989aa4;
+                      font-size: 13px; font-weight: 650;" class="zahl">1</div>
+          <div style="grid-column: 2/6; grid-row: 2; border: 1px dashed #26262c; border-radius: 8px;"></div>
+          <div style="grid-column: 6; grid-row: 2; border: 1px solid #26262c; border-radius: 8px;
+                      display: flex; align-items: center; justify-content: center; color: #989aa4;
+                      font-size: 13px; font-weight: 650;" class="zahl">2</div>
+          <sc-for list="{{unten}}" as="p" hint-placeholder-count="4">
+            <div style="grid-row: 3; border: 1px solid {{p.kontur}}; border-radius: 8px;
+                        display: flex; align-items: center; justify-content: center;
+                        color: {{p.farbe}}; font-size: 13px; font-weight: 650;" class="zahl">{{p.nr}}</div>
+          </sc-for>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; margin-top: 20px; padding-top: 18px;
+                    border-top: 1px solid #26262c;">
+          <span style="width: 10px; height: 10px; border-radius: 50%; background: #c8102e; flex: none;"></span>
+          <span style="font-size: 14px; color: #989aa4;">Platz 4 spricht — die Kamera steht auf seinem Preset.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Die Lücke -->
+  <div style="border-top: 1px solid #26262c;">
+    <div class="bahn" style="padding: 68px 0;">
+      <div class="marke" style="margin-bottom: 14px;">Warum es das gibt</div>
+      <h2 style="font-size: 34px; font-weight: 650;">Drei Produktwelten — keine deckt beides ab</h2>
+      <p style="margin: 14px 0 0; font-size: 19px; color: #989aa4; max-width: 46ch;">
+        Wer heute eine Gremiensitzung ausstattet, kauft zwei Systeme, die nichts voneinander wissen.
+        Die Naht dazwischen bleibt Handarbeit.</p>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; margin-top: 32px;">
+        <sc-for list="{{welten}}" as="w" hint-placeholder-count="3">
+          <div class="karte">
+            <h3 style="font-size: 17px; font-weight: 600;">{{w.titel}}</h3>
+            <p style="margin: 8px 0 0; font-size: 15px; color: #989aa4;">{{w.text}}</p>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top: 32px; border-left: 3px solid #c8102e; padding: 4px 0 4px 18px;
+                  font-size: 18px; max-width: 52ch;">
+        Wir ersetzen weder Ihre Videokonferenz noch Ihr Ratsinformationssystem.
+        Wir schließen die Naht dazwischen.</div>
+    </div>
+  </div>
+
+  <!-- Leitsätze -->
+  <div style="border-top: 1px solid #26262c;">
+    <div class="bahn" style="padding: 68px 0;">
+      <div class="marke" style="margin-bottom: 14px;">Der Satz, aus dem alles folgt</div>
+      <h2 style="font-size: 34px; font-weight: 650;">Person ist nicht Platz ist nicht Gerät</h2>
+      <p style="margin: 14px 0 0; font-size: 19px; color: #989aa4; max-width: 48ch;">
+        Der Sitzplatz trägt die Identität: Nummer, Funktion, Stimmrecht, Kamerapreset. Personen werden
+        je Sitzung zugeordnet, Geräte sind austauschbar.</p>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; margin-top: 32px;">
+        <sc-for list="{{saetze}}" as="s" hint-placeholder-count="3">
+          <div class="karte">
+            <h3 style="font-size: 17px; font-weight: 600;">{{s.titel}}</h3>
+            <p style="margin: 8px 0 0; font-size: 15px; color: #989aa4;">{{s.text}}</p>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stand: die unbequeme Seite gehört auf die Startseite, nicht versteckt -->
+  <div style="border-top: 1px solid #26262c;">
+    <div class="bahn" style="padding: 68px 0 0;">
+      <div class="marke" style="margin-bottom: 14px;">Stand</div>
+      <h2 style="font-size: 34px; font-weight: 650;">In Entwicklung — Pilotpartner gesucht</h2>
+      <div style="display: flex; gap: 48px; margin-top: 26px; align-items: flex-start;">
+        <p style="flex: 1; margin: 0; font-size: 19px; color: #989aa4;">
+          Kern, Kameranachführung, Redeliste, Abstimmung, Tagesordnung, Sitzungsmappe und Protokoll
+          laufen. Ton, Regie und Transkript nicht. Was jetzt hilft, ist kein weiteres Merkmal,
+          sondern ein echter Raum.</p>
+        <div style="flex: none; width: 400px; display: flex; flex-direction: column; gap: 9px;">
+          <sc-for list="{{stand}}" as="z" hint-placeholder-count="6">
+            <div style="display: flex; align-items: baseline; gap: 12px; font-size: 15px;">
+              <span style="width: 62px; flex: none; font-size: 11px; letter-spacing: .08em;
+                           text-transform: uppercase; color: {{z.farbe}};">{{z.lage}}</span>
+              <span style="flex: 1;">{{z.was}}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="display: flex; gap: 12px; margin-top: 36px;">
+        <div style="padding: 14px 26px; border-radius: 10px; background: #f6f6f8; color: #08080a;
+                    font-weight: 600; font-size: 16px;">Vorführung anfragen</div>
+        <div style="padding: 14px 26px; border-radius: 10px; border: 1px solid #26262c;
+                    font-size: 16px;">Was läuft, was nicht</div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() {
+    const ruhig = { kontur: '#26262c', farbe: '#989aa4' };
+    return {
+      oben: [
+        { nr: '3', ...ruhig },
+        { nr: '4', kontur: '#c8102e', farbe: '#c8102e' },
+        { nr: '5', ...ruhig },
+        { nr: '6', ...ruhig },
+      ],
+      unten: [{ nr: '9', ...ruhig }, { nr: '10', ...ruhig }, { nr: '11', ...ruhig }, { nr: '12', ...ruhig }],
+      welten: [
+        { titel: 'Saaltechnik', text: 'Stark bei Ton und Kamera. Kennt weder Beschluss noch Protokoll noch Sitzungsmappe.' },
+        { titel: 'Board-Portale', text: 'Stark bei Unterlagen und Governance. Haben keinerlei Bezug zum Raum, zum Mikrofon, zur Kamera.' },
+        { titel: 'Videokonferenz', text: 'Kann Zuschaltung. Keine rechtssichere Abstimmung, kein Protokoll, keine Anwesenheit, kein Saalton.' },
+      ],
+      saetze: [
+        { titel: 'Ein Ausfall kostet Komfort, nie Daten',
+          text: 'Drei Sekunden Tonlücke sind verzeihlich, eine verlorene Stimme nicht.' },
+        { titel: 'Der Saal hängt von nichts ab',
+          text: 'Kein Lizenzabruf im Netz, kein CDN, keine externe Schriftart. Fällt das Internet aus, läuft alles weiter.' },
+        { titel: 'Ein Programm, keine Sonderzweige',
+          text: 'Jeder Kundenwunsch wird ein allgemeines Merkmal oder er wird abgelehnt.' },
+      ],
+      stand: [
+        { lage: 'läuft', was: 'Sitzungszustand, Rollen und Rechte', farbe: '#3fbc6d' },
+        { lage: 'läuft', was: 'Kameranachführung über VISCA', farbe: '#3fbc6d' },
+        { lage: 'läuft', was: 'Abstimmung, Tagesordnung, Sitzungsmappe', farbe: '#3fbc6d' },
+        { lage: 'läuft', was: 'Protokoll aus der Ereigniskette', farbe: '#3fbc6d' },
+        { lage: 'offen', was: 'Ton — Automixer, Mix-Minus, Einmessung', farbe: '#989aa4' },
+        { lage: 'offen', was: 'Bildregie und Transkript', farbe: '#989aa4' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

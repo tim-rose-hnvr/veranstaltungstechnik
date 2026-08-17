@@ -1,0 +1,105 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+    a { color: #2563eb; } a:hover { color: #1d4ed8; }
+    .wurzel {
+      --grund: #f4f4f5; --karte: #ffffff; --rand: #d4d4d8;
+      --schrift: #18181b; --leise: #71717a; --vertieft: #ececef;
+      --an: #c8102e; --frei: #16a34a; --wort: #2563eb;
+    }
+    .wurzel.dunkel {
+      --grund: #09090b; --karte: #18181b; --rand: #3f3f46;
+      --schrift: #fafafa; --leise: #a1a1aa; --vertieft: #101013;
+      --an: #f0576a; --frei: #3fbc6d; --wort: #7ba4f5;
+    }
+    .titelzeile { font-size: 11px; font-weight: 650; letter-spacing: .1em;
+                  text-transform: uppercase; color: var(--leise); }
+    .zahl { font-variant-numeric: tabular-nums; }
+    .stimme { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+              gap: 10px; height: 200px; border-radius: 18px; border: 2px solid var(--rand);
+              background: var(--karte); color: var(--schrift); font: inherit; font-size: 30px;
+              font-weight: 650; letter-spacing: -.01em; cursor: pointer; }
+    .stimme span { font-size: 13px; font-weight: 400; color: var(--leise); letter-spacing: 0; }
+    .stimme.ja { border-color: var(--frei); }
+    .stimme.nein { border-color: var(--an); }
+  </style>
+</helmet>
+
+<div class="wurzel {{modus}}" style="width: 1194px; height: 834px; display: flex; flex-direction: column;
+     background: var(--grund); color: var(--schrift); overflow: hidden;">
+
+  <!-- Während einer Abstimmung tritt alles andere zurück. Der Balken sagt, warum. -->
+  <div style="flex: none; height: 56px; display: flex; align-items: center; gap: 14px; padding: 0 32px;
+              background: var(--an); color: #ffffff;">
+    <span style="width: 9px; height: 9px; border-radius: 50%; background: #ffffff; flex: none;"></span>
+    <span style="font-weight: 650; letter-spacing: .02em;">Abstimmung läuft</span>
+    <span style="opacity: .85; font-size: 14px;">Tagesordnungspunkt 4 · offen</span>
+    <span class="zahl" style="margin-left: auto; font-size: 14px; opacity: .85;">
+      Automatische Technikeingriffe gesperrt</span>
+  </div>
+
+  <div style="flex: 1; display: flex; flex-direction: column; padding: 40px 64px 32px; min-height: 0;">
+
+    <div style="flex: none; margin-bottom: 32px;">
+      <span class="titelzeile">Beschluss</span>
+      <h1 style="margin: 8px 0 0; font-size: 46px; line-height: 1.12; font-weight: 700;
+                 letter-spacing: -.025em; text-wrap: balance; max-width: 20ch;">
+        Der Jahresabschluss 2026 wird festgestellt.</h1>
+    </div>
+
+    <div style="display: flex; gap: 18px; flex: none;">
+      <button class="stimme ja">Ja<span>dafür</span></button>
+      <button class="stimme nein">Nein<span>dagegen</span></button>
+      <button class="stimme">Enthaltung<span>zählt nicht mit</span></button>
+    </div>
+
+    <div style="flex: 1;"></div>
+
+    <div style="flex: none; display: flex; align-items: flex-end; gap: 40px;
+                border-top: 1px solid var(--rand); padding-top: 20px;">
+      <div style="flex: 1;">
+        <div style="display: flex; align-items: baseline; gap: 10px; margin-bottom: 10px;">
+          <span class="titelzeile">Beschlussfähigkeit</span>
+          <span class="zahl" style="font-size: 13px; color: var(--leise);">beim Start eingefroren</span>
+        </div>
+        <!-- Balken: anwesende Stimmberechtigte gegen das Quorum -->
+        <div style="position: relative; height: 10px; border-radius: 5px; background: var(--vertieft); overflow: hidden;">
+          <div style="position: absolute; inset: 0 36% 0 0; background: var(--frei);"></div>
+        </div>
+        <div class="zahl" style="display: flex; justify-content: space-between; margin-top: 8px;
+                                 font-size: 14px; color: var(--leise);">
+          <span>7 von 11 Stimmberechtigten anwesend</span>
+          <span>Quorum 6 — erreicht</span>
+        </div>
+      </div>
+      <div style="flex: none; text-align: right;">
+        <div class="zahl" style="font-size: 34px; font-weight: 700; letter-spacing: -.02em;">4 von 7</div>
+        <div style="font-size: 14px; color: var(--leise);">Stimmen abgegeben</div>
+      </div>
+    </div>
+
+    <p style="margin: 18px 0 0; font-size: 14px; color: var(--leise); max-width: 62ch;">
+      Die Zählung bleibt verborgen, bis die Sitzungsleitung auszählt — ein Zwischenstand würde
+      die noch ausstehenden Stimmen beeinflussen.</p>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{"dunkel":{"editor":"boolean","default":false,"section":"Ansicht"}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { modus: (this.props.dunkel ?? false) ? 'dunkel' : '' };
+  }
+}
+</script>
+</body>
+</html>

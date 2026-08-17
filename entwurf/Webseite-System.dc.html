@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 17px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+           background: #08080a; }
+    a { color: #f6f6f8; text-decoration: none; } a:hover { color: #ffffff; }
+    .bahn { width: 1088px; margin: 0 auto; }
+    .marke { font-size: 12px; letter-spacing: .15em; text-transform: uppercase; color: #989aa4; }
+    .karte { background: #121216; border: 1px solid #26262c; border-radius: 14px; padding: 22px 24px; }
+    .zahl { font-variant-numeric: tabular-nums; }
+    h1, h2, h3 { margin: 0; letter-spacing: -.025em; text-wrap: balance; }
+    .regel { display: grid; grid-template-columns: 1fr; gap: 6px; padding: 18px 0;
+             border-top: 1px solid #26262c; }
+    .regel:last-child { border-bottom: 1px solid #26262c; }
+  </style>
+</helmet>
+
+<div style="width: 1280px; background: #08080a; color: #f6f6f8; padding-bottom: 64px;">
+
+  <div style="border-bottom: 1px solid #26262c;">
+    <div class="bahn" style="display: flex; align-items: center; gap: 24px; height: 66px;">
+      <span style="display: inline-flex; align-items: center; gap: 9px; font-weight: 700; letter-spacing: -.01em;">
+        <span style="width: 9px; height: 9px; border-radius: 50%; background: #c8102e;"></span>ConferenceCue</span>
+      <div style="margin-left: auto; display: flex; gap: 22px; font-size: 15px; color: #989aa4;">
+        <span style="color: #f6f6f8; border-bottom: 1px solid #c8102e; padding-bottom: 3px;">System</span>
+        <span>Einsatz</span><span>Sicherheit</span><span>Stand</span><span>Kontakt</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bahn" style="padding: 76px 0 60px;">
+    <div class="marke" style="margin-bottom: 18px;">Wie es arbeitet</div>
+    <h1 style="font-size: 54px; line-height: 1.06; font-weight: 700;">Ein Platz, eine Identität,<br>alles verknüpft.</h1>
+    <p style="margin: 22px 0 0; font-size: 20px; line-height: 1.55; color: #989aa4; max-width: 44ch;">
+      Jede Rolle ist eine eigene Oberfläche am selben Zustand. Was jemand darf, entscheidet der
+      Kern — nie die Oberfläche. Die Oberfläche graut nur aus.</p>
+  </div>
+
+  <div style="border-top: 1px solid #26262c;">
+    <div class="bahn" style="padding: 60px 0;">
+      <div class="marke" style="margin-bottom: 14px;">Bestandteile</div>
+      <h2 style="font-size: 34px; font-weight: 650;">Sechs Teile, ein Zustand</h2>
+      <div style="display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 16px; margin-top: 30px;">
+        <div class="karte" style="display: flex; flex-direction: column; gap: 12px;">
+          <span style="color: #c8102e;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="2" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0 0 14 0"></path><path d="M12 18v4"></path></svg>
+          </span>
+          <h3 style="font-size: 17px; font-weight: 600;">Sprechstelle</h3>
+          <p style="margin: 0; font-size: 15px; color: #989aa4;">Wortmeldung, Mikrofon, Redeliste. Die Zahl gleichzeitig offener Mikrofone folgt aus der Einmessung des Saals, nicht aus einer Einstellung.</p>
+        </div>
+        <div class="karte" style="display: flex; flex-direction: column; gap: 12px;">
+          <span style="color: #c8102e;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 10l5-3v10l-5-3"></path><rect x="3" y="6" width="12" height="12" rx="2"></rect></svg>
+          </span>
+          <h3 style="font-size: 17px; font-weight: 600;">Kameranachführung</h3>
+          <p style="margin: 0; font-size: 15px; color: #989aa4;">Offenes Mikrofon fährt die PTZ-Kamera über VISCA over IP auf den gelernten Preset des Platzes — mit Mindeststandzeit, damit das Bild ruhig bleibt.</p>
+        </div>
+        <div class="karte" style="display: flex; flex-direction: column; gap: 12px;">
+          <span style="color: #989aa4;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13"></path><path d="M8 12h13"></path><path d="M8 18h13"></path><path d="M3 6h.01"></path><path d="M3 12h.01"></path><path d="M3 18h.01"></path></svg>
+          </span>
+          <h3 style="font-size: 17px; font-weight: 600;">Tagesordnung</h3>
+          <p style="margin: 0; font-size: 15px; color: #989aa4;">Höchstens ein Punkt ist in Arbeit. Bei einem nicht öffentlichen Punkt pausieren Stream und Aufzeichnung automatisch — gesteuert vom Sitzungszustand.</p>
+        </div>
+        <div class="karte" style="display: flex; flex-direction: column; gap: 12px;">
+          <span style="color: #989aa4;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          </span>
+          <h3 style="font-size: 17px; font-weight: 600;">Abstimmung</h3>
+          <p style="margin: 0; font-size: 15px; color: #989aa4;">Beschlussfähigkeit wird beim Start geprüft und eingefroren. Bei geheimer Wahl existiert die Zuordnung Stimme zu Person nirgends — auch nicht im Protokoll.</p>
+        </div>
+        <div class="karte" style="display: flex; flex-direction: column; gap: 12px;">
+          <span style="color: #989aa4;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path><path d="M14 3v5h5"></path><path d="M9 13h6"></path><path d="M9 17h4"></path></svg>
+          </span>
+          <h3 style="font-size: 17px; font-weight: 600;">Protokoll</h3>
+          <p style="margin: 0; font-size: 15px; color: #989aa4;">Jede Wortmeldung, jede Stimme, jeder Technikeingriff als Kette, nur anfügbar. Der Entwurf fällt am Ende der Sitzung von selbst an, gegliedert nach Punkten.</p>
+        </div>
+        <div class="karte" style="display: flex; flex-direction: column; gap: 12px;">
+          <span style="color: #989aa4;">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"
+                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="10" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          </span>
+          <h3 style="font-size: 17px; font-weight: 600;">Sitzungsmappe</h3>
+          <p style="margin: 0; font-size: 15px; color: #989aa4;">Unterlagen je Punkt mit Vertraulichkeitsstufe, persönlichem Wasserzeichen und Zugriffsprotokoll. Was eine Rolle nicht sehen darf, wird nie gesendet.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Die Fachregeln sind das Verkaufsargument. Sie stehen deshalb gross und
+       ungeschmückt da, eine unter der anderen. -->
+  <div style="border-top: 1px solid #26262c;">
+    <div class="bahn" style="padding: 60px 0;">
+      <div class="marke" style="margin-bottom: 14px;">Fachregeln</div>
+      <h2 style="font-size: 34px; font-weight: 650;">Was das System nicht tut, obwohl es könnte</h2>
+      <p style="margin: 14px 0 30px; font-size: 19px; color: #989aa4; max-width: 48ch;">
+        Diese Regeln sind keine Meinungen, sondern Ergebnisse aus Akustik, Funktechnik und
+        Verfahrensrecht. Sie lassen sich nicht wegkonfigurieren.</p>
+      <div>
+        <sc-for list="{{regeln}}" as="r" hint-placeholder-count="5">
+          <div class="regel">
+            <span style="font-size: 19px; font-weight: 600;">{{r.titel}}</span>
+            <span style="font-size: 16px; color: #989aa4; max-width: 78ch;">{{r.text}}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+
+  <div style="border-top: 1px solid #26262c;">
+    <div class="bahn" style="padding: 60px 0 0;">
+      <div class="marke" style="margin-bottom: 14px;">Technik</div>
+      <h2 style="font-size: 34px; font-weight: 650;">Entschieden, nicht offen</h2>
+      <div style="margin-top: 28px; border: 1px solid #26262c; border-radius: 14px; overflow: hidden;">
+        <sc-for list="{{stack}}" as="s" hint-placeholder-count="7">
+          <div style="display: flex; gap: 24px; padding: 15px 22px; border-bottom: 1px solid #26262c;
+                      background: {{s.grund}};">
+            <span style="width: 190px; flex: none; font-weight: 600; font-size: 15px;">{{s.bereich}}</span>
+            <span style="flex: 1; font-size: 15px; color: #989aa4;">{{s.wahl}}</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top: 30px; border-left: 3px solid #c8102e; padding: 4px 0 4px 18px;
+                  font-size: 17px; color: #989aa4; max-width: 60ch;">
+        Bewusst nicht verwendet: vMix und OBS im Produkt, Windows als Kern, macOS als Dauerserver,
+        eigene Kryptografie.</div>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() {
+    const streifen = (i) => (i % 2 === 0 ? '#0d0d10' : '#121216');
+    return {
+      regeln: [
+        { titel: 'Die Zahl offener Mikrofone ist gedeckelt.',
+          text: 'Jede Verdopplung offener Mikrofone kostet 3 dB Reserve gegen Rückkopplung. Die Höchstzahl folgt aus dem Ring-out des Saals, typisch acht.' },
+        { titel: 'Während einer Abstimmung greift die Technik nicht ein.',
+          text: 'Das Mikrofon geht auf, die Kamera bleibt stehen. Eine Kamerafahrt im laufenden Beschluss ist ein Eingriff, den niemand angeordnet hat.' },
+        { titel: 'Wer der Aufzeichnung widersprochen hat, wird übersprungen.',
+          text: 'Das Mikrofon geht trotzdem auf — Reden und Gefilmtwerden sind zweierlei. Der Widerspruch hängt an der Teilnahme, nicht an einer Einstellung, die jemand vergessen kann.' },
+        { titel: 'Die Sitzungsleitung ist ein Staffelstab.',
+          text: 'Berechtigt sind viele, aktiv ist genau eine. Fällt das Gerät der Leitung aus, übernimmt ein anderer Berechtigter — ausdrücklich, nie von selbst.' },
+        { titel: 'Ein Beschluss gehört an einen Tagesordnungspunkt.',
+          text: 'Ohne aufgerufenen Punkt keine Abstimmung, denn nachträglich ist die Zuordnung nicht mehr herstellbar.' },
+        { titel: 'Ein Zustandswechsel ohne Protokolleintrag ist unmöglich.',
+          text: 'Das Ereignis wird vor der Änderung geschrieben. Scheitert das, bleibt der Zustand, wie er war.' },
+      ],
+      stack: [
+        { bereich: 'Kern', wahl: 'Go, WebSocket, PostgreSQL — ein Programm, eine Binärdatei', grund: streifen(0) },
+        { bereich: 'Medien', wahl: 'GStreamer für SFU, Kompositor und NDI; WebRTC zu den Geräten', grund: streifen(1) },
+        { bereich: 'Kamerasteuerung', wahl: 'VISCA over IP auf UDP 52381; ONVIF als Alternative', grund: streifen(2) },
+        { bereich: 'Ton', wahl: 'Opus über WebRTC im Raum, AES67 oder Dante zur Anlagentechnik', grund: streifen(3) },
+        { bereich: 'Client', wahl: 'zuerst Web-App; native iPadOS-App erst, wenn Kiosk-Betrieb sie erzwingt', grund: streifen(4) },
+        { bereich: 'Server', wahl: 'Ubuntu Server LTS ohne Oberfläche, Container über Podman', grund: streifen(5) },
+        { bereich: 'Zertifikate', wahl: 'eigene Zertifizierungsstelle, gegenseitige Authentisierung', grund: streifen(6) },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

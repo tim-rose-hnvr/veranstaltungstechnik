@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font: 16px/1.2 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+    a { color: #c8102e; } a:hover { color: #9d0c24; }
+    .schild { width: 852px; height: 393px; display: flex; flex-direction: column;
+              padding: 26px 42px 22px; overflow: hidden; }
+    .kopf { display: flex; justify-content: space-between; align-items: center;
+            font-size: 15px; letter-spacing: .1em; text-transform: uppercase; }
+    .name { font-size: 96px; font-weight: 700; line-height: 1; letter-spacing: -.03em; }
+    .zahl { font-variant-numeric: tabular-nums; }
+  </style>
+</helmet>
+
+<div style="display: flex; flex-direction: column; gap: 20px;">
+
+  <!-- Ruhezustand: Papier. Auf dem E-Paper-Schild ist das der Normalfall. -->
+  <div class="schild" style="background: #ffffff; color: #000000; border: 1px solid #d4d4d8;">
+    <div class="kopf">
+      <span class="zahl" style="font-weight: 700;">Platz 3</span>
+      <span style="color: #666666;">Vorstandszimmer</span>
+    </div>
+    <div style="flex: 1; display: flex; align-items: center;">
+      <div class="name">Jonas Öztürk</div>
+    </div>
+    <div style="height: 44px; display: flex; align-items: center; gap: 14px;">
+      <span style="width: 26px; height: 26px; border-radius: 50%; border: 3px solid #000000;
+                   background: #ffffff; flex: none;"></span>
+      <span style="font-size: 26px; font-weight: 600;">Delegierter · Stimmrecht</span>
+    </div>
+  </div>
+
+  <!-- Spricht: das ganze Schild kehrt sich um. Quer durch den Saal lesbar,
+       ohne dass jemand eine Lampe suchen muss. -->
+  <div class="schild" style="background: #c8102e; color: #ffffff;">
+    <div class="kopf">
+      <span class="zahl" style="font-weight: 700;">Platz 4</span>
+      <span style="color: rgba(255,255,255,.75);">Vorstandszimmer</span>
+    </div>
+    <div style="flex: 1; display: flex; align-items: center;">
+      <div class="name">Ida Peters</div>
+    </div>
+    <div style="height: 44px; display: flex; align-items: center; gap: 14px;">
+      <span style="width: 26px; height: 26px; border-radius: 50%; border: 3px solid #ffffff;
+                   background: #ffffff; flex: none;"></span>
+      <span style="font-size: 26px; font-weight: 600;">spricht</span>
+    </div>
+  </div>
+
+  <!-- Widerspruch gegen die Aufzeichnung: steht auf dem Schild, nicht nur im Server. -->
+  <div class="schild" style="background: #ffffff; color: #000000; border: 1px solid #d4d4d8;">
+    <div class="kopf">
+      <span class="zahl" style="font-weight: 700;">Platz 9</span>
+      <span style="color: #666666;">Vorstandszimmer</span>
+    </div>
+    <div style="flex: 1; display: flex; align-items: center;">
+      <div class="name">Bernd Ritter</div>
+    </div>
+    <div style="height: 44px; display: flex; align-items: center; gap: 14px;">
+      <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#8a5a00" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none;">
+        <path d="M15 10l4.5-2.6v9.2L15 14"></path><rect x="3" y="6" width="12" height="12" rx="2"></rect>
+        <path d="M3 3l18 18"></path>
+      </svg>
+      <span style="font-size: 26px; font-weight: 600; color: #8a5a00;">keine Aufzeichnung</span>
+    </div>
+  </div>
+</div>
+</x-dc>
+
+<script data-dc-script data-props='{}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>
