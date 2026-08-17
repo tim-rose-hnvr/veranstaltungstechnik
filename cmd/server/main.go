@@ -19,10 +19,14 @@ import (
 	"github.com/tim-rose-hnvr/kameranachverfolgung/intern/web"
 )
 
-const (
-	migrationsDatei = "migrationen/001_grundlage.sql"
-	webVerzeichnis  = "web"
-)
+// Migrationen in dieser Reihenfolge. Die Wächtertabelle ist die letzte, die
+// die jeweilige Datei anlegt — gibt es sie, ist die Migration gelaufen.
+var migrationen = []struct{ Datei, Waechter string }{
+	{"migrationen/001_grundlage.sql", "ereignis"},
+	{"migrationen/002_sitzung.sql", "wortmeldung"},
+}
+
+const webVerzeichnis = "web"
 
 func main() {
 	konfigPfad := flag.String("konfiguration", "config.yaml", "Pfad zu config.yaml")
@@ -50,6 +54,10 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 	if err != nil {
 		return err
 	}
+	sitzungsdaten, err := speicher.SitzungLesen(konfiguration.SitzungsDatei)
+	if err != nil {
+		return err
+	}
 
 	anlaufCtx, anlaufFertig := context.WithTimeout(ctx, 30*time.Second)
 	defer anlaufFertig()
@@ -60,12 +68,14 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 	}
 	defer ablage.Schliessen()
 
-	migration, err := os.ReadFile(migrationsDatei)
-	if err != nil {
-		return err
-	}
-	if err := ablage.SchemaSicherstellen(anlaufCtx, string(migration)); err != nil {
-		return err
+	for _, m := range migrationen {
+		migration, err := os.ReadFile(m.Datei)
+		if err != nil {
+			return err
+		}
+		if err := ablage.SchemaSicherstellen(anlaufCtx, m.Waechter, string(migration)); err != nil {
+			return err
+		}
 	}
 
 	saalID, aufbau, err := ablage.SaalImportieren(anlaufCtx, saaldaten)
@@ -76,9 +86,31 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 		"saal", saaldaten.Saal, "saal_id", saalID,
 		"plaetze", len(aufbau), "kameras", len(saaldaten.Kameras))
 
+	stand, err := ablage.SitzungImportieren(anlaufCtx, saalID, sitzungsdaten)
+	if err != nil {
+		return err
+	}
+	leitungPlatz, err := ablage.LeitungAusKette(anlaufCtx, saalID)
+	if err != nil {
+		return err
+	}
+	protokoll.Info("sitzung eingelesen",
+		"titel", stand.Titel, "zustand", stand.Zustand,
+		"teilnahmen", len(stand.Teilnahmen), "redeliste", len(stand.Wortmeldungen))
+
 	steuerung := kamera.NeuViscaIP(konfiguration.KameraZeitlimit())
-	sitzung, err := kern.Neu(saalID, aufbau, konfiguration.MaxOffeneMikrofone,
-		konfiguration.KameraZeitlimit(), steuerung, ablage, protokoll)
+	sitzung, err := kern.Neu(kern.Aufbau{
+		SaalID:         saalID,
+		SitzungID:      stand.SitzungID,
+		Titel:          stand.Titel,
+		SitzungZustand: stand.Zustand,
+		Plaetze:        aufbau,
+		Teilnahmen:     stand.Teilnahmen,
+		Wortmeldungen:  stand.Wortmeldungen,
+		LeitungPlatz:   leitungPlatz,
+		MaxOffen:       konfiguration.MaxOffeneMikrofone,
+		Zeitlimit:      konfiguration.KameraZeitlimit(),
+	}, steuerung, ablage, protokoll)
 	if err != nil {
 		return err
 	}

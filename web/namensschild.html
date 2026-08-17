@@ -107,11 +107,13 @@ function zeichnen(n) {
     return;
   }
 
-  // In Meilenstein 1 trägt der Platz den Namen. Eine Person wird ihm erst
-  // zugeordnet, wenn es die Teilnahme gibt.
-  knoten.name.textContent = meiner.name;
+  // Der Platz trägt die Identität, die Person wird ihm je Sitzung zugeordnet.
+  // Steht keine Person auf dem Platz, bleibt der Platzname stehen.
+  knoten.name.textContent = meiner.person || meiner.name;
   document.body.className = meiner.mikro ? "spricht" : "";
-  knoten.text.textContent = meiner.mikro ? "spricht" : (meiner.belegt ? "am Platz" : "frei");
+  knoten.text.textContent = meiner.mikro
+    ? "spricht"
+    : (meiner.hat_wort ? "hat das Wort" : (meiner.belegt ? "am Platz" : "frei"));
 }
 
 verbinden();

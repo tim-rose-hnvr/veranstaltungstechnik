@@ -1,5 +1,6 @@
 datenbank: postgres://sitzung:geheim@localhost:5432/sitzung?sslmode=disable
 adresse: ":8080"
 saal_datei: saal.json
+sitzungs_datei: sitzung.json
 max_offene_mikrofone: 3
 kamera_zeitlimit_ms: 500

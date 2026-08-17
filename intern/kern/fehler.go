@@ -5,6 +5,13 @@ const (
 	CodeGrenzeErreicht = "grenze_erreicht"
 	CodePlatzUnbekannt = "platz_unbekannt"
 	CodePlatzBelegt    = "platz_belegt"
+
+	// Aus Meilenstein 2.
+	CodeNichtBerechtigt    = "nicht_berechtigt"
+	CodePinFalsch          = "pin_falsch"
+	CodeKeinWort           = "kein_wort"
+	CodeSitzungLaeuftNicht = "sitzung_laeuft_nicht"
+
 	// CodeSpeicherFehler meldet, dass ein Ereignis nicht in die Kette
 	// geschrieben werden konnte. Der Zustand bleibt dann unverändert — ein
 	// Zustandswechsel ohne Protokolleintrag darf es nicht geben.

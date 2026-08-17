@@ -15,6 +15,7 @@
     --leise: #71717a;
     --an: #dc2626;
     --frei: #16a34a;
+    --wort: #2563eb;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -28,8 +29,10 @@
     font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
     background: var(--grund); color: var(--schrift);
   }
-  header { display: flex; flex-wrap: wrap; gap: 1rem; align-items: baseline; margin-bottom: 1.25rem; }
+  header { display: flex; flex-wrap: wrap; gap: .5rem 1rem; align-items: baseline; margin-bottom: 1rem; }
   h1 { font-size: 1.25rem; margin: 0; font-weight: 600; }
+  h2 { font-size: .78rem; margin: 0 0 .6rem; font-weight: 600; letter-spacing: .09em;
+       text-transform: uppercase; color: var(--leise); }
   .leise { color: var(--leise); font-size: .875rem; }
   .zeile { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-bottom: 1rem; }
   .marke { display: inline-flex; align-items: center; gap: .4rem; }
@@ -37,36 +40,54 @@
   .punkt.gut { background: var(--frei); }
   .punkt.schlecht { background: var(--an); }
 
-  .plaetze { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); }
+  .spalten { display: grid; gap: 1.25rem; grid-template-columns: 1fr; align-items: start; }
+  @media (min-width: 60rem) { .spalten { grid-template-columns: 1fr 18rem; } }
+
+  .plaetze { display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr)); }
   .platz {
     background: var(--karte); border: 1px solid var(--rand); border-radius: .75rem;
-    padding: 1rem; display: flex; flex-direction: column; gap: .75rem;
+    padding: .9rem; display: flex; flex-direction: column; gap: .7rem;
   }
   .platz.meiner { border-color: var(--schrift); }
   .platz.offen { border-color: var(--an); box-shadow: inset 0 0 0 1px var(--an); }
+  .platz.wort { border-color: var(--wort); }
   .kopf { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
   .nummer { font-variant-numeric: tabular-nums; font-weight: 600; }
-  .knoepfe { display: flex; gap: .5rem; }
+  .person { font-size: .875rem; color: var(--leise); }
+  .knoepfe { display: flex; gap: .4rem; flex-wrap: wrap; }
   button {
-    font: inherit; padding: .5rem .9rem; border-radius: .5rem; cursor: pointer;
-    border: 1px solid var(--rand); background: var(--karte); color: var(--schrift);
-    flex: 1;
+    font: inherit; font-size: .875rem; padding: .45rem .7rem; border-radius: .5rem; cursor: pointer;
+    border: 1px solid var(--rand); background: var(--karte); color: var(--schrift); flex: 1;
   }
   button:hover:not(:disabled) { border-color: var(--schrift); }
-  button:disabled { opacity: .45; cursor: default; }
+  button:disabled { opacity: .4; cursor: default; }
   button.aktiv { background: var(--an); border-color: var(--an); color: #fff; }
 
-  #fehler {
-    margin-bottom: 1rem; padding: .75rem 1rem; border-radius: .5rem;
-    background: var(--an); color: #fff; display: none;
-  }
+  aside { background: var(--karte); border: 1px solid var(--rand); border-radius: .75rem; padding: .9rem; }
+  aside + aside { margin-top: 1rem; }
+  ol { list-style: none; margin: 0; padding: 0; counter-reset: rede; }
+  ol li { display: flex; justify-content: space-between; gap: .5rem; padding: .45rem 0;
+          border-bottom: 1px solid var(--rand); font-size: .9rem; }
+  ol li:last-child { border-bottom: 0; }
+  ol li .lage { color: var(--leise); font-size: .8rem; }
+  ol li .lage.erteilt, ol li .lage.laufend { color: var(--wort); font-weight: 600; }
+
+  #fehler { margin-bottom: 1rem; padding: .75rem 1rem; border-radius: .5rem;
+            background: var(--an); color: #fff; display: none; }
+
+  dialog { border: 1px solid var(--rand); border-radius: .75rem; background: var(--karte);
+           color: var(--schrift); padding: 1.25rem; min-width: 16rem; }
+  dialog::backdrop { background: rgba(0,0,0,.5); }
+  dialog input { font: inherit; font-size: 1.5rem; letter-spacing: .5em; text-align: center;
+                 width: 100%; padding: .5rem; margin: .75rem 0; border-radius: .5rem;
+                 border: 1px solid var(--rand); background: var(--grund); color: var(--schrift); }
 </style>
 </head>
 <body>
 
 <header>
   <h1>Sprechstelle</h1>
-  <span class="leise" id="saalzeile">Verbindung wird aufgebaut …</span>
+  <span class="leise" id="sitzungszeile">Verbindung wird aufgebaut …</span>
 </header>
 
 <div id="fehler" role="alert"></div>
@@ -77,38 +98,74 @@
   <span class="marke leise" id="kamerazeile">Kamera: noch keine Bewegung</span>
 </div>
 
-<div class="plaetze" id="plaetze"></div>
+<div class="spalten">
+  <main>
+    <h2>Saal</h2>
+    <div class="plaetze" id="plaetze"></div>
+  </main>
+
+  <div>
+    <aside>
+      <h2>Redeliste</h2>
+      <ol id="redeliste"></ol>
+    </aside>
+    <aside>
+      <h2>Sitzung</h2>
+      <div class="knoepfe" id="sitzungsknoepfe"></div>
+      <p class="leise" id="meinezeile" style="margin:.75rem 0 0">nicht angemeldet</p>
+    </aside>
+  </div>
+</div>
+
+<dialog id="pinfeld">
+  <form method="dialog">
+    <b id="pintitel">Platz</b>
+    <input id="pineingabe" type="text" inputmode="numeric" pattern="[0-9]*" maxlength="4"
+           autocomplete="off" placeholder="••••">
+    <div class="knoepfe">
+      <button value="abbrechen">Abbrechen</button>
+      <button value="ok" id="pinok">Anmelden</button>
+    </div>
+  </form>
+</dialog>
 
 <script>
 "use strict";
 
-// Kein Browser-Speicher: der gewählte Platz lebt nur in dieser Seite.
+// Kein Browser-Speicher: Platz und Rechte leben nur in dieser Seite.
 let meinPlatz = 0;
+let meineRechte = [];
 let letzterStand = -1;
 let sitz = null;
 let wiederholung = null;
+let letzterZustand = null;
 
 const knoten = {
   plaetze: document.getElementById("plaetze"),
+  redeliste: document.getElementById("redeliste"),
+  sitzungsknoepfe: document.getElementById("sitzungsknoepfe"),
   fehler: document.getElementById("fehler"),
   netzpunkt: document.getElementById("netzpunkt"),
   netztext: document.getElementById("netztext"),
   offen: document.getElementById("offenzeile"),
   kamera: document.getElementById("kamerazeile"),
-  saal: document.getElementById("saalzeile")
+  sitzung: document.getElementById("sitzungszeile"),
+  meine: document.getElementById("meinezeile"),
+  pinfeld: document.getElementById("pinfeld"),
+  pintitel: document.getElementById("pintitel"),
+  pineingabe: document.getElementById("pineingabe")
 };
 
 function verbinden() {
   const schema = location.protocol === "https:" ? "wss:" : "ws:";
   sitz = new WebSocket(schema + "//" + location.host + "/ws");
 
-  sitz.onopen = function () {
-    netz(true);
-    if (meinPlatz !== 0) senden({ typ: "anmelden", platz: meinPlatz });
-  };
+  sitz.onopen = function () { netz(true); };
   sitz.onclose = function () {
     netz(false);
     letzterStand = -1;
+    meinPlatz = 0;
+    meineRechte = [];
     if (wiederholung === null) wiederholung = setTimeout(function () {
       wiederholung = null;
       verbinden();
@@ -126,11 +183,15 @@ function verbinden() {
 function netz(verbunden) {
   knoten.netzpunkt.className = "punkt " + (verbunden ? "gut" : "schlecht");
   knoten.netztext.textContent = verbunden ? "verbunden" : "getrennt";
-  knoten.saal.textContent = verbunden ? "Platz wählen, dann Mikrofon schalten" : "Verbindung wird aufgebaut …";
 }
 
 function senden(nachricht) {
   if (sitz && sitz.readyState === WebSocket.OPEN) sitz.send(JSON.stringify(nachricht));
+}
+
+function darf(aktion) {
+  for (let i = 0; i < meineRechte.length; i++) if (meineRechte[i] === aktion) return true;
+  return false;
 }
 
 function fehlerZeigen(text) {
@@ -146,10 +207,23 @@ function zustand(n) {
   // Ältere Nachrichten verwerfen: der Server zählt stand monoton hoch.
   if (n.stand < letzterStand) return;
   letzterStand = n.stand;
+  letzterZustand = n;
+
+  // Die Rechte kommen fertig aus dem Kern. Der Client entscheidet nichts,
+  // er graut nur aus.
+  meineRechte = n.ich ? n.ich.darf : [];
+  if (n.ich) meinPlatz = n.ich.platz;
 
   let offen = 0;
   for (let i = 0; i < n.plaetze.length; i++) if (n.plaetze[i].mikro) offen++;
   knoten.offen.textContent = offen + " von " + n.max_offen + " Mikrofonen offen";
+
+  knoten.sitzung.textContent = n.sitzung.titel + " — " + n.sitzung.zustand +
+    (n.sitzung.leitung_platz ? ", Leitung auf Platz " + n.sitzung.leitung_platz : "");
+
+  knoten.meine.textContent = n.ich
+    ? n.ich.person + " · Platz " + n.ich.platz + " · " + n.ich.rolle
+    : "nicht angemeldet — Platz wählen";
 
   if (n.kamera) {
     knoten.kamera.textContent = "Kamera: " + n.kamera.name + ", Preset " + n.kamera.preset +
@@ -157,6 +231,8 @@ function zustand(n) {
   }
 
   zeichnen(n, offen);
+  redeliste(n);
+  sitzungsknoepfe(n);
 }
 
 function zeichnen(n, offen) {
@@ -164,48 +240,172 @@ function zeichnen(n, offen) {
 
   for (let i = 0; i < n.plaetze.length; i++) {
     const p = n.plaetze[i];
+    const meiner = p.nummer === meinPlatz;
 
     const karte = document.createElement("div");
-    karte.className = "platz" + (p.mikro ? " offen" : "") + (p.nummer === meinPlatz ? " meiner" : "");
+    karte.className = "platz" + (p.mikro ? " offen" : "") + (meiner ? " meiner" : "") +
+      (p.hat_wort && !p.mikro ? " wort" : "");
 
     const kopf = document.createElement("div");
     kopf.className = "kopf";
-    const name = document.createElement("span");
-    name.innerHTML = "<span class='nummer'>" + p.nummer + "</span> · ";
-    name.appendChild(document.createTextNode(p.name));
+    const links = document.createElement("span");
+    links.innerHTML = "<span class='nummer'>" + p.nummer + "</span> · ";
+    links.appendChild(document.createTextNode(p.name));
     const lage = document.createElement("span");
     lage.className = "leise";
-    lage.textContent = p.belegt ? "belegt" : "frei";
-    kopf.appendChild(name);
+    lage.textContent = p.mikro ? "spricht" : (p.hat_wort ? "hat das Wort" : (p.belegt ? "am Platz" : "frei"));
+    kopf.appendChild(links);
     kopf.appendChild(lage);
+
+    const person = document.createElement("div");
+    person.className = "person";
+    person.textContent = p.person || "nicht besetzt";
 
     const knoepfe = document.createElement("div");
     knoepfe.className = "knoepfe";
 
-    const waehlen = document.createElement("button");
-    waehlen.textContent = p.nummer === meinPlatz ? "mein Platz" : "hier sitzen";
-    waehlen.disabled = p.nummer === meinPlatz || (p.belegt && p.nummer !== meinPlatz);
-    waehlen.onclick = function () {
-      meinPlatz = p.nummer;
-      senden({ typ: "anmelden", platz: p.nummer });
-    };
+    if (!meiner) {
+      const waehlen = document.createElement("button");
+      waehlen.textContent = "hier sitzen";
+      waehlen.disabled = p.belegt || !p.person;
+      waehlen.onclick = function () { pinFragen(p); };
+      knoepfe.appendChild(waehlen);
+    }
 
-    const mikro = document.createElement("button");
-    mikro.textContent = p.mikro ? "Mikrofon aus" : "Mikrofon an";
-    mikro.className = p.mikro ? "aktiv" : "";
-    mikro.disabled = !p.mikro && offen >= n.max_offen;
-    mikro.onclick = function () {
-      senden({ typ: p.mikro ? "mikro_aus" : "mikro_an", platz: p.nummer });
-    };
+    // Mikrofon: eigener Platz, oder fremder Platz als aktive Leitung.
+    const leitung = meinPlatz !== 0 && meinPlatz === n.sitzung.leitung_platz;
+    if (meiner || leitung) {
+      const mikro = document.createElement("button");
+      mikro.textContent = p.mikro ? "Mikrofon aus" : "Mikrofon an";
+      mikro.className = p.mikro ? "aktiv" : "";
+      mikro.disabled = p.mikro
+        ? !darf("mikro_aus")
+        : (!darf("mikro_an") || offen >= n.max_offen || (!leitung && !p.hat_wort));
+      mikro.onclick = function () {
+        senden({ typ: p.mikro ? "mikro_aus" : "mikro_an", platz: p.nummer });
+      };
+      knoepfe.appendChild(mikro);
+    }
 
-    knoepfe.appendChild(waehlen);
-    knoepfe.appendChild(mikro);
+    if (darf("wort_erteilen") && !p.hat_wort && aufDerListe(n, p.nummer)) {
+      const erteilen = document.createElement("button");
+      erteilen.textContent = "Wort erteilen";
+      erteilen.onclick = function () { senden({ typ: "wort_erteilen", platz: p.nummer }); };
+      knoepfe.appendChild(erteilen);
+    }
+    if (darf("wort_entziehen") && (p.hat_wort || aufDerListe(n, p.nummer))) {
+      const entziehen = document.createElement("button");
+      entziehen.textContent = "entziehen";
+      entziehen.onclick = function () { senden({ typ: "wort_entziehen", platz: p.nummer }); };
+      knoepfe.appendChild(entziehen);
+    }
+    if (meiner && darf("wort_melden") && !aufDerListe(n, p.nummer)) {
+      const melden = document.createElement("button");
+      melden.textContent = "Wort melden";
+      melden.onclick = function () { senden({ typ: "wort_melden" }); };
+      knoepfe.appendChild(melden);
+    }
+    if (meiner && darf("wort_zurueckziehen") && aufDerListe(n, p.nummer) && !p.hat_wort) {
+      const zurueck = document.createElement("button");
+      zurueck.textContent = "zurückziehen";
+      zurueck.onclick = function () { senden({ typ: "wort_zurueckziehen" }); };
+      knoepfe.appendChild(zurueck);
+    }
+
     karte.appendChild(kopf);
+    karte.appendChild(person);
     karte.appendChild(knoepfe);
     neu.appendChild(karte);
   }
 
   knoten.plaetze.replaceChildren(neu);
+}
+
+function aufDerListe(n, nummer) {
+  for (let i = 0; i < n.redeliste.length; i++) if (n.redeliste[i].platz === nummer) return true;
+  return false;
+}
+
+function redeliste(n) {
+  const neu = document.createDocumentFragment();
+  if (n.redeliste.length === 0) {
+    const leer = document.createElement("li");
+    leer.className = "lage";
+    leer.textContent = "keine Wortmeldung";
+    neu.appendChild(leer);
+  }
+  for (let i = 0; i < n.redeliste.length; i++) {
+    const e = n.redeliste[i];
+    const zeile = document.createElement("li");
+    const links = document.createElement("span");
+    links.textContent = (i + 1) + ". " + e.person + " (" + e.platz + ")";
+    const rechts = document.createElement("span");
+    rechts.className = "lage " + e.zustand;
+    rechts.textContent = e.zustand;
+    zeile.appendChild(links);
+    zeile.appendChild(rechts);
+    neu.appendChild(zeile);
+  }
+  knoten.redeliste.replaceChildren(neu);
+}
+
+function sitzungsknoepfe(n) {
+  const neu = document.createDocumentFragment();
+
+  if (darf("sitzung_eroeffnen")) {
+    const auf = document.createElement("button");
+    auf.textContent = "Sitzung eröffnen";
+    auf.onclick = function () { senden({ typ: "sitzung_eroeffnen" }); };
+    neu.appendChild(auf);
+  }
+  if (darf("sitzung_schliessen")) {
+    const zu = document.createElement("button");
+    zu.textContent = "Sitzung schließen";
+    zu.onclick = function () { senden({ typ: "sitzung_schliessen" }); };
+    neu.appendChild(zu);
+  }
+  if (darf("leitung_uebergeben")) {
+    const auswahl = document.createElement("select");
+    auswahl.style.flex = "1";
+    const kopf = document.createElement("option");
+    kopf.textContent = "Leitung übergeben an …";
+    kopf.value = "";
+    auswahl.appendChild(kopf);
+    for (let i = 0; i < n.plaetze.length; i++) {
+      const p = n.plaetze[i];
+      if (p.nummer === n.sitzung.leitung_platz || !p.person) continue;
+      const eintrag = document.createElement("option");
+      eintrag.value = String(p.nummer);
+      eintrag.textContent = p.nummer + " · " + p.person;
+      auswahl.appendChild(eintrag);
+    }
+    auswahl.onchange = function () {
+      if (auswahl.value) senden({ typ: "leitung_uebergeben", platz: Number(auswahl.value) });
+      auswahl.value = "";
+    };
+    neu.appendChild(auswahl);
+  }
+  if (!neu.hasChildNodes()) {
+    const hinweis = document.createElement("span");
+    hinweis.className = "leise";
+    hinweis.textContent = "keine Sitzungsrechte";
+    neu.appendChild(hinweis);
+  }
+  knoten.sitzungsknoepfe.replaceChildren(neu);
+}
+
+function pinFragen(p) {
+  knoten.pintitel.textContent = "Platz " + p.nummer + " — " + (p.person || "");
+  knoten.pineingabe.value = "";
+  knoten.pinfeld.returnValue = "";
+  knoten.pinfeld.showModal();
+  knoten.pineingabe.focus();
+
+  knoten.pinfeld.onclose = function () {
+    if (knoten.pinfeld.returnValue !== "ok") return;
+    senden({ typ: "anmelden", platz: p.nummer, pin: knoten.pineingabe.value });
+    knoten.pineingabe.value = "";
+  };
 }
 
 verbinden();

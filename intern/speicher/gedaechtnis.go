@@ -14,9 +14,18 @@ import (
 // Umsetzung im Betrieb, Gedaechtnis die für Tests ohne Datenbank.
 type Ablage interface {
 	SaalImportieren(ctx context.Context, d Saaldaten) (string, []kern.Platzaufbau, error)
+	SitzungImportieren(ctx context.Context, saalID string, d Sitzungsdaten) (Sitzungsstand, error)
 	EreignisAnfuegen(ctx context.Context, saalID, art string, nutzlast map[string]any) (kern.Ereignis, error)
 	Ereignisse(ctx context.Context, saalID string) ([]kern.Ereignis, error)
+	OffeneWortmeldungen(ctx context.Context, sitzungID string) ([]kern.Wortmeldung, error)
+	LeitungAusKette(ctx context.Context, saalID string) (int, error)
 	Zaehlen(ctx context.Context, tabelle string) (int, error)
+
+	// Schreibwege des Kerns.
+	SitzungZustandSetzen(ctx context.Context, sitzungID string, zustand kern.Sitzungszustand) error
+	TeilnahmeZustandSetzen(ctx context.Context, teilnahmeID string, zustand kern.Teilnahmezustand) error
+	WortmeldungAnlegen(ctx context.Context, sitzungID, teilnahmeID string) (string, int64, error)
+	WortmeldungZustandSetzen(ctx context.Context, wortmeldungID string, zustand kern.Wortzustand) error
 }
 
 var (
@@ -37,6 +46,11 @@ type Gedaechtnis struct {
 	presets        map[string]bool            // kamera_id|platz_id
 	ketten         map[string][]kern.Ereignis // saal_id -> Kette
 	naechsteID     int
+
+	personen      map[string]string // organisation_id|name -> id
+	sitzungen     map[string]*gSitzung
+	teilnahmen    map[string]*gTeilnahme // sitzung_id|platz_id -> Teilnahme
+	wortmeldungen []*gWortmeldung
 }
 
 // NeuGedaechtnis erzeugt eine leere Ablage im Arbeitsspeicher.
@@ -48,6 +62,9 @@ func NeuGedaechtnis() *Gedaechtnis {
 		plaetze:        map[string]string{},
 		presets:        map[string]bool{},
 		ketten:         map[string][]kern.Ereignis{},
+		personen:       map[string]string{},
+		sitzungen:      map[string]*gSitzung{},
+		teilnahmen:     map[string]*gTeilnahme{},
 	}
 }
 
@@ -166,6 +183,14 @@ func (g *Gedaechtnis) Zaehlen(ctx context.Context, tabelle string) (int, error) 
 			anzahl += len(kette)
 		}
 		return anzahl, nil
+	case "person":
+		return len(g.personen), nil
+	case "sitzung":
+		return len(g.sitzungen), nil
+	case "teilnahme":
+		return len(g.teilnahmen), nil
+	case "wortmeldung":
+		return len(g.wortmeldungen), nil
 	default:
 		return 0, fmt.Errorf("unbekannte tabelle %q", tabelle)
 	}

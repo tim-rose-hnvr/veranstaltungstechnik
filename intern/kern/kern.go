@@ -7,6 +7,8 @@ import (
 	"sort"
 	"sync"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Platzaufbau beschreibt einen Sitzplatz samt der Kamera, die ihn zeigt.
@@ -26,17 +28,23 @@ type Kamerasteuerung interface {
 	PresetAbrufen(ctx context.Context, adresse string, kanal, preset uint8) error
 }
 
-// Ereignisschreiber hängt ein Ereignis an die Kette des Saals an.
-type Ereignisschreiber interface {
+// Ablage ist alles, was der Kern dauerhaft festhalten muss.
+type Ablage interface {
 	EreignisAnfuegen(ctx context.Context, saalID, art string, nutzlast map[string]any) (Ereignis, error)
+	SitzungZustandSetzen(ctx context.Context, sitzungID string, zustand Sitzungszustand) error
+	TeilnahmeZustandSetzen(ctx context.Context, teilnahmeID string, zustand Teilnahmezustand) error
+	WortmeldungAnlegen(ctx context.Context, sitzungID, teilnahmeID string) (string, int64, error)
+	WortmeldungZustandSetzen(ctx context.Context, wortmeldungID string, zustand Wortzustand) error
 }
 
 // PlatzZustand ist ein Sitzplatz, wie ihn der Client sieht.
 type PlatzZustand struct {
-	Nummer int    `json:"nummer"`
-	Name   string `json:"name"`
-	Mikro  bool   `json:"mikro"`
-	Belegt bool   `json:"belegt"`
+	Nummer  int    `json:"nummer"`
+	Name    string `json:"name"`
+	Person  string `json:"person"`
+	Mikro   bool   `json:"mikro"`
+	Belegt  bool   `json:"belegt"`
+	HatWort bool   `json:"hat_wort"`
 }
 
 // Kamerazustand ist die zuletzt ausgelöste Kamerabewegung.
@@ -46,106 +54,215 @@ type Kamerazustand struct {
 	Erreichbar bool   `json:"erreichbar"`
 }
 
-// Zustand ist der vollständige Zustand des Saals. Der Server sendet immer
+// Zustand ist der gemeinsame Zustand des Saals. Der Server sendet immer
 // alles, nie Teiländerungen — dann heilen sich Aussetzer von selbst.
 type Zustand struct {
-	Typ      string         `json:"typ"`
-	Stand    uint64         `json:"stand"`
-	MaxOffen int            `json:"max_offen"`
-	Plaetze  []PlatzZustand `json:"plaetze"`
-	Kamera   *Kamerazustand `json:"kamera"`
+	Typ       string             `json:"typ"`
+	Stand     uint64             `json:"stand"`
+	MaxOffen  int                `json:"max_offen"`
+	Sitzung   SitzungZustand     `json:"sitzung"`
+	Plaetze   []PlatzZustand     `json:"plaetze"`
+	Redeliste []RedelisteEintrag `json:"redeliste"`
+	Kamera    *Kamerazustand     `json:"kamera"`
 }
 
 type platz struct {
-	aufbau Platzaufbau
-	mikro  bool
-	belegt bool
+	aufbau    Platzaufbau
+	mikro     bool
+	belegt    bool
+	teilnahme *Teilnahmeaufbau
 }
 
-// Kern hält den Zustand eines Saals und setzt die Regeln durch.
+// Aufbau ist alles, was der Kern beim Start braucht.
+type Aufbau struct {
+	SaalID         string
+	SitzungID      string
+	Titel          string
+	SitzungZustand Sitzungszustand
+	Plaetze        []Platzaufbau
+	Teilnahmen     []Teilnahmeaufbau
+	Wortmeldungen  []Wortmeldung // offene aus der Datenbank
+	LeitungPlatz   int           // 0: aus der Rolle ableiten
+	MaxOffen       int
+	Zeitlimit      time.Duration
+}
+
+// Kern hält den Zustand einer Sitzung und setzt die Regeln durch.
+// Jede Rechteprüfung liegt hier — nie in der Oberfläche.
 type Kern struct {
 	saalID    string
+	sitzungID string
+	titel     string
 	maxOffen  int
 	zeitlimit time.Duration
 	steuerung Kamerasteuerung
-	ablage    Ereignisschreiber
+	ablage    Ablage
 	protokoll *slog.Logger
 
-	mu      sync.Mutex
-	plaetze []*platz
-	nach    map[int]*platz
-	stand   uint64
-	kamera  *Kamerazustand
+	mu           sync.Mutex
+	sitzung      Sitzungszustand
+	plaetze      []*platz
+	nach         map[int]*platz
+	leitungPlatz int
+	redeliste    []*Wortmeldung
+	stand        uint64
+	kamera       *Kamerazustand
 
-	melder func(Zustand)
-
-	// wartend zählt laufende Kamerabefehle, damit Tests darauf warten können.
+	melder  func()
 	wartend sync.WaitGroup
 }
 
-// Neu baut den Kern für einen Saal auf.
-func Neu(saalID string, aufbau []Platzaufbau, maxOffen int, zeitlimit time.Duration,
-	steuerung Kamerasteuerung, ablage Ereignisschreiber, protokoll *slog.Logger) (*Kern, error) {
-
-	if maxOffen < 1 {
-		return nil, fmt.Errorf("max_offene_mikrofone muss mindestens 1 sein, ist %d", maxOffen)
+// Neu baut den Kern auf.
+func Neu(a Aufbau, steuerung Kamerasteuerung, ablage Ablage, protokoll *slog.Logger) (*Kern, error) {
+	if a.MaxOffen < 1 {
+		return nil, fmt.Errorf("max_offene_mikrofone muss mindestens 1 sein, ist %d", a.MaxOffen)
 	}
 	if protokoll == nil {
 		protokoll = slog.Default()
 	}
+	if a.SitzungZustand == "" {
+		a.SitzungZustand = SitzungVorbereitet
+	}
 
 	k := &Kern{
-		saalID:    saalID,
-		maxOffen:  maxOffen,
-		zeitlimit: zeitlimit,
+		saalID:    a.SaalID,
+		sitzungID: a.SitzungID,
+		titel:     a.Titel,
+		maxOffen:  a.MaxOffen,
+		zeitlimit: a.Zeitlimit,
 		steuerung: steuerung,
 		ablage:    ablage,
 		protokoll: protokoll,
-		nach:      make(map[int]*platz, len(aufbau)),
-		melder:    func(Zustand) {},
+		sitzung:   a.SitzungZustand,
+		nach:      make(map[int]*platz, len(a.Plaetze)),
+		melder:    func() {},
 	}
-	for _, a := range aufbau {
-		if _, doppelt := k.nach[a.Nummer]; doppelt {
-			return nil, fmt.Errorf("platz %d kommt doppelt vor", a.Nummer)
+
+	for _, aufbau := range a.Plaetze {
+		if _, doppelt := k.nach[aufbau.Nummer]; doppelt {
+			return nil, fmt.Errorf("platz %d kommt doppelt vor", aufbau.Nummer)
 		}
-		p := &platz{aufbau: a}
+		p := &platz{aufbau: aufbau}
 		k.plaetze = append(k.plaetze, p)
-		k.nach[a.Nummer] = p
+		k.nach[aufbau.Nummer] = p
 	}
 	sort.Slice(k.plaetze, func(i, j int) bool {
 		return k.plaetze[i].aufbau.Nummer < k.plaetze[j].aufbau.Nummer
 	})
+
+	for i := range a.Teilnahmen {
+		t := a.Teilnahmen[i]
+		p, bekannt := k.nach[t.PlatzNummer]
+		if !bekannt {
+			return nil, fmt.Errorf("teilnahme verweist auf unbekannten platz %d", t.PlatzNummer)
+		}
+		if p.teilnahme != nil {
+			return nil, fmt.Errorf("platz %d hat zwei teilnahmen", t.PlatzNummer)
+		}
+		p.teilnahme = &t
+	}
+
+	for i := range a.Wortmeldungen {
+		w := a.Wortmeldungen[i]
+		if w.Zustand.Offen() {
+			k.redeliste = append(k.redeliste, &w)
+		}
+	}
+	sort.Slice(k.redeliste, func(i, j int) bool { return k.redeliste[i].FolgeNr < k.redeliste[j].FolgeNr })
+
+	// Der Staffelstab kommt aus dem Ereignisprotokoll. Steht dort nichts,
+	// führt die Teilnahme mit der Rolle leitung.
+	k.leitungPlatz = a.LeitungPlatz
+	if k.leitungPlatz == 0 {
+		for _, p := range k.plaetze {
+			if p.teilnahme != nil && p.teilnahme.Rolle == RolleLeitung {
+				k.leitungPlatz = p.aufbau.Nummer
+				break
+			}
+		}
+	}
 	return k, nil
 }
 
-// SetzeMelder hinterlegt die Funktion, die nach jeder Änderung den
-// vollständigen Zustand verteilt. Vor dem Start aufrufen.
-func (k *Kern) SetzeMelder(melder func(Zustand)) {
+// SetzeMelder hinterlegt die Funktion, die nach jeder Änderung verteilt.
+func (k *Kern) SetzeMelder(melder func()) {
 	if melder != nil {
 		k.melder = melder
 	}
 }
 
-// Zustand liefert den aktuellen Zustand, etwa für einen neuen Client.
+// Zustand liefert den gemeinsamen Zustand.
 func (k *Kern) Zustand() Zustand {
 	k.mu.Lock()
 	defer k.mu.Unlock()
 	return k.zustandIntern()
 }
 
-// Anmelden belegt einen Platz.
-func (k *Kern) Anmelden(ctx context.Context, nummer int) error {
-	return k.aendern(ctx, nummer, "platz_angemeldet", func(p *platz) *Fehler {
-		if p.belegt {
-			return fehler(CodePlatzBelegt, fmt.Sprintf("Platz %d ist bereits belegt", nummer))
-		}
-		p.belegt = true
+// Ich liefert den verbindungseigenen Teil: wer ich bin und was ich darf.
+// Für einen nicht angemeldeten Platz kommt nil.
+func (k *Kern) Ich(nummer int) *IchZustand {
+	k.mu.Lock()
+	defer k.mu.Unlock()
+
+	p, bekannt := k.nach[nummer]
+	if !bekannt || p.teilnahme == nil {
 		return nil
-	})
+	}
+	ich := &IchZustand{
+		Platz:  nummer,
+		Person: p.teilnahme.Person,
+		Rolle:  p.teilnahme.Rolle,
+		Darf:   make([]string, 0, len(alleAktionen)),
+	}
+	for _, aktion := range alleAktionen {
+		if k.darfIntern(p, aktion) == nil {
+			ich.Darf = append(ich.Darf, aktion)
+		}
+	}
+	return ich
 }
 
-// Abmelden gibt einen Platz wieder frei. Ein offenes Mikrofon wird dabei
-// geschlossen, sonst bliebe es nach dem Verschwinden des Geräts offen.
+// Anmelden belegt einen Platz nach Prüfung der PIN.
+func (k *Kern) Anmelden(ctx context.Context, nummer int, pin string) error {
+	k.mu.Lock()
+	p, bekannt := k.nach[nummer]
+	if !bekannt {
+		k.mu.Unlock()
+		return fehler(CodePlatzUnbekannt, fmt.Sprintf("Platz %d gibt es nicht", nummer))
+	}
+	if p.teilnahme == nil {
+		k.mu.Unlock()
+		return fehler(CodeNichtBerechtigt, fmt.Sprintf("Für Platz %d ist niemand eingetragen", nummer))
+	}
+	if p.belegt {
+		k.mu.Unlock()
+		return fehler(CodePlatzBelegt, fmt.Sprintf("Platz %d ist bereits belegt", nummer))
+	}
+	if err := bcrypt.CompareHashAndPassword(p.teilnahme.PinHash, []byte(pin)); err != nil {
+		k.mu.Unlock()
+		// Kein Hinweis darauf, ob der Platz existiert oder die PIN falsch war
+		// — die Antwort ist für beide Fälle dieselbe Länge wert.
+		return fehler(CodePinFalsch, "PIN stimmt nicht")
+	}
+
+	if err := k.schreiben(ctx, "platz_angemeldet", map[string]any{
+		"platz": nummer, "person": p.teilnahme.Person, "rolle": string(p.teilnahme.Rolle),
+	}); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	if err := k.ablage.TeilnahmeZustandSetzen(ctx, p.teilnahme.ID, TeilnahmeAnwesend); err != nil {
+		k.protokoll.Error("teilnahmezustand nicht gespeichert", "platz", nummer, "grund", err)
+	}
+	p.belegt = true
+	k.stand++
+	k.mu.Unlock()
+
+	k.melder()
+	return nil
+}
+
+// Abmelden gibt einen Platz frei. Ein offenes Mikrofon wird geschlossen.
 func (k *Kern) Abmelden(ctx context.Context, nummer int) error {
 	k.mu.Lock()
 	p, bekannt := k.nach[nummer]
@@ -157,29 +274,204 @@ func (k *Kern) Abmelden(ctx context.Context, nummer int) error {
 		k.mu.Unlock()
 		return nil
 	}
-	nutzlast := map[string]any{"platz": nummer, "mikro_war_offen": p.mikro}
-	if err := k.schreiben(ctx, "platz_abgemeldet", nutzlast); err != nil {
+
+	if err := k.schreiben(ctx, "platz_abgemeldet", map[string]any{
+		"platz": nummer, "mikro_war_offen": p.mikro,
+	}); err != nil {
 		k.mu.Unlock()
 		return err
+	}
+	if p.mikro {
+		k.wortmeldungSetzenIntern(ctx, nummer, WortBeendet)
+	}
+	if p.teilnahme != nil {
+		if err := k.ablage.TeilnahmeZustandSetzen(ctx, p.teilnahme.ID, TeilnahmeAbwesend); err != nil {
+			k.protokoll.Error("teilnahmezustand nicht gespeichert", "platz", nummer, "grund", err)
+		}
 	}
 	p.belegt = false
 	p.mikro = false
 	k.stand++
-	z := k.zustandIntern()
 	k.mu.Unlock()
 
-	k.melder(z)
+	k.melder()
 	return nil
 }
 
-// MikroAn öffnet ein Mikrofon und fährt die zuständige Kamera auf den Preset
-// des Platzes. Mehr als max_offene_mikrofone gleichzeitig ist nicht möglich.
-func (k *Kern) MikroAn(ctx context.Context, nummer int) error {
+// SitzungEroeffnen setzt die Sitzung auf laufend.
+func (k *Kern) SitzungEroeffnen(ctx context.Context, absender int) error {
+	return k.sitzungSetzen(ctx, absender, AktionSitzungEroeffnen, SitzungLaufend,
+		[]Sitzungszustand{SitzungVorbereitet, SitzungBereit, SitzungUnterbrochen}, "sitzung_eroeffnet")
+}
+
+// SitzungSchliessen beendet die Sitzung. Offene Mikrofone und Wortmeldungen
+// werden dabei geschlossen.
+func (k *Kern) SitzungSchliessen(ctx context.Context, absender int) error {
+	return k.sitzungSetzen(ctx, absender, AktionSitzungSchliessen, SitzungGeschlossen,
+		[]Sitzungszustand{SitzungLaufend, SitzungUnterbrochen}, "sitzung_geschlossen")
+}
+
+func (k *Kern) sitzungSetzen(ctx context.Context, absender int, aktion string,
+	ziel Sitzungszustand, erlaubtVon []Sitzungszustand, art string) error {
+
 	k.mu.Lock()
-	p, bekannt := k.nach[nummer]
+	if err := k.darfPlatz(absender, aktion); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	passt := false
+	for _, z := range erlaubtVon {
+		if k.sitzung == z {
+			passt = true
+		}
+	}
+	if !passt {
+		k.mu.Unlock()
+		return fehler(CodeSitzungLaeuftNicht,
+			fmt.Sprintf("Die Sitzung ist %s, das geht hier nicht", k.sitzung))
+	}
+
+	if err := k.schreiben(ctx, art, map[string]any{"platz": absender, "zustand": string(ziel)}); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	k.sitzung = ziel
+	if err := k.ablage.SitzungZustandSetzen(ctx, k.sitzungID, ziel); err != nil {
+		k.protokoll.Error("sitzungszustand nicht gespeichert", "grund", err)
+	}
+
+	if ziel == SitzungGeschlossen {
+		for _, p := range k.plaetze {
+			if p.mikro {
+				p.mikro = false
+			}
+		}
+		for _, w := range k.redeliste {
+			if err := k.ablage.WortmeldungZustandSetzen(ctx, w.ID, WortBeendet); err != nil {
+				k.protokoll.Error("wortmeldung nicht gespeichert", "grund", err)
+			}
+		}
+		k.redeliste = nil
+	}
+	k.stand++
+	k.mu.Unlock()
+
+	k.melder()
+	return nil
+}
+
+// WortMelden trägt den Platz in die Redeliste ein.
+func (k *Kern) WortMelden(ctx context.Context, absender int) error {
+	k.mu.Lock()
+	if err := k.darfPlatz(absender, AktionWortMelden); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	if w := k.wortmeldungIntern(absender); w != nil {
+		k.mu.Unlock()
+		return nil // steht schon in der Liste
+	}
+
+	p := k.nach[absender]
+	id, folgeNr, err := k.ablage.WortmeldungAnlegen(ctx, k.sitzungID, p.teilnahme.ID)
+	if err != nil {
+		k.protokoll.Error("wortmeldung nicht angelegt", "platz", absender, "grund", err)
+		k.mu.Unlock()
+		return fehler(CodeSpeicherFehler, "Wortmeldung konnte nicht festgehalten werden")
+	}
+	if err := k.schreiben(ctx, "wort_gemeldet", map[string]any{"platz": absender, "folge_nr": folgeNr}); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	k.redeliste = append(k.redeliste, &Wortmeldung{
+		ID: id, FolgeNr: folgeNr, PlatzNummer: absender, Zustand: WortGemeldet,
+	})
+	k.stand++
+	k.mu.Unlock()
+
+	k.melder()
+	return nil
+}
+
+// WortZurueckziehen nimmt die eigene Meldung zurück, solange sie nur gemeldet ist.
+func (k *Kern) WortZurueckziehen(ctx context.Context, absender int) error {
+	return k.wortWechseln(ctx, absender, absender, AktionWortZurueckziehen,
+		WortZurueckgezogen, "wort_zurueckgezogen")
+}
+
+// WortErteilen gibt einem Platz das Wort.
+func (k *Kern) WortErteilen(ctx context.Context, absender, ziel int) error {
+	return k.wortWechseln(ctx, absender, ziel, AktionWortErteilen, WortErteilt, "wort_erteilt")
+}
+
+// WortEntziehen nimmt das Wort wieder weg und schließt das Mikrofon.
+func (k *Kern) WortEntziehen(ctx context.Context, absender, ziel int) error {
+	return k.wortWechseln(ctx, absender, ziel, AktionWortEntziehen, WortEntzogen, "wort_entzogen")
+}
+
+func (k *Kern) wortWechseln(ctx context.Context, absender, ziel int, aktion string,
+	neu Wortzustand, art string) error {
+
+	k.mu.Lock()
+	if err := k.darfPlatz(absender, aktion); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	if _, bekannt := k.nach[ziel]; !bekannt {
+		k.mu.Unlock()
+		return fehler(CodePlatzUnbekannt, fmt.Sprintf("Platz %d gibt es nicht", ziel))
+	}
+
+	w := k.wortmeldungIntern(ziel)
+	if w == nil {
+		k.mu.Unlock()
+		return fehler(CodeKeinWort, fmt.Sprintf("Platz %d steht nicht auf der Redeliste", ziel))
+	}
+	if !WortUebergangErlaubt(w.Zustand, neu) {
+		k.mu.Unlock()
+		return fehler(CodeKeinWort,
+			fmt.Sprintf("Aus %s wird nicht %s", w.Zustand, neu))
+	}
+
+	if err := k.schreiben(ctx, art, map[string]any{"platz": ziel, "von": absender}); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	k.wortmeldungSetzenIntern(ctx, ziel, neu)
+
+	// Entzogenes Wort schließt das Mikrofon sofort.
+	if neu == WortEntzogen {
+		if p := k.nach[ziel]; p.mikro {
+			p.mikro = false
+		}
+	}
+	k.stand++
+	k.mu.Unlock()
+
+	k.melder()
+	return nil
+}
+
+// MikroAn öffnet ein Mikrofon und fährt die Kamera auf den Preset des Platzes.
+func (k *Kern) MikroAn(ctx context.Context, absender, ziel int) error {
+	k.mu.Lock()
+	p, bekannt := k.nach[ziel]
 	if !bekannt {
 		k.mu.Unlock()
-		return fehler(CodePlatzUnbekannt, fmt.Sprintf("Platz %d gibt es nicht", nummer))
+		return fehler(CodePlatzUnbekannt, fmt.Sprintf("Platz %d gibt es nicht", ziel))
+	}
+	if err := k.darfPlatz(absender, AktionMikroAn); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	if err := k.darfFremdenPlatz(absender, ziel); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	// Wer nicht die aktive Leitung ist, braucht das erteilte Wort.
+	if absender != k.leitungPlatz && !k.hatWortIntern(ziel) {
+		k.mu.Unlock()
+		return fehler(CodeKeinWort, "Das Wort wurde noch nicht erteilt")
 	}
 	if p.mikro {
 		k.mu.Unlock()
@@ -189,20 +481,23 @@ func (k *Kern) MikroAn(ctx context.Context, nummer int) error {
 		k.mu.Unlock()
 		return fehler(CodeGrenzeErreicht, fmt.Sprintf("%d von %d Mikrofonen offen", offen, k.maxOffen))
 	}
-	if err := k.schreiben(ctx, "mikro_an", map[string]any{"platz": nummer}); err != nil {
+
+	if err := k.schreiben(ctx, "mikro_an", map[string]any{"platz": ziel, "von": absender}); err != nil {
 		k.mu.Unlock()
 		return err
 	}
 	p.mikro = true
+	if w := k.wortmeldungIntern(ziel); w != nil && WortUebergangErlaubt(w.Zustand, WortLaufend) {
+		k.wortmeldungSetzenIntern(ctx, ziel, WortLaufend)
+	}
 	k.stand++
 	aufbau := p.aufbau
-	z := k.zustandIntern()
 	k.mu.Unlock()
 
-	k.melder(z)
+	k.melder()
 
-	// Der Kamerabefehl läuft nebenher. Ein nicht erreichbares Gerät darf die
-	// Antwort an die Clients nicht um das Zeitlimit verzögern.
+	// Der Kamerabefehl läuft nebenher: ein stummes Gerät darf die Antwort an
+	// die Clients nicht um das Zeitlimit verzögern.
 	k.wartend.Add(1)
 	go func() {
 		defer k.wartend.Done()
@@ -212,57 +507,159 @@ func (k *Kern) MikroAn(ctx context.Context, nummer int) error {
 }
 
 // MikroAus schließt ein Mikrofon.
-func (k *Kern) MikroAus(ctx context.Context, nummer int) error {
-	return k.aendern(ctx, nummer, "mikro_aus", func(p *platz) *Fehler {
-		if !p.mikro {
-			return nil // bereits zu, keine Änderung
-		}
-		p.mikro = false
+func (k *Kern) MikroAus(ctx context.Context, absender, ziel int) error {
+	k.mu.Lock()
+	p, bekannt := k.nach[ziel]
+	if !bekannt {
+		k.mu.Unlock()
+		return fehler(CodePlatzUnbekannt, fmt.Sprintf("Platz %d gibt es nicht", ziel))
+	}
+	if err := k.darfPlatz(absender, AktionMikroAus); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	if err := k.darfFremdenPlatz(absender, ziel); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	if !p.mikro {
+		k.mu.Unlock()
 		return nil
-	})
+	}
+
+	if err := k.schreiben(ctx, "mikro_aus", map[string]any{"platz": ziel, "von": absender}); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	p.mikro = false
+	k.wortmeldungSetzenIntern(ctx, ziel, WortBeendet)
+	k.stand++
+	k.mu.Unlock()
+
+	k.melder()
+	return nil
+}
+
+// LeitungUebergeben reicht den Staffelstab weiter. Berechtigt sind viele,
+// aktiv ist genau eine — und die abgebende Seite verliert die Rechte sofort.
+func (k *Kern) LeitungUebergeben(ctx context.Context, absender, ziel int) error {
+	k.mu.Lock()
+	if err := k.darfPlatz(absender, AktionLeitungUebergeben); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	p, bekannt := k.nach[ziel]
+	if !bekannt {
+		k.mu.Unlock()
+		return fehler(CodePlatzUnbekannt, fmt.Sprintf("Platz %d gibt es nicht", ziel))
+	}
+	if p.teilnahme == nil || p.teilnahme.Rolle != RolleLeitung {
+		k.mu.Unlock()
+		return fehler(CodeNichtBerechtigt,
+			fmt.Sprintf("Platz %d ist nicht zur Sitzungsleitung berechtigt", ziel))
+	}
+	if ziel == k.leitungPlatz {
+		k.mu.Unlock()
+		return nil
+	}
+
+	if err := k.schreiben(ctx, "leitung_uebergeben", map[string]any{
+		"von": absender, "an": ziel,
+	}); err != nil {
+		k.mu.Unlock()
+		return err
+	}
+	k.leitungPlatz = ziel
+	k.stand++
+	k.mu.Unlock()
+
+	k.melder()
+	return nil
 }
 
 // KameraAbwarten wartet auf laufende Kamerabefehle. Nur für Tests.
 func (k *Kern) KameraAbwarten() { k.wartend.Wait() }
 
-// aendern führt eine Zustandsänderung durch: prüfen, Ereignis schreiben,
-// Zustand setzen, verteilen. Meldet die Prüfung nil und ändert nichts, wird
-// kein Ereignis geschrieben.
-func (k *Kern) aendern(ctx context.Context, nummer int, art string, pruefen func(*platz) *Fehler) error {
-	k.mu.Lock()
+// darfPlatz prüft Sitzungszustand, Teilnahme und Rolle. Aufrufer hält k.mu.
+func (k *Kern) darfPlatz(nummer int, aktion string) *Fehler {
 	p, bekannt := k.nach[nummer]
-	if !bekannt {
-		k.mu.Unlock()
-		return fehler(CodePlatzUnbekannt, fmt.Sprintf("Platz %d gibt es nicht", nummer))
+	if !bekannt || p.teilnahme == nil {
+		return fehler(CodeNichtBerechtigt, "Für diesen Platz ist niemand angemeldet")
+	}
+	return k.darfIntern(p, aktion)
+}
+
+// darfIntern ist die eine Stelle, an der über Rechte entschieden wird.
+// Aufrufer hält k.mu.
+func (k *Kern) darfIntern(p *platz, aktion string) *Fehler {
+	if p.teilnahme == nil {
+		return fehler(CodeNichtBerechtigt, "Für diesen Platz ist niemand eingetragen")
 	}
 
-	vorher := *p
-	if f := pruefen(p); f != nil {
-		*p = vorher
-		k.mu.Unlock()
-		return f
-	}
-	if *p == vorher {
-		k.mu.Unlock()
-		return nil
+	// Das Eröffnen ist die einzige Aktion vor der laufenden Sitzung.
+	if aktion != AktionSitzungEroeffnen && k.sitzung != SitzungLaufend {
+		return fehler(CodeSitzungLaeuftNicht, "Es läuft keine Sitzung")
 	}
 
-	if err := k.schreiben(ctx, art, map[string]any{"platz": nummer}); err != nil {
-		*p = vorher
-		k.mu.Unlock()
-		return err
+	leitungAktiv := p.aufbau.Nummer == k.leitungPlatz
+	if !rolleDarf(p.teilnahme.Rolle, leitungAktiv, aktion) {
+		if p.teilnahme.Rolle == RolleLeitung && !leitungAktiv {
+			return fehler(CodeNichtBerechtigt, "Die Sitzungsleitung liegt gerade bei einem anderen Platz")
+		}
+		return fehler(CodeNichtBerechtigt, fmt.Sprintf("Die Rolle %s darf das nicht", p.teilnahme.Rolle))
 	}
-	k.stand++
-	z := k.zustandIntern()
-	k.mu.Unlock()
-
-	k.melder(z)
 	return nil
 }
 
+// darfFremdenPlatz erlaubt nur der aktiven Leitung, an fremden Plätzen zu
+// schalten. Aufrufer hält k.mu.
+func (k *Kern) darfFremdenPlatz(absender, ziel int) *Fehler {
+	if absender == ziel || absender == k.leitungPlatz {
+		return nil
+	}
+	return fehler(CodeNichtBerechtigt, "Nur die Sitzungsleitung schaltet fremde Plätze")
+}
+
+// wortmeldungIntern findet die offene Wortmeldung eines Platzes.
+// Aufrufer hält k.mu.
+func (k *Kern) wortmeldungIntern(nummer int) *Wortmeldung {
+	for _, w := range k.redeliste {
+		if w.PlatzNummer == nummer && w.Zustand.Offen() {
+			return w
+		}
+	}
+	return nil
+}
+
+// wortmeldungSetzenIntern schreibt den neuen Zustand und räumt geschlossene
+// Meldungen aus der Liste. Aufrufer hält k.mu.
+func (k *Kern) wortmeldungSetzenIntern(ctx context.Context, nummer int, neu Wortzustand) {
+	w := k.wortmeldungIntern(nummer)
+	if w == nil || !WortUebergangErlaubt(w.Zustand, neu) {
+		return
+	}
+	w.Zustand = neu
+	if err := k.ablage.WortmeldungZustandSetzen(ctx, w.ID, neu); err != nil {
+		k.protokoll.Error("wortmeldung nicht gespeichert", "platz", nummer, "grund", err)
+	}
+	if !neu.Offen() {
+		uebrig := k.redeliste[:0]
+		for _, e := range k.redeliste {
+			if e != w {
+				uebrig = append(uebrig, e)
+			}
+		}
+		k.redeliste = uebrig
+	}
+}
+
+// hatWortIntern sagt, ob ein Platz sprechen darf. Aufrufer hält k.mu.
+func (k *Kern) hatWortIntern(nummer int) bool {
+	w := k.wortmeldungIntern(nummer)
+	return w != nil && (w.Zustand == WortErteilt || w.Zustand == WortLaufend)
+}
+
 func (k *Kern) kameraFahren(a Platzaufbau) {
-	// Ohne Cancel des auslösenden Aufrufs: der Befehl gehört zum Saal, nicht
-	// zur Verbindung, die ihn ausgelöst hat.
 	ctx, abbrechen := context.WithTimeout(context.Background(), k.zeitlimit)
 	defer abbrechen()
 
@@ -291,10 +688,9 @@ func (k *Kern) kameraFahren(a Platzaufbau) {
 	}
 	k.kamera = &Kamerazustand{Name: a.KameraName, Preset: a.Preset, Erreichbar: erreichbar}
 	k.stand++
-	z := k.zustandIntern()
 	k.mu.Unlock()
 
-	k.melder(z)
+	k.melder()
 }
 
 // schreiben hängt ein Ereignis an die Kette. Es wird vor der Zustandsänderung
@@ -304,7 +700,6 @@ func (k *Kern) schreiben(ctx context.Context, art string, nutzlast map[string]an
 	if k.ablage == nil {
 		return nil
 	}
-	// Das Schreiben überlebt eine abgebrochene Client-Verbindung.
 	ctx, abbrechen := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
 	defer abbrechen()
 
@@ -332,16 +727,34 @@ func (k *Kern) zustandIntern() Zustand {
 		Typ:      "zustand",
 		Stand:    k.stand,
 		MaxOffen: k.maxOffen,
-		Plaetze:  make([]PlatzZustand, 0, len(k.plaetze)),
-		Kamera:   k.kamera,
+		Sitzung: SitzungZustand{
+			Titel:        k.titel,
+			Zustand:      k.sitzung,
+			LeitungPlatz: k.leitungPlatz,
+		},
+		Plaetze:   make([]PlatzZustand, 0, len(k.plaetze)),
+		Redeliste: make([]RedelisteEintrag, 0, len(k.redeliste)),
+		Kamera:    k.kamera,
 	}
 	for _, p := range k.plaetze {
-		z.Plaetze = append(z.Plaetze, PlatzZustand{
-			Nummer: p.aufbau.Nummer,
-			Name:   p.aufbau.Name,
-			Mikro:  p.mikro,
-			Belegt: p.belegt,
-		})
+		pz := PlatzZustand{
+			Nummer:  p.aufbau.Nummer,
+			Name:    p.aufbau.Name,
+			Mikro:   p.mikro,
+			Belegt:  p.belegt,
+			HatWort: k.hatWortIntern(p.aufbau.Nummer),
+		}
+		if p.teilnahme != nil {
+			pz.Person = p.teilnahme.Person
+		}
+		z.Plaetze = append(z.Plaetze, pz)
+	}
+	for _, w := range k.redeliste {
+		eintrag := RedelisteEintrag{Platz: w.PlatzNummer, Zustand: w.Zustand}
+		if p := k.nach[w.PlatzNummer]; p != nil && p.teilnahme != nil {
+			eintrag.Person = p.teilnahme.Person
+		}
+		z.Redeliste = append(z.Redeliste, eintrag)
 	}
 	return z
 }

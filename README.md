@@ -1,7 +1,7 @@
-# Kameranachverfolgung — Meilenstein 1
+# Kameranachverfolgung — Meilenstein 1 und 2
 
-Ein Browser meldet „Mikrofon an", der Server erkennt den Sitzplatz und fährt
-die PTZ-Kamera per VISCA over IP auf den zugehörigen Preset.
+Eine Sitzung wird eröffnet, die Leitung erteilt das Wort, das Mikrofon geht auf
+und die PTZ-Kamera fährt per VISCA over IP auf den Preset des Platzes.
 Kein Audio, kein Video, keine Abstimmung.
 
 ## Start
@@ -13,29 +13,39 @@ createdb sitzung                # Datenbank aus config.yaml
 go run ./cmd/server             # aus dem Wurzelverzeichnis starten
 ```
 
-Beim ersten Start wird `migrationen/001_grundlage.sql` eingespielt, falls die
-Tabellen fehlen, und `saal.json` eingelesen. Wiederholtes Starten ändert
-nichts. Andere Konfiguration: `-konfiguration pfad.yaml`.
+Fehlende Tabellen werden beim Start aus `migrationen/` eingespielt, danach
+`saal.json` und `sitzung.json` eingelesen. Wiederholtes Starten ändert nichts.
+Andere Konfiguration: `-konfiguration pfad.yaml`.
 
 ## Seiten
 
 | Adresse | Rolle |
 |---|---|
-| `/` | Sprechstelle: Platz wählen, Mikrofon schalten |
-| `/namensschild?platz=1` | Namensschild eines Platzes, zeigt „spricht" |
+| `/` | Sprechstelle: anmelden, Wort melden, Mikrofon schalten |
+| `/namensschild?platz=1` | Namensschild eines Platzes |
 | `/dolmetscher` | Dolmetscherplatz, zeigt den Redner (ohne Ton) |
 | `/testumgebung` | die drei Geräte nebeneinander in einem Fenster |
 
-Namensschild und Dolmetscherplatz lesen nur mit — sie melden keinen Platz an
-und belegen deshalb keinen. Jede Seite läuft genauso auf echter Hardware.
+Namensschild und Dolmetscherplatz lesen nur mit — sie melden keinen Platz an.
 
 ## Konfiguration
 
-`config.yaml`: `datenbank`, `adresse`, `saal_datei`, `max_offene_mikrofone`,
-`kamera_zeitlimit_ms`.
+`config.yaml`: `datenbank`, `adresse`, `saal_datei`, `sitzungs_datei`,
+`max_offene_mikrofone`, `kamera_zeitlimit_ms`.
 
-`saal.json` beschreibt Saal, Kameras und Plätze samt Presetnummer. Die Presets
-liegen in der Kamera, der Server merkt sich nur die Nummer.
+`saal.json` beschreibt Kameras und Plätze samt Presetnummer; die Presets liegen
+in der Kamera, der Server merkt sich nur die Nummer. `sitzung.json` verbindet
+Person, Platz, Rolle und PIN. Die PIN liegt in der Datenbank nur als
+bcrypt-Hash und geht nie an einen Client.
+
+## Rollen
+
+| Rolle | darf |
+|---|---|
+| `leitung` (aktiv) | Sitzung führen, Wort erteilen und entziehen, Leitung übergeben, jedes Mikrofon |
+| `leitung` (nicht aktiv) | wie ein Delegierter — berechtigt sind viele, aktiv ist genau eine |
+| `delegierter` | Wort melden, eigenes Mikrofon nach erteiltem Wort |
+| `schriftfuehrung`, `gast` | nur zusehen |
 
 ## Test
 
@@ -49,16 +59,19 @@ Achtung: Die Testdatenbank wird dabei geleert.
 
 ## Was zu wissen ist
 
-- **Ereigniskette**: `hash = sha256(vorgaenger_hash ‖ folge_nr ‖ zeit ‖ art ‖ nutzlast)`;
-  `folge_nr` als 8 Byte big endian, Zeit als RFC3339 mit Nanosekunden in UTC
-  auf Mikrosekunden gestutzt, Nutzlast als kanonisches JSON. Geschrieben in
-  einer Transaktion mit `SELECT … FOR UPDATE` auf den letzten Eintrag.
-- **Ereignis vor Zustand**: Scheitert der Protokolleintrag, bleibt der Zustand
+- **Rechte nur im Kern.** `intern/kern` entscheidet, die Oberfläche graut nur
+  aus. Das Feld `ich.darf` im Zustand kommt fertig aus dem Kern.
+- **Ereigniskette**: `hash = sha256(vorgaenger_hash ‖ folge_nr ‖ zeit ‖ art ‖ nutzlast)`,
+  `folge_nr` als 8 Byte big endian, Zeit als RFC3339 in UTC auf Mikrosekunden
+  gestutzt, Nutzlast als kanonisches JSON. Geschrieben in einer Transaktion mit
+  `SELECT … FOR UPDATE` auf den letzten Eintrag.
+- **Ereignis vor Zustand.** Scheitert der Protokolleintrag, bleibt der Zustand
   unverändert und der Client bekommt `speicher_fehler`.
-- **Kamera nebenher**: Der Kamerabefehl läuft in einer eigenen Routine. Eine
-  stumme Kamera verzögert die Clients nicht, sie erzeugt das Ereignis
-  `kamera_nicht_erreichbar` und `erreichbar: false`.
-- **Kein Ton**: Der Dolmetscherplatz zeigt nur, wer spricht. Kanalwahl und
-  Hustentaste sind sichtbar abgeschaltet, bis es den Audioteil gibt.
-- **Der Saal hängt von nichts ab**: keine externe Schriftart, kein CDN, kein
-  Browser-Speicher in der Oberfläche.
+- **Kamera nebenher.** Eine stumme Kamera verzögert die Clients nicht, sie
+  erzeugt `kamera_nicht_erreichbar` und `erreichbar: false`.
+- **Eine geschlossene Sitzung wird nicht wieder eröffnet** — so will es die
+  Zustandskette. Für den nächsten Durchlauf einen neuen `titel` in
+  `sitzung.json` eintragen.
+- **Übergabe der Leitung** braucht eine zweite Teilnahme mit der Rolle
+  `leitung`; in `sitzung.json` steht bewusst nur eine.
+- **Kein Ton.** Der Dolmetscherplatz zeigt nur, wer spricht.

@@ -17,9 +17,11 @@ import (
 )
 
 // Nachricht ist das, was der Client schickt. Das Feld typ entscheidet.
+// platz ist bei mikro_an, wort_erteilen und Verwandten der Zielplatz.
 type Nachricht struct {
 	Typ   string `json:"typ"`
 	Platz int    `json:"platz"`
+	Pin   string `json:"pin"`
 }
 
 // Fehlernachricht geht an genau den Client, dessen Befehl scheiterte.
@@ -27,6 +29,13 @@ type Fehlernachricht struct {
 	Typ  string `json:"typ"`
 	Code string `json:"code"`
 	Text string `json:"text"`
+}
+
+// zustandNachricht ist der gemeinsame Zustand plus dem verbindungseigenen
+// Teil. "ich" ist die einzige Stelle, an der nicht alle dasselbe bekommen.
+type zustandNachricht struct {
+	kern.Zustand
+	Ich *kern.IchZustand `json:"ich"`
 }
 
 // Server verbindet den Kern mit HTTP.
@@ -85,23 +94,18 @@ func (s *Server) seite(datei string) http.Handler {
 }
 
 // Verteilen schickt den vollständigen Zustand an alle Clients.
-func (s *Server) Verteilen(z kern.Zustand) {
-	roh, err := json.Marshal(z)
-	if err != nil {
-		s.protokoll.Error("zustand nicht verpackbar", "grund", err)
-		return
-	}
+func (s *Server) Verteilen() {
+	z := s.kern.Zustand()
 
 	s.mu.Lock()
-	defer s.mu.Unlock()
+	verbindungen := make([]*verbindung, 0, len(s.verbindungen))
 	for v := range s.verbindungen {
-		select {
-		case v.sende <- roh:
-		default:
-			// Client kommt nicht nach. Er bekommt beim nächsten Zustand
-			// wieder alles — Teiländerungen gibt es nicht, also fehlt nichts.
-			s.protokoll.Warn("zustand verworfen, client zu langsam")
-		}
+		verbindungen = append(verbindungen, v)
+	}
+	s.mu.Unlock()
+
+	for _, v := range verbindungen {
+		v.stelle(z)
 	}
 }
 
@@ -164,51 +168,88 @@ func (v *verbindung) lesen(ctx context.Context) {
 
 		var n Nachricht
 		if err := json.Unmarshal(roh, &n); err != nil {
-			v.melde(&kern.Fehler{Code: "platz_unbekannt", Text: "Nachricht nicht lesbar"})
+			v.melde(&kern.Fehler{Code: kern.CodePlatzUnbekannt, Text: "Nachricht nicht lesbar"})
 			continue
 		}
 		v.ausfuehren(ctx, n)
 	}
 }
 
+// ausfuehren reicht den Befehl an den Kern weiter. Hier wird nichts geprüft —
+// jede Rechtefrage beantwortet der Kern.
 func (v *verbindung) ausfuehren(ctx context.Context, n Nachricht) {
 	s := v.server
+	absender := v.eigenerPlatz()
 	var err error
 
 	switch n.Typ {
 	case "anmelden":
-		v.server.mu.Lock()
-		vorher := v.platz
-		v.server.mu.Unlock()
-		if vorher == n.Platz {
-			return
-		}
-		if err = s.kern.Anmelden(ctx, n.Platz); err == nil {
-			if vorher != 0 {
-				if fehler := s.kern.Abmelden(ctx, vorher); fehler != nil {
-					s.protokoll.Warn("alter platz nicht freigegeben", "platz", vorher, "grund", fehler)
-				}
-			}
-			v.server.mu.Lock()
-			v.platz = n.Platz
-			v.server.mu.Unlock()
-		}
+		v.anmelden(ctx, n)
+		return
 	case "mikro_an":
-		err = s.kern.MikroAn(ctx, n.Platz)
+		err = s.kern.MikroAn(ctx, absender, n.Platz)
 	case "mikro_aus":
-		err = s.kern.MikroAus(ctx, n.Platz)
+		err = s.kern.MikroAus(ctx, absender, n.Platz)
+	case kern.AktionWortMelden:
+		err = s.kern.WortMelden(ctx, absender)
+	case kern.AktionWortZurueckziehen:
+		err = s.kern.WortZurueckziehen(ctx, absender)
+	case kern.AktionWortErteilen:
+		err = s.kern.WortErteilen(ctx, absender, n.Platz)
+	case kern.AktionWortEntziehen:
+		err = s.kern.WortEntziehen(ctx, absender, n.Platz)
+	case kern.AktionLeitungUebergeben:
+		err = s.kern.LeitungUebergeben(ctx, absender, n.Platz)
+	case kern.AktionSitzungEroeffnen:
+		err = s.kern.SitzungEroeffnen(ctx, absender)
+	case kern.AktionSitzungSchliessen:
+		err = s.kern.SitzungSchliessen(ctx, absender)
 	default:
 		return
 	}
+	v.antworten(n, err)
+}
 
-	if err != nil {
-		var f *kern.Fehler
-		if errors.As(err, &f) {
-			v.melde(f)
-			return
-		}
-		s.protokoll.Error("befehl fehlgeschlagen", "typ", n.Typ, "platz", n.Platz, "grund", err)
+func (v *verbindung) anmelden(ctx context.Context, n Nachricht) {
+	s := v.server
+	vorher := v.eigenerPlatz()
+	if vorher == n.Platz {
+		return
 	}
+
+	if err := s.kern.Anmelden(ctx, n.Platz, n.Pin); err != nil {
+		v.antworten(n, err)
+		return
+	}
+	if vorher != 0 {
+		if err := s.kern.Abmelden(ctx, vorher); err != nil {
+			s.protokoll.Warn("alter platz nicht freigegeben", "platz", vorher, "grund", err)
+		}
+	}
+	s.mu.Lock()
+	v.platz = n.Platz
+	s.mu.Unlock()
+
+	// Die Rechte hängen am Platz — nach der Anmeldung neu verteilen.
+	s.Verteilen()
+}
+
+func (v *verbindung) antworten(n Nachricht, err error) {
+	if err == nil {
+		return
+	}
+	var f *kern.Fehler
+	if errors.As(err, &f) {
+		v.melde(f)
+		return
+	}
+	v.server.protokoll.Error("befehl fehlgeschlagen", "typ", n.Typ, "platz", n.Platz, "grund", err)
+}
+
+func (v *verbindung) eigenerPlatz() int {
+	v.server.mu.Lock()
+	defer v.server.mu.Unlock()
+	return v.platz
 }
 
 func (v *verbindung) melde(f *kern.Fehler) {
@@ -216,20 +257,29 @@ func (v *verbindung) melde(f *kern.Fehler) {
 	if err != nil {
 		return
 	}
-	select {
-	case v.sende <- roh:
-	default:
-	}
+	v.abschicken(roh)
 }
 
 func (v *verbindung) stelle(z kern.Zustand) {
-	roh, err := json.Marshal(z)
+	n := zustandNachricht{Zustand: z}
+	if platz := v.eigenerPlatz(); platz != 0 {
+		n.Ich = v.server.kern.Ich(platz)
+	}
+	roh, err := json.Marshal(n)
 	if err != nil {
+		v.server.protokoll.Error("zustand nicht verpackbar", "grund", err)
 		return
 	}
+	v.abschicken(roh)
+}
+
+func (v *verbindung) abschicken(roh []byte) {
 	select {
 	case v.sende <- roh:
 	default:
+		// Client kommt nicht nach. Er bekommt beim nächsten Zustand wieder
+		// alles — Teiländerungen gibt es nicht, also fehlt nichts.
+		v.server.protokoll.Warn("nachricht verworfen, client zu langsam")
 	}
 }
 

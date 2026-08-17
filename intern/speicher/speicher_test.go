@@ -1,9 +1,12 @@
 package speicher_test
 
 import (
+	"bytes"
 	"context"
 	"os"
 	"testing"
+
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 
@@ -37,13 +40,9 @@ func frischePostgres(t *testing.T, dsn string) speicher.Ablage {
 	}
 	defer teich.Close()
 	if _, err := teich.Exec(ctx, `
-		DROP TABLE IF EXISTS ereignis, preset, platz, kamera, saal, organisation CASCADE`); err != nil {
+		DROP TABLE IF EXISTS wortmeldung, teilnahme, sitzung, person,
+		                     ereignis, preset, platz, kamera, saal, organisation CASCADE`); err != nil {
 		t.Fatalf("testdatenbank leeren: %v", err)
-	}
-
-	migration, err := os.ReadFile("../../migrationen/001_grundlage.sql")
-	if err != nil {
-		t.Fatalf("migration lesen: %v", err)
 	}
 
 	p, err := speicher.Verbinden(ctx, dsn)
@@ -51,8 +50,17 @@ func frischePostgres(t *testing.T, dsn string) speicher.Ablage {
 		t.Fatalf("verbinden: %v", err)
 	}
 	t.Cleanup(p.Schliessen)
-	if err := p.SchemaSicherstellen(ctx, string(migration)); err != nil {
-		t.Fatalf("schema anlegen: %v", err)
+	for _, m := range []struct{ datei, waechter string }{
+		{"../../migrationen/001_grundlage.sql", "ereignis"},
+		{"../../migrationen/002_sitzung.sql", "wortmeldung"},
+	} {
+		roh, err := os.ReadFile(m.datei)
+		if err != nil {
+			t.Fatalf("migration lesen: %v", err)
+		}
+		if err := p.SchemaSicherstellen(ctx, m.waechter, string(roh)); err != nil {
+			t.Fatalf("schema anlegen: %v", err)
+		}
 	}
 	return p
 }
@@ -241,4 +249,72 @@ func zaehlen(t *testing.T, ctx context.Context, ablage speicher.Ablage, tabellen
 		stand[tabelle] = anzahl
 	}
 	return stand
+}
+
+// TestSitzungImportIdempotent: zweimaliger Import derselben sitzung.json
+// erzeugt keine zusätzlichen Zeilen, und die PIN steht nirgends im Klartext.
+func TestSitzungImportIdempotent(t *testing.T) {
+	for name, bauen := range ablagen(t) {
+		t.Run(name, func(t *testing.T) {
+			ctx := context.Background()
+			ablage := bauen(t)
+			tabellen := []string{"person", "sitzung", "teilnahme"}
+
+			saalID, _, err := ablage.SaalImportieren(ctx, testsaal())
+			if err != nil {
+				t.Fatalf("saal einlesen: %v", err)
+			}
+
+			erste, err := ablage.SitzungImportieren(ctx, saalID, testsitzung())
+			if err != nil {
+				t.Fatalf("erster import: %v", err)
+			}
+			vorher := zaehlen(t, ctx, ablage, tabellen)
+
+			zweite, err := ablage.SitzungImportieren(ctx, saalID, testsitzung())
+			if err != nil {
+				t.Fatalf("zweiter import: %v", err)
+			}
+			nachher := zaehlen(t, ctx, ablage, tabellen)
+
+			if zweite.SitzungID != erste.SitzungID {
+				t.Errorf("sitzung_id hat sich geändert: %s -> %s", erste.SitzungID, zweite.SitzungID)
+			}
+			for _, tabelle := range tabellen {
+				if vorher[tabelle] != nachher[tabelle] {
+					t.Errorf("tabelle %s: %d zeilen vor, %d nach dem zweiten import",
+						tabelle, vorher[tabelle], nachher[tabelle])
+				}
+			}
+			if len(erste.Teilnahmen) != 3 {
+				t.Fatalf("3 teilnahmen erwartet, %d bekommen", len(erste.Teilnahmen))
+			}
+
+			// Die PIN darf nirgends im Klartext liegen, und der Hash muss
+			// über beide Importe hinweg zur PIN passen.
+			for i, teilnahme := range zweite.Teilnahmen {
+				if bytes.Contains(teilnahme.PinHash, []byte(testsitzung().Teilnahmen[i].Pin)) {
+					t.Errorf("platz %d: die pin steht im hash", teilnahme.PlatzNummer)
+				}
+				if err := bcrypt.CompareHashAndPassword(teilnahme.PinHash,
+					[]byte(testsitzung().Teilnahmen[i].Pin)); err != nil {
+					t.Errorf("platz %d: die pin passt nach dem zweiten import nicht mehr", teilnahme.PlatzNummer)
+				}
+			}
+			if erste.Teilnahmen[0].Rolle != kern.RolleLeitung {
+				t.Errorf("platz 1 sollte die leitung sein, ist %s", erste.Teilnahmen[0].Rolle)
+			}
+		})
+	}
+}
+
+func testsitzung() speicher.Sitzungsdaten {
+	return speicher.Sitzungsdaten{
+		Titel: "Probesitzung",
+		Teilnahmen: []speicher.Teilnahmedaten{
+			{Platz: 1, Person: "Anke Bergmann", Rolle: "leitung", Pin: "1234"},
+			{Platz: 2, Person: "Jonas Öztürk", Rolle: "delegierter", Pin: "2345"},
+			{Platz: 3, Person: "Rita Falk", Rolle: "schriftfuehrung", Pin: "3456"},
+		},
+	}
 }

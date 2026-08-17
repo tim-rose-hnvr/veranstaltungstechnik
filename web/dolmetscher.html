@@ -35,7 +35,7 @@
   .zeile .aus { color: #71717a; }
 
   /* Der Kanalbereich steht hier, damit die Anordnung stimmt. Er ist
-     abgeschaltet, weil Meilenstein 1 keinen Ton führt. */
+     abgeschaltet, weil das System noch keinen Ton führt. */
   .gesperrt { opacity: .45; }
   .kanaele { display: flex; gap: .5rem; }
   .kanaele button {
@@ -59,7 +59,7 @@
 </div>
 
 <div class="karte weitere">
-  <div class="titel">Saal</div>
+  <div class="titel">Saal und Redeliste</div>
   <div id="liste"></div>
 </div>
 
@@ -70,8 +70,8 @@
     <button disabled>EN</button>
     <button disabled>Relais</button>
   </div>
-  <div class="hinweis">Ohne Funktion: Meilenstein 1 führt keinen Ton. Kanäle,
-    Hustentaste und Relais kommen mit dem Audioteil.</div>
+  <div class="hinweis">Ohne Funktion: das System führt noch keinen Ton. Kanäle,
+    Hustentaste und Relais kommen mit dem Audioteil in Meilenstein 3.</div>
 </div>
 
 <script>
@@ -127,7 +127,7 @@ function zeichnen(n) {
     knoten.rednerplatz.textContent = "—";
     knoten.rednerkarte.className = "karte";
   } else {
-    knoten.redner.textContent = offene[0].name;
+    knoten.redner.textContent = offene[0].person || offene[0].name;
     knoten.rednerplatz.textContent = offene.length === 1
       ? "Platz " + offene[0].nummer
       : "Platz " + offene[0].nummer + " · " + offene.length + " Mikrofone offen";
@@ -141,11 +141,13 @@ function zeichnen(n) {
     zeile.className = "zeile";
 
     const links = document.createElement("span");
-    links.textContent = p.nummer + " · " + p.name;
+    links.textContent = p.nummer + " · " + (p.person || p.name);
 
     const rechts = document.createElement("span");
     rechts.className = p.mikro ? "an" : "aus";
-    rechts.textContent = p.mikro ? "spricht" : (p.belegt ? "am Platz" : "frei");
+    rechts.textContent = p.mikro
+      ? "spricht"
+      : (p.hat_wort ? "hat das Wort" : (p.belegt ? "am Platz" : "frei"));
 
     zeile.appendChild(links);
     zeile.appendChild(rechts);

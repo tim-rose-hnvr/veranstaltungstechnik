@@ -43,22 +43,23 @@ func Verbinden(ctx context.Context, dsn string) (*Postgres, error) {
 // Schliessen gibt den Verbindungspool frei.
 func (p *Postgres) Schliessen() { p.teich.Close() }
 
-// SchemaSicherstellen spielt die Migration ein, wenn die Tabellen fehlen.
-// Es wird nichts geändert, wenn sie schon da sind.
-func (p *Postgres) SchemaSicherstellen(ctx context.Context, migration string) error {
+// SchemaSicherstellen spielt eine Migration ein, wenn sie noch nicht gelaufen
+// ist. Ob sie gelaufen ist, verrät die Wächtertabelle — die letzte Tabelle,
+// die die Migration anlegt. So braucht es keine eigene Verwaltungstabelle.
+func (p *Postgres) SchemaSicherstellen(ctx context.Context, waechter, migration string) error {
 	return p.imVorgang(ctx, func(tx pgx.Tx) error {
 		if _, err := tx.Exec(ctx, "SELECT pg_advisory_xact_lock($1)", sperreImport); err != nil {
 			return err
 		}
 		var vorhanden *string
-		if err := tx.QueryRow(ctx, "SELECT to_regclass('public.ereignis')::text").Scan(&vorhanden); err != nil {
+		if err := tx.QueryRow(ctx, "SELECT to_regclass($1)::text", "public."+waechter).Scan(&vorhanden); err != nil {
 			return fmt.Errorf("schema prüfen: %w", err)
 		}
 		if vorhanden != nil {
 			return nil
 		}
 		if _, err := tx.Exec(ctx, migration); err != nil {
-			return fmt.Errorf("migration einspielen: %w", err)
+			return fmt.Errorf("migration %s einspielen: %w", waechter, err)
 		}
 		return nil
 	})
@@ -242,6 +243,7 @@ func (p *Postgres) Zaehlen(ctx context.Context, tabelle string) (int, error) {
 	erlaubt := map[string]bool{
 		"organisation": true, "saal": true, "kamera": true,
 		"platz": true, "preset": true, "ereignis": true,
+		"person": true, "sitzung": true, "teilnahme": true, "wortmeldung": true,
 	}
 	if !erlaubt[tabelle] {
 		return 0, fmt.Errorf("unbekannte tabelle %q", tabelle)
