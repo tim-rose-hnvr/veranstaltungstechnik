@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"sort"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 
@@ -15,6 +16,7 @@ type gSitzung struct {
 	saalID  string
 	titel   string
 	zustand kern.Sitzungszustand
+	beginn  *time.Time
 }
 
 type gTeilnahme struct {
@@ -57,7 +59,7 @@ func (g *Gedaechtnis) SitzungImportieren(ctx context.Context, saalID string, d S
 		g.sitzungen[sitzung.id] = sitzung
 	}
 
-	stand := Sitzungsstand{SitzungID: sitzung.id, Titel: sitzung.titel, Zustand: sitzung.zustand}
+	stand := Sitzungsstand{SitzungID: sitzung.id, Titel: sitzung.titel, Zustand: sitzung.zustand, Beginn: sitzung.beginn}
 
 	for _, t := range d.Teilnahmen {
 		if _, bekannt := g.plaetze[fmt.Sprintf("%s|%d", saalID, t.Platz)]; !bekannt {
@@ -116,7 +118,9 @@ func (g *Gedaechtnis) SitzungImportieren(ctx context.Context, saalID string, d S
 }
 
 // SitzungZustandSetzen hält den Zustandswechsel fest.
-func (g *Gedaechtnis) SitzungZustandSetzen(ctx context.Context, sitzungID string, zustand kern.Sitzungszustand) error {
+func (g *Gedaechtnis) SitzungZustandSetzen(ctx context.Context, sitzungID string,
+	zustand kern.Sitzungszustand, zeit time.Time) error {
+
 	g.mu.Lock()
 	defer g.mu.Unlock()
 
@@ -125,6 +129,9 @@ func (g *Gedaechtnis) SitzungZustandSetzen(ctx context.Context, sitzungID string
 		return fmt.Errorf("sitzung %s gibt es nicht", sitzungID)
 	}
 	s.zustand = zustand
+	if zustand == kern.SitzungLaufend && s.beginn == nil {
+		s.beginn = &zeit
+	}
 	return nil
 }
 

@@ -105,6 +105,7 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 		SitzungID:      stand.SitzungID,
 		Titel:          stand.Titel,
 		SitzungZustand: stand.Zustand,
+		Beginn:         stand.Beginn,
 		Plaetze:        plaetze,
 		Teilnahmen:     stand.Teilnahmen,
 		Wortmeldungen:  stand.Wortmeldungen,

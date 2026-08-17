@@ -22,7 +22,7 @@ type Ablage interface {
 	Zaehlen(ctx context.Context, tabelle string) (int, error)
 
 	// Schreibwege des Kerns.
-	SitzungZustandSetzen(ctx context.Context, sitzungID string, zustand kern.Sitzungszustand) error
+	SitzungZustandSetzen(ctx context.Context, sitzungID string, zustand kern.Sitzungszustand, zeit time.Time) error
 	TeilnahmeZustandSetzen(ctx context.Context, teilnahmeID string, zustand kern.Teilnahmezustand) error
 	WortmeldungAnlegen(ctx context.Context, sitzungID, teilnahmeID string) (string, int64, error)
 	WortmeldungZustandSetzen(ctx context.Context, wortmeldungID string, zustand kern.Wortzustand) error

@@ -465,3 +465,109 @@ func enthaelt(liste []string, wert string) bool {
 	}
 	return false
 }
+
+// TestZeitachseInJedemEreignis: jedes Ereignis nach der Eröffnung trägt die
+// Sitzung und die Millisekunden seit Sitzungsbeginn. Ohne diese Zeitachse
+// lassen sich Aufzeichnung, Transkript und Protokoll später nicht zusammen-
+// bringen — nachrüsten geht nicht.
+func TestZeitachseInJedemEreignis(t *testing.T) {
+	p := aufbauen(t, 5, 3, standardbesetzung())
+	ctx := context.Background()
+
+	// Vor der Eröffnung gibt es keinen Nullpunkt, also auch keine Millisekunden.
+	if err := p.kern.Anmelden(ctx, 2, "2222"); err != nil {
+		t.Fatalf("anmelden: %v", err)
+	}
+	eroeffnen(t, p)
+
+	if err := p.kern.WortMelden(ctx, 2); err != nil {
+		t.Fatalf("wortmeldung: %v", err)
+	}
+	if err := p.kern.WortErteilen(ctx, 1, 2); err != nil {
+		t.Fatalf("worterteilung: %v", err)
+	}
+
+	kette, err := p.ablage.Ereignisse(ctx, p.saalID)
+	if err != nil {
+		t.Fatalf("kette lesen: %v", err)
+	}
+
+	var vorher int64 = -1
+	var mitZeit int
+	for _, e := range kette {
+		if e.Art == "platz_angemeldet" {
+			if _, gefunden := e.Nutzlast["ms"]; gefunden {
+				t.Error("vor der eröffnung darf es keine millisekunden geben")
+			}
+			continue
+		}
+
+		sitzung, gefunden := e.Nutzlast["sitzung"]
+		if !gefunden || sitzung == "" {
+			t.Errorf("ereignis %q ohne sitzung: %v", e.Art, e.Nutzlast)
+		}
+		roh, gefunden := e.Nutzlast["ms"]
+		if !gefunden {
+			t.Fatalf("ereignis %q ohne millisekunden: %v", e.Art, e.Nutzlast)
+		}
+		ms, passt := millisekunden(roh)
+		if !passt {
+			t.Fatalf("ereignis %q: millisekunden sind %T, nicht zählbar", e.Art, roh)
+		}
+		if ms < 0 {
+			t.Errorf("ereignis %q liegt vor dem sitzungsbeginn: %d ms", e.Art, ms)
+		}
+		if ms < vorher {
+			t.Errorf("die zeitachse läuft rückwärts: %d nach %d", ms, vorher)
+		}
+		vorher = ms
+		mitZeit++
+	}
+
+	if mitZeit < 3 {
+		t.Errorf("mindestens drei ereignisse auf der zeitachse erwartet, %d gefunden", mitZeit)
+	}
+	// Die Eröffnung selbst ist der Nullpunkt.
+	if kette[1].Art != "sitzung_eroeffnet" {
+		t.Fatalf("an stelle 2 wurde die eröffnung erwartet, %q gefunden", kette[1].Art)
+	}
+	if ms, _ := millisekunden(kette[1].Nutzlast["ms"]); ms > 50 {
+		t.Errorf("die eröffnung sollte bei 0 ms liegen, liegt bei %d", ms)
+	}
+	if p.kern.Beginn().IsZero() {
+		t.Error("der nullpunkt der zeitachse fehlt")
+	}
+}
+
+// millisekunden liest den Wert unabhängig davon, ob er direkt aus dem Kern
+// kommt (int64) oder den Umweg über jsonb genommen hat (float64).
+func millisekunden(wert any) (int64, bool) {
+	switch zahl := wert.(type) {
+	case int64:
+		return zahl, true
+	case float64:
+		return int64(zahl), true
+	default:
+		return 0, false
+	}
+}
+
+// TestZeitachseImHash: die Millisekunden stehen in der Nutzlast und gehen
+// damit in den Hash ein — eine nachträglich verschobene Zeitachse fällt auf.
+func TestZeitachseImHash(t *testing.T) {
+	p := aufbauen(t, 5, 3, standardbesetzung())
+	eroeffnen(t, p)
+
+	kette, err := p.ablage.Ereignisse(context.Background(), p.saalID)
+	if err != nil {
+		t.Fatalf("kette lesen: %v", err)
+	}
+	if err := kern.KettePruefen(kette); err != nil {
+		t.Fatalf("die kette sollte in ordnung sein: %v", err)
+	}
+
+	kette[0].Nutzlast["ms"] = int64(999999)
+	if err := kern.KettePruefen(kette); err == nil {
+		t.Fatal("eine verschobene zeitachse hätte auffallen müssen")
+	}
+}

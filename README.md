@@ -68,6 +68,11 @@ Achtung: Die Testdatenbank wird dabei geleert.
   `SELECT … FOR UPDATE` auf den letzten Eintrag.
 - **Ereignis vor Zustand.** Scheitert der Protokolleintrag, bleibt der Zustand
   unverändert und der Client bekommt `speicher_fehler`.
+- **Eine Zeitachse je Sitzung.** Jedes Ereignis trägt `sitzung` und `ms` —
+  Millisekunden seit der Eröffnung. Beides steht in der Nutzlast und geht
+  damit in den Hash ein: die Zeitachse ist fälschungssicher, ohne dass die
+  Hash-Regel sich ändert. Ohne sie ließen sich Aufzeichnung, Transkript und
+  Protokoll später nicht zusammenbringen.
 - **Kamera nebenher.** Eine stumme Kamera verzögert die Clients nicht, sie
   erzeugt `kamera_nicht_erreichbar` und `erreichbar: false`.
 - **Eine geschlossene Sitzung wird nicht wieder eröffnet** — so will es die

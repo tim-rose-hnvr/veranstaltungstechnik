@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -34,6 +35,7 @@ type Sitzungsstand struct {
 	SitzungID     string
 	Titel         string
 	Zustand       kern.Sitzungszustand
+	Beginn        *time.Time // Nullpunkt der Zeitachse, solange nicht eröffnet: nil
 	Teilnahmen    []kern.Teilnahmeaufbau
 	Wortmeldungen []kern.Wortmeldung
 }
@@ -124,13 +126,15 @@ func (p *Postgres) SitzungImportieren(ctx context.Context, saalID string, d Sitz
 		// Die Sitzung hat keine Eindeutigkeit auf (saal_id, titel), deshalb
 		// erst suchen, dann anlegen — unter der Vorgangssperre von oben.
 		var zustand string
+		var beginn *time.Time
 		err := tx.QueryRow(ctx, `
-			SELECT id::text, zustand FROM sitzung
+			SELECT id::text, zustand, beginn FROM sitzung
 			WHERE saal_id = $1 AND titel = $2 ORDER BY id LIMIT 1`,
-			saalID, d.Titel).Scan(&stand.SitzungID, &zustand)
+			saalID, d.Titel).Scan(&stand.SitzungID, &zustand, &beginn)
 		switch {
 		case err == nil:
 			stand.Zustand = kern.Sitzungszustand(zustand)
+			stand.Beginn = beginn
 		case errors.Is(err, pgx.ErrNoRows):
 			if err := tx.QueryRow(ctx, `
 				INSERT INTO sitzung (saal_id, titel) VALUES ($1, $2)
@@ -231,17 +235,21 @@ func (p *Postgres) teilnahmeSichern(ctx context.Context, tx pgx.Tx,
 	return id, hash, nil
 }
 
-// SitzungZustandSetzen hält den Zustandswechsel der Sitzung fest.
-func (p *Postgres) SitzungZustandSetzen(ctx context.Context, sitzungID string, zustand kern.Sitzungszustand) error {
+// SitzungZustandSetzen hält den Zustandswechsel der Sitzung fest. zeit kommt
+// vom Kern, damit der Nullpunkt der Zeitachse in Datenbank und Kern derselbe
+// ist — sonst laufen Ereigniszeiten und Aufzeichnung auseinander.
+func (p *Postgres) SitzungZustandSetzen(ctx context.Context, sitzungID string,
+	zustand kern.Sitzungszustand, zeit time.Time) error {
+
 	var err error
 	switch zustand {
 	case kern.SitzungLaufend:
 		_, err = p.teich.Exec(ctx, `
-			UPDATE sitzung SET zustand = $2, beginn = coalesce(beginn, now()) WHERE id = $1`,
-			sitzungID, string(zustand))
+			UPDATE sitzung SET zustand = $2, beginn = coalesce(beginn, $3) WHERE id = $1`,
+			sitzungID, string(zustand), zeit)
 	case kern.SitzungGeschlossen, kern.SitzungArchiviert:
 		_, err = p.teich.Exec(ctx, `
-			UPDATE sitzung SET zustand = $2, ende = now() WHERE id = $1`, sitzungID, string(zustand))
+			UPDATE sitzung SET zustand = $2, ende = $3 WHERE id = $1`, sitzungID, string(zustand), zeit)
 	default:
 		_, err = p.teich.Exec(ctx, "UPDATE sitzung SET zustand = $2 WHERE id = $1", sitzungID, string(zustand))
 	}

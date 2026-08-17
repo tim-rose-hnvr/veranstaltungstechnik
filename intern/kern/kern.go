@@ -31,7 +31,7 @@ type Kamerasteuerung interface {
 // Ablage ist alles, was der Kern dauerhaft festhalten muss.
 type Ablage interface {
 	EreignisAnfuegen(ctx context.Context, saalID, art string, nutzlast map[string]any) (Ereignis, error)
-	SitzungZustandSetzen(ctx context.Context, sitzungID string, zustand Sitzungszustand) error
+	SitzungZustandSetzen(ctx context.Context, sitzungID string, zustand Sitzungszustand, zeit time.Time) error
 	TeilnahmeZustandSetzen(ctx context.Context, teilnahmeID string, zustand Teilnahmezustand) error
 	WortmeldungAnlegen(ctx context.Context, sitzungID, teilnahmeID string) (string, int64, error)
 	WortmeldungZustandSetzen(ctx context.Context, wortmeldungID string, zustand Wortzustand) error
@@ -79,6 +79,7 @@ type Aufbau struct {
 	SitzungID      string
 	Titel          string
 	SitzungZustand Sitzungszustand
+	Beginn         *time.Time // Nullpunkt der Zeitachse, nil solange nicht eröffnet
 	Plaetze        []Platzaufbau
 	Teilnahmen     []Teilnahmeaufbau
 	Wortmeldungen  []Wortmeldung // offene aus der Datenbank
@@ -101,6 +102,7 @@ type Kern struct {
 
 	mu           sync.Mutex
 	sitzung      Sitzungszustand
+	beginn       time.Time // Nullpunkt der Zeitachse, Nullwert: noch nicht eröffnet
 	plaetze      []*platz
 	nach         map[int]*platz
 	leitungPlatz int
@@ -136,6 +138,10 @@ func Neu(a Aufbau, steuerung Kamerasteuerung, ablage Ablage, protokoll *slog.Log
 		sitzung:   a.SitzungZustand,
 		nach:      make(map[int]*platz, len(a.Plaetze)),
 		melder:    func() {},
+	}
+
+	if a.Beginn != nil {
+		k.beginn = *a.Beginn
 	}
 
 	for _, aufbau := range a.Plaetze {
@@ -331,12 +337,21 @@ func (k *Kern) sitzungSetzen(ctx context.Context, absender int, aktion string,
 			fmt.Sprintf("Die Sitzung ist %s, das geht hier nicht", k.sitzung))
 	}
 
+	// Der Nullpunkt der Zeitachse wird vor dem Ereignis gesetzt, damit die
+	// Eröffnung selbst schon bei 0 ms liegt.
+	vorherigerBeginn := k.beginn
+	jetzt := time.Now()
+	if ziel == SitzungLaufend && k.beginn.IsZero() {
+		k.beginn = jetzt
+	}
+
 	if err := k.schreiben(ctx, art, map[string]any{"platz": absender, "zustand": string(ziel)}); err != nil {
+		k.beginn = vorherigerBeginn
 		k.mu.Unlock()
 		return err
 	}
 	k.sitzung = ziel
-	if err := k.ablage.SitzungZustandSetzen(ctx, k.sitzungID, ziel); err != nil {
+	if err := k.ablage.SitzungZustandSetzen(ctx, k.sitzungID, ziel, jetzt); err != nil {
 		k.protokoll.Error("sitzungszustand nicht gespeichert", "grund", err)
 	}
 
@@ -703,11 +718,41 @@ func (k *Kern) schreiben(ctx context.Context, art string, nutzlast map[string]an
 	ctx, abbrechen := context.WithTimeout(context.WithoutCancel(ctx), 5*time.Second)
 	defer abbrechen()
 
+	nutzlast = k.zeitachseAnhaengen(nutzlast)
 	if _, err := k.ablage.EreignisAnfuegen(ctx, k.saalID, art, nutzlast); err != nil {
 		k.protokoll.Error("ereignis nicht geschrieben", "art", art, "grund", err)
 		return fehler(CodeSpeicherFehler, "Ereignis konnte nicht protokolliert werden")
 	}
 	return nil
+}
+
+// zeitachseAnhaengen ergänzt jede Nutzlast um die Sitzung und um die
+// Millisekunden seit Sitzungsbeginn. Eine Zeitachse je Sitzung ist die
+// Voraussetzung dafür, Aufzeichnung, Transkript und Protokoll später
+// zusammenzubringen — nachträglich ist sie nicht herstellbar.
+//
+// Beides steht bewusst in der Nutzlast und nicht in einer eigenen Spalte:
+// die Nutzlast geht in den Hash ein, damit ist die Zeitachse ohne Änderung
+// der Hash-Regel fälschungssicher. Aufrufer hält k.mu.
+func (k *Kern) zeitachseAnhaengen(nutzlast map[string]any) map[string]any {
+	angereichert := make(map[string]any, len(nutzlast)+2)
+	for schluessel, wert := range nutzlast {
+		angereichert[schluessel] = wert
+	}
+	if k.sitzungID != "" {
+		angereichert["sitzung"] = k.sitzungID
+	}
+	if !k.beginn.IsZero() {
+		angereichert["ms"] = time.Since(k.beginn).Milliseconds()
+	}
+	return angereichert
+}
+
+// Beginn ist der Nullpunkt der Zeitachse. Nullwert: noch nicht eröffnet.
+func (k *Kern) Beginn() time.Time {
+	k.mu.Lock()
+	defer k.mu.Unlock()
+	return k.beginn
 }
 
 // offeneIntern zählt offene Mikrofone. Aufrufer hält k.mu.
