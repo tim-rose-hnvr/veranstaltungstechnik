@@ -74,6 +74,12 @@ type Abstimmung struct {
 	// Wer schon abgestimmt hat — nie, wie. Bei geheimer Wahl ist das die
 	// einzige Verbindung zur Person, und sie sagt nichts über den Inhalt.
 	Abgegeben map[int]bool
+	// Marken hält je Platz die vom Gerät vergebene Marke der Stimme fest —
+	// nur im Arbeitsspeicher, nie in der Kette oder der Datenbank. Sie macht
+	// die Abgabe wiederholbar: dieselbe Marke noch einmal ist dieselbe
+	// Stimme, keine zweite. So darf das Gerät nach einem Verbindungsabriss
+	// blind nachliefern, ohne dass doppelt gezählt wird.
+	Marken map[int]string
 	// Nur bei offener und namentlicher Abstimmung gefüllt.
 	Namentlich map[int]Wahl
 	// Zählung, erst ab dem Auszählen sichtbar.
@@ -102,6 +108,10 @@ func (r Rolle) Stimmrecht() bool { return r == RolleLeitung || r == RolleDelegie
 // Die Zählung bleibt bis zum Auszählen leer — ein Zwischenstand würde die
 // noch ausstehenden Stimmen beeinflussen.
 type AbstimmungZustand struct {
+	// ID steht im Zustand, damit das Gerät eine gepufferte Stimme an genau
+	// diese Abstimmung bindet — eine Stimme für eine vorbeigegangene
+	// Abstimmung verfällt, statt in der nächsten mitgezählt zu werden.
+	ID              string             `json:"id"`
 	Titel           string             `json:"titel"`
 	Art             Abstimmungsart     `json:"art"`
 	Zustand         Abstimmungszustand `json:"zustand"`

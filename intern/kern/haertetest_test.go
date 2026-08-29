@@ -74,7 +74,7 @@ func TestSitzungSchliessenWaehrendAbstimmung(t *testing.T) {
 	if err := p.kern.AbstimmungStarten(ctx, 1, "Haushalt", kern.AbstimmungOffen); err != nil {
 		t.Fatalf("starten: %v", err)
 	}
-	if err := p.kern.StimmeAbgeben(ctx, 1, kern.WahlJa); err != nil {
+	if err := p.kern.StimmeAbgeben(ctx, 1, kern.WahlJa, "", ""); err != nil {
 		t.Fatalf("stimme: %v", err)
 	}
 	if err := p.kern.SitzungSchliessen(ctx, 1); err != nil {
@@ -127,7 +127,7 @@ func TestGleichzeitigeStimmen(t *testing.T) {
 			warten.Add(1)
 			go func(platz int) {
 				defer warten.Done()
-				_ = p.kern.StimmeAbgeben(ctx, platz, kern.WahlJa)
+				_ = p.kern.StimmeAbgeben(ctx, platz, kern.WahlJa, "", "")
 			}(platz)
 		}
 	}
@@ -184,10 +184,10 @@ func TestNeustartMittenInDerAbstimmung(t *testing.T) {
 	if err := p.kern.AbstimmungStarten(ctx, 1, "Haushalt", kern.AbstimmungGeheim); err != nil {
 		t.Fatalf("starten: %v", err)
 	}
-	if err := p.kern.StimmeAbgeben(ctx, 1, kern.WahlJa); err != nil {
+	if err := p.kern.StimmeAbgeben(ctx, 1, kern.WahlJa, "", ""); err != nil {
 		t.Fatalf("stimme: %v", err)
 	}
-	if err := p.kern.StimmeAbgeben(ctx, 2, kern.WahlNein); err != nil {
+	if err := p.kern.StimmeAbgeben(ctx, 2, kern.WahlNein, "", ""); err != nil {
 		t.Fatalf("stimme: %v", err)
 	}
 	vorher := p.kern.Zustand()
@@ -211,11 +211,11 @@ func TestNeustartMittenInDerAbstimmung(t *testing.T) {
 	}
 
 	// Wer schon abgestimmt hat, kann es auch nach dem Neustart nicht erneut.
-	if code := codeVon(t, nachher.StimmeAbgeben(ctx, 1, kern.WahlJa)); code != kern.CodeSchonAbgestimmt {
+	if code := codeVon(t, nachher.StimmeAbgeben(ctx, 1, kern.WahlJa, "", "")); code != kern.CodeSchonAbgestimmt {
 		t.Errorf("code %q erwartet, %q bekommen", kern.CodeSchonAbgestimmt, code)
 	}
 	// Und die Zählung stimmt am Ende trotzdem.
-	if err := nachher.StimmeAbgeben(ctx, 4, kern.WahlJa); err != nil {
+	if err := nachher.StimmeAbgeben(ctx, 4, kern.WahlJa, "", ""); err != nil {
 		t.Fatalf("dritte stimme: %v", err)
 	}
 	if err := nachher.AbstimmungBeenden(ctx, 1); err != nil {

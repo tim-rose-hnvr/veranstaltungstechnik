@@ -69,7 +69,7 @@ func (k *Kern) AbstimmungStarten(ctx context.Context, absender int, titel string
 	k.abstimmung = &Abstimmung{
 		ID: id, FolgeNr: folgeNr, Titel: titel, Art: art, Zustand: AbstimmungLaufend,
 		Stimmberechtigt: stimmberechtigt, Anwesend: anwesend, Quorum: quorum,
-		Abgegeben: map[int]bool{}, Namentlich: map[int]Wahl{},
+		Abgegeben: map[int]bool{}, Namentlich: map[int]Wahl{}, Marken: map[int]string{},
 	}
 	k.stand++
 	k.mu.Unlock()
@@ -80,8 +80,31 @@ func (k *Kern) AbstimmungStarten(ctx context.Context, absender int, titel string
 
 // StimmeAbgeben nimmt die Stimme des eigenen Platzes entgegen. Bei geheimer
 // Wahl wird nur festgehalten, dass abgestimmt wurde — nie, wie.
-func (k *Kern) StimmeAbgeben(ctx context.Context, absender int, wahl Wahl) error {
+//
+// marke ist ein vom Gerät vergebener Einmalwert: kommt dieselbe Marke noch
+// einmal, war es dieselbe Stimme und die Antwort ist Erfolg, nicht Fehler.
+// So kann das Gerät eine gepufferte Stimme nach einem Verbindungsabriss
+// gefahrlos wiederholen. abstimmung bindet die Stimme an genau eine
+// Abstimmung; ist die vorbei, verfällt die Stimme mit klarer Ansage, statt
+// in der nächsten Abstimmung zu landen. Beide dürfen leer sein — dann gilt
+// das alte Verhalten.
+func (k *Kern) StimmeAbgeben(ctx context.Context, absender int, wahl Wahl, marke, abstimmung string) error {
 	k.mu.Lock()
+
+	// Die eigene Wiederholung zuerst: sie ist kein Fehler, sondern die
+	// Bestätigung, auf die das Gerät wartet. Marken leben nur in der
+	// laufenden Abstimmung, eine neue Abstimmung beginnt mit leeren Marken —
+	// ein Treffer kann also nie aus einer früheren Abstimmung stammen.
+	if marke != "" && k.abstimmung != nil && k.abstimmung.Marken[absender] == marke {
+		k.mu.Unlock()
+		return nil
+	}
+	if abstimmung != "" && (k.abstimmung == nil || k.abstimmung.ID != abstimmung ||
+		k.abstimmung.Zustand != AbstimmungLaufend) {
+		k.mu.Unlock()
+		return fehler(CodeStimmeVerfallen,
+			"Die Abstimmung ist inzwischen geschlossen — diese Stimme wurde nicht gezählt")
+	}
 	if err := k.darfPlatz(absender, AktionStimmeAbgeben); err != nil {
 		k.mu.Unlock()
 		return err
@@ -116,6 +139,9 @@ func (k *Kern) StimmeAbgeben(ctx context.Context, absender int, wahl Wahl) error
 	}
 
 	k.abstimmung.Abgegeben[absender] = true
+	if marke != "" {
+		k.abstimmung.Marken[absender] = marke
+	}
 	if !geheim {
 		k.abstimmung.Namentlich[absender] = wahl
 	}
@@ -218,7 +244,7 @@ func (k *Kern) abstimmungZustandIntern() *AbstimmungZustand {
 	}
 	a := k.abstimmung
 	z := &AbstimmungZustand{
-		Titel: a.Titel, Art: a.Art, Zustand: a.Zustand,
+		ID: a.ID, Titel: a.Titel, Art: a.Art, Zustand: a.Zustand,
 		Stimmberechtigt: a.Stimmberechtigt, Anwesend: a.Anwesend, Quorum: a.Quorum,
 		Abgegeben: len(a.Abgegeben),
 	}

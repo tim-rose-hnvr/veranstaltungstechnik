@@ -175,6 +175,12 @@
   #wahlknoepfe button small { font-size: .8rem; font-weight: 400; color: var(--leise); }
   #wahlknoepfe button.ja { border-color: var(--frei); }
   #wahlknoepfe button.nein { border-color: var(--an); }
+  #wahlknoepfe .gepuffert { grid-column: 1 / -1; min-height: 8rem; border: 2px dashed var(--rand);
+                            border-radius: 1.1rem; display: flex; flex-direction: column; gap: .4rem;
+                            align-items: center; justify-content: center; text-align: center;
+                            padding: 1rem; }
+  #wahlknoepfe .gepuffert b { font-size: 1.25rem; }
+  #wahlknoepfe .gepuffert.wartet { border-color: var(--wort); }
   #quorum { border-top: 1px solid var(--rand); padding-top: 1.1rem; display: flex;
             flex-wrap: wrap; gap: 1.5rem; align-items: flex-end; }
   .balken { flex: 1 1 18rem; }
@@ -307,12 +313,24 @@
 <script>
 "use strict";
 
-// Kein Browser-Speicher: Platz und Rechte leben nur in dieser Seite.
+// Browser-Speicher wird für genau eine Sache benutzt: die gepufferte Stimme
+// (sessionStorage, stirbt mit dem Tab). Eine abgegebene Stimme überlebt damit
+// Verbindungsabriss und Neuladen — Leitsatz: ein Ausfall darf Komfort kosten,
+// niemals Daten. Platz, PIN und Rechte leben weiter nur in dieser Seite.
 let meinPlatz = 0;
 let meineRechte = [];
 let letzterStand = -1;
 let sitz = null;
 let wiederholung = null;
+let netzDa = false;
+let meineAnmeldung = null;   // bestätigte Anmeldung { platz, pin } für die Wiederanmeldung
+let anmeldeMerker = null;    // laufender Anmeldeversuch, noch unbestätigt
+let anmeldeVersuche = 0;     // Wiederanmeldung nach Abriss: begrenzte Versuche
+let autoAnmeldung = false;   // still wiederholen statt Fehlerbanner zeigen
+let merkzettel = null;       // die gepufferte Stimme { marke, wahl, abstimmung }
+let beschlussentwurf = "";   // halb getippter Beschlusstext, überlebt den Neuaufbau der Karte
+let entwurfsart = "offen";
+let zuletztNachgereicht = 0;
 let z = null;               // letzter Zustand
 let gewaehlterPlatz = 0;    // im Saalplan angetippt
 let schirmZu = false;       // Abstimmungsschirm von Hand geschlossen
@@ -341,10 +359,17 @@ function verbinden() {
   const schema = location.protocol === "https:" ? "wss:" : "ws:";
   sitz = new WebSocket(schema + "//" + location.host + "/ws");
 
-  sitz.onopen = function () { netz(true); };
+  sitz.onopen = function () {
+    netz(true);
+    if (meineAnmeldung) { anmeldeVersuche = 5; wiederAnmelden(); }
+  };
   sitz.onclose = function () {
     netz(false);
-    letzterStand = -1; meinPlatz = 0; meineRechte = [];
+    // Platz und Rechte bleiben als letzter bekannter Stand stehen: der
+    // Abstimmungsschirm darf beim Abriss nicht zuklappen — dort steht, dass
+    // die Stimme gesichert ist. Der nächste Zustand nach der Wiederverbindung
+    // setzt beides ohnehin frisch.
+    letzterStand = -1;
     if (wiederholung === null) wiederholung = setTimeout(function () {
       wiederholung = null; verbinden();
     }, 1000);
@@ -354,14 +379,42 @@ function verbinden() {
     let n;
     try { n = JSON.parse(e.data); } catch (_) { return; }
     if (n.typ === "zustand") zustand(n);
-    else if (n.typ === "fehler") melden(n.text || n.code);
+    else if (n.typ === "stimme_angekommen") stimmeAngekommen(n);
+    else if (n.typ === "fehler") fehlerVomServer(n);
     else if (n.typ === "unterlage") unterlageOeffnen(n);
   };
 }
 
 function netz(verbunden) {
+  netzDa = verbunden;
   knoten.netzpunkt.className = "punkt " + (verbunden ? "gut" : "schlecht");
   knoten.netztext.textContent = verbunden ? "verbunden" : "getrennt";
+  if (z) wahlschirm(z);
+}
+
+function fehlerVomServer(n) {
+  // Beim stillen Wiederanmelden ist ein belegter Platz kein Fehler, sondern
+  // ein Server, der den alten Platz noch nicht freigegeben hat: kurz warten.
+  if (n.code === "platz_belegt" && autoAnmeldung && anmeldeVersuche > 0) {
+    setTimeout(wiederAnmelden, 1200);
+    return;
+  }
+  if (n.code === "pin_falsch") { meineAnmeldung = null; anmeldeMerker = null; }
+  // Die gepufferte Stimme ist erledigt: angekommen war sie nie (verfallen)
+  // oder längst da (schon abgestimmt). In beiden Fällen nicht mehr nachreichen.
+  if (merkzettel && (n.code === "stimme_verfallen" || n.code === "schon_abgestimmt")) {
+    merkzettel = null;
+    stimmeMerken();
+  }
+  melden(n.text || n.code);
+}
+
+function wiederAnmelden() {
+  if (!meineAnmeldung || meinPlatz !== 0 || anmeldeVersuche <= 0) return;
+  anmeldeVersuche--;
+  autoAnmeldung = true;
+  anmeldeMerker = meineAnmeldung;
+  senden({ typ: "anmelden", platz: meineAnmeldung.platz, pin: meineAnmeldung.pin });
 }
 
 function senden(nachricht) {
@@ -417,6 +470,15 @@ function zustand(n) {
   // Die Rechte kommen fertig aus dem Kern. Der Client entscheidet nichts.
   meineRechte = n.ich ? n.ich.darf : [];
   meinPlatz = n.ich ? n.ich.platz : 0;
+
+  // Erst wenn der Kern den Platz bestätigt, taugt die Eingabe als Anmeldung
+  // für die stille Wiederanmeldung nach einem Verbindungsabriss.
+  if (n.ich && anmeldeMerker && n.ich.platz === anmeldeMerker.platz) {
+    meineAnmeldung = anmeldeMerker;
+    anmeldeMerker = null;
+    autoAnmeldung = false;
+  }
+  if (merkzettel) stimmeNachreichen(n);
 
   let offen = 0;
   for (let i = 0; i < n.plaetze.length; i++) if (n.plaetze[i].mikro) offen++;
@@ -812,21 +874,30 @@ function abstimmung(n) {
       neu.appendChild(alt);
     }
     if (darf("abstimmung_starten")) {
+      // Die Karte wird bei jedem Zustandsrundruf neu gebaut — ein Mikrofon
+      // geht auf, und der halb getippte Text wäre weg. Deshalb leben Entwurf
+      // und Art außerhalb und werden hier nur wieder eingesetzt.
       const titel = document.createElement("input");
       titel.placeholder = "Beschlusstext";
       titel.style.margin = ".5rem 0 .4rem";
+      titel.value = beschlussentwurf;
+      titel.oninput = function () { beschlussentwurf = titel.value; };
       const art = document.createElement("select");
       for (const wert of ["offen", "namentlich", "geheim"]) {
         const o = document.createElement("option");
         o.value = wert; o.textContent = wert;
         art.appendChild(o);
       }
+      art.value = entwurfsart;
+      art.onchange = function () { entwurfsart = art.value; };
       const reihe = document.createElement("div");
       reihe.className = "knoepfe";
       reihe.style.marginTop = ".4rem";
       reihe.appendChild(knopf("Abstimmung eröffnen", function () {
         if (!titel.value.trim()) { melden("Eine Abstimmung braucht einen Beschlusstext."); return; }
         senden({ typ: "abstimmung_starten", titel: titel.value.trim(), art: art.value });
+        beschlussentwurf = "";
+        entwurfsart = "offen";
       }, "stark"));
       neu.appendChild(titel); neu.appendChild(art); neu.appendChild(reihe);
     } else if (!a) {
@@ -908,15 +979,37 @@ function wahlschirm(n) {
     return;
   }
   // Eine neue Abstimmung holt den Schirm zurück, auch wenn er zu war.
-  if (a.titel !== letzteAbstimmung) { letzteAbstimmung = a.titel; schirmZu = false; }
-  knoten.schirm.classList.toggle("offen", !schirmZu && meinPlatz !== 0);
+  if (a.id !== letzteAbstimmung) { letzteAbstimmung = a.id; schirmZu = false; }
+  // Offen für Angemeldete — und für ein getrenntes Gerät mit gepufferter
+  // Stimme, damit "gesichert" lesbar bleibt. Nach einem Neuladen mit Netz
+  // bleibt er zu: erst anmelden, dann liefert die Seite die Stimme nach.
+  knoten.schirm.classList.toggle("offen",
+    !schirmZu && (meinPlatz !== 0 || (merkzettel !== null && !netzDa)));
 
   knoten.wahllage.textContent = "Tagesordnungspunkt " +
     (n.sitzung.aktueller_top || "—") + " · " + a.art;
   knoten.beschluss.textContent = a.titel;
 
   const knoepfe = document.createDocumentFragment();
-  if (darf("stimme_abgeben")) {
+  if (merkzettel) {
+    // Die Stimme liegt auf dem Gerät. Bei geheimer Wahl steht die Wahl nicht
+    // auf dem Schirm — wer vorbeigeht, sieht nur, DASS abgestimmt wurde.
+    const kachel = document.createElement("div");
+    kachel.className = "gepuffert" + (netzDa ? " wartet" : "");
+    const titel = document.createElement("b");
+    titel.textContent = a.art === "geheim"
+      ? "Ihre Stimme ist auf dem Gerät gesichert"
+      : "Ihre Stimme (" + merkzettel.wahl.charAt(0).toUpperCase() + merkzettel.wahl.slice(1) + ") ist auf dem Gerät gesichert";
+    const text = document.createElement("small");
+    text.className = "leise";
+    text.textContent = netzDa
+      ? "Sie wird gerade übertragen und gleich bestätigt."
+      : "Verbindung getrennt — sie wird nachgereicht, sobald die Verbindung zurück ist. Sie können das Gerät so liegen lassen.";
+    kachel.appendChild(titel);
+    kachel.appendChild(text);
+    knoepfe.appendChild(kachel);
+    knoten.wahlhinweis.textContent = "";
+  } else if (darf("stimme_abgeben")) {
     for (const paar of [["ja", "Ja", "dafür", "ja"], ["nein", "Nein", "dagegen", "nein"],
                         ["enthaltung", "Enthaltung", "zählt nicht mit", ""]]) {
       const b = document.createElement("button");
@@ -925,7 +1018,7 @@ function wahlschirm(n) {
       const klein = document.createElement("small");
       klein.textContent = paar[2];
       b.appendChild(klein);
-      b.onclick = function () { senden({ typ: "stimme_abgeben", wahl: paar[0] }); };
+      b.onclick = function () { stimmeAbgeben(paar[0]); };
       knoepfe.appendChild(b);
     }
     knoten.wahlhinweis.textContent = a.art === "geheim"
@@ -976,6 +1069,70 @@ knoten.zumsaal.onclick = function () {
   knoten.schirm.classList.remove("offen");
 };
 
+/* ---------- Gepufferte Stimme ---------- */
+
+// Die Stimme wird zuerst auf dem Gerät gesichert, dann geschickt. Gelöscht
+// wird sie erst, wenn der Server ihre Marke bestätigt — oder wenn sie
+// nachweislich nicht mehr zählen kann. Ein Abriss dazwischen kostet nur Zeit.
+function stimmeAbgeben(wahl) {
+  const a = z && z.abstimmung;
+  merkzettel = { marke: marke(), wahl: wahl, abstimmung: a && a.id ? a.id : "" };
+  stimmeMerken();
+  zuletztNachgereicht = Date.now();
+  senden({ typ: "stimme_abgeben", wahl: wahl, marke: merkzettel.marke,
+           abstimmung: merkzettel.abstimmung });
+  if (z) wahlschirm(z);
+}
+
+function stimmeAngekommen(n) {
+  if (!merkzettel || n.marke !== merkzettel.marke) return;
+  merkzettel = null;
+  stimmeMerken();
+  if (z) wahlschirm(z);
+}
+
+// stimmeNachreichen läuft bei jedem Zustand: verfallen lassen, was nicht mehr
+// zählen kann, sonst gedrosselt erneut schicken, bis die Bestätigung kommt.
+function stimmeNachreichen(n) {
+  const a = n.abstimmung;
+  if (merkzettel.abstimmung &&
+      (!a || a.id !== merkzettel.abstimmung || a.zustand !== "laufend")) {
+    merkzettel = null;
+    stimmeMerken();
+    melden("Ihre gepufferte Stimme kam zu spät — die Abstimmung war bereits geschlossen. Sie wurde NICHT gezählt.");
+    return;
+  }
+  if (meinPlatz === 0) return; // erst wieder anmelden, dann nachreichen
+  const jetzt = Date.now();
+  if (jetzt - zuletztNachgereicht < 2000) return;
+  zuletztNachgereicht = jetzt;
+  senden({ typ: "stimme_abgeben", wahl: merkzettel.wahl, marke: merkzettel.marke,
+           abstimmung: merkzettel.abstimmung });
+}
+
+function stimmeLaden() {
+  try {
+    const roh = sessionStorage.getItem("stimme");
+    return roh ? JSON.parse(roh) : null;
+  } catch (_) { return null; }
+}
+
+function stimmeMerken() {
+  try {
+    if (merkzettel) sessionStorage.setItem("stimme", JSON.stringify(merkzettel));
+    else sessionStorage.removeItem("stimme");
+  } catch (_) { /* ohne Speicher lebt der Puffer nur im Arbeitsspeicher */ }
+}
+
+function marke() {
+  if (crypto.randomUUID) return crypto.randomUUID();
+  const b = new Uint8Array(16);
+  crypto.getRandomValues(b);
+  let text = "";
+  for (let i = 0; i < b.length; i++) text += b[i].toString(16).padStart(2, "0");
+  return text;
+}
+
 /* ---------- Anmeldung ---------- */
 
 function pinFragen(p) {
@@ -987,12 +1144,15 @@ function pinFragen(p) {
 
   knoten.pinfeld.onclose = function () {
     if (knoten.pinfeld.returnValue !== "ok") return;
+    autoAnmeldung = false;
+    anmeldeMerker = { platz: p.nummer, pin: knoten.pineingabe.value };
     senden({ typ: "anmelden", platz: p.nummer, pin: knoten.pineingabe.value });
     knoten.pineingabe.value = "";
     gewaehlterPlatz = 0;
   };
 }
 
+merkzettel = stimmeLaden();
 verbinden();
 </script>
 </body>

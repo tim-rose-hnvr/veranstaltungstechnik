@@ -67,6 +67,15 @@ type nachricht struct {
 		Person  string `json:"person"`
 		Zustand string `json:"zustand"`
 	} `json:"redeliste"`
+	Abstimmung *struct {
+		ID        string `json:"id"`
+		Zustand   string `json:"zustand"`
+		Abgegeben int    `json:"abgegeben"`
+		Ergebnis  *struct {
+			Ja   int `json:"ja"`
+			Nein int `json:"nein"`
+		} `json:"ergebnis"`
+	} `json:"abstimmung"`
 }
 
 func aufstellen(t *testing.T) *httptest.Server {
@@ -567,4 +576,57 @@ func siegelbericht(t *testing.T, dienst *httptest.Server) map[string]any {
 		t.Fatalf("bericht nicht lesbar: %v", err)
 	}
 	return bericht
+}
+
+// TestGepufferteStimmeUeberDenGanzenWeg: das Gerät schickt seine Stimme mit
+// Marke und Abstimmungskennung, bekommt eine Bestätigung, und darf dieselbe
+// Stimme gefahrlos wiederholen — gezählt wird sie einmal. Kommt sie zu spät,
+// verfällt sie mit klarer Ansage. Das ist der Vertrag, auf dem der
+// Offline-Puffer im Gerät steht.
+func TestGepufferteStimmeUeberDenGanzenWeg(t *testing.T) {
+	dienst := aufstellen(t)
+	anke := verbinden(t, dienst)
+	jonas := verbinden(t, dienst)
+
+	anke.anmelden(1, "1111")
+	jonas.anmelden(2, "2222")
+	anke.schicken(map[string]any{"typ": kern.AktionSitzungEroeffnen})
+	anke.warte(func(n nachricht) bool { return n.Sitzung.Zustand == string(kern.SitzungLaufend) })
+
+	anke.schicken(map[string]any{"typ": kern.AktionAbstimmungStarten,
+		"titel": "Beschluss über den Haushalt", "art": "offen"})
+	n := jonas.warte(func(n nachricht) bool { return n.Abstimmung != nil })
+	if n.Abstimmung.ID == "" {
+		t.Fatal("ohne kennung im zustand kann kein gerät seine stimme binden")
+	}
+	id := n.Abstimmung.ID
+
+	// Abgeben, Bestätigung abwarten, blind wiederholen: beide Male bestätigt.
+	for lauf := 0; lauf < 2; lauf++ {
+		jonas.schicken(map[string]any{"typ": kern.AktionStimmeAbgeben, "wahl": "ja",
+			"marke": "geraet-4711", "abstimmung": id})
+		ack := jonas.warte(func(n nachricht) bool { return n.Typ == "stimme_angekommen" })
+		if ack.Marke != "geraet-4711" {
+			t.Fatalf("die bestätigung trägt die falsche marke: %q", ack.Marke)
+		}
+	}
+
+	anke.schicken(map[string]any{"typ": kern.AktionAbstimmungBeenden})
+	n = anke.warte(func(n nachricht) bool {
+		return n.Abstimmung != nil && n.Abstimmung.Ergebnis != nil
+	})
+	if n.Abstimmung.Ergebnis.Ja != 1 {
+		t.Fatalf("genau eine ja-stimme erwartet, %d bekommen", n.Abstimmung.Ergebnis.Ja)
+	}
+	if n.Abstimmung.Abgegeben != 1 {
+		t.Fatalf("einmal abgegeben erwartet, %d bekommen", n.Abstimmung.Abgegeben)
+	}
+
+	// Nach dem Auszählen verfällt eine nachgereichte Stimme — mit klarer Ansage.
+	anke.schicken(map[string]any{"typ": kern.AktionStimmeAbgeben, "wahl": "ja",
+		"marke": "geraet-9999", "abstimmung": id})
+	f := anke.warte(func(n nachricht) bool { return n.Typ == "fehler" })
+	if f.Code != kern.CodeStimmeVerfallen {
+		t.Fatalf("code %q erwartet, %q bekommen", kern.CodeStimmeVerfallen, f.Code)
+	}
 }

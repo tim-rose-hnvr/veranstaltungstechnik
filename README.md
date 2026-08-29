@@ -200,6 +200,23 @@ in der Tabelle `stimme`, nicht im Ereignisprotokoll, nicht im Zustand. Nur
 `stimmabgabe` hält fest, *dass* jemand abgestimmt hat — sonst ließe sich
 doppeltes Abstimmen nicht verhindern.
 
+### Die Stimme übersteht den Verbindungsabriss
+
+Ein Ausfall darf Komfort kosten, niemals Daten. Deshalb wird die Stimme zuerst
+auf dem Gerät gesichert (sessionStorage, die eine bewusste Ausnahme vom
+Verzicht auf Browser-Speicher) und dann geschickt — zusammen mit einer vom
+Gerät vergebenen **Marke** und der Kennung der Abstimmung. Der Server
+bestätigt die Marke; erst darauf hin löscht das Gerät seinen Puffer.
+
+Kommt die Bestätigung nicht, liefert das Gerät nach der Wiederverbindung
+blind nach. Dieselbe Marke noch einmal ist dieselbe Stimme — Antwort Erfolg,
+gezählt wird genau einmal. Ist die Abstimmung inzwischen vorbei, verfällt die
+Stimme mit klarer Ansage statt in der nächsten Abstimmung zu landen. Die
+Marke lebt nur im Arbeitsspeicher des Servers, nie in Kette oder Datenbank —
+bei geheimer Wahl entstünde sonst ein Bindeglied zur Person. Auch ein
+Neuladen der Seite übersteht der Puffer; die Wiederanmeldung nach einem
+Abriss geschieht selbsttätig, solange die Seite offen blieb.
+
 ## Test
 
 ```sh

@@ -17,6 +17,10 @@ const (
 	CodeAbstimmungLaeuft     = "abstimmung_laeuft"
 	CodeNichtBeschlussfaehig = "nicht_beschlussfaehig"
 	CodeSchonAbgestimmt      = "schon_abgestimmt"
+	// CodeStimmeVerfallen: die Stimme war für eine Abstimmung, die inzwischen
+	// vorbei ist. Das Gerät hört damit auf, sie nachzureichen — und die
+	// Person erfährt es, statt dass die Stimme still verschwindet.
+	CodeStimmeVerfallen = "stimme_verfallen"
 
 	// Aus Meilenstein 4.
 	CodeKeinTop        = "kein_top"

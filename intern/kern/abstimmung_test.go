@@ -74,7 +74,7 @@ func TestGeheimeWahlOhneZuordnung(t *testing.T) {
 	}
 	stimmen := map[int]kern.Wahl{1: kern.WahlJa, 2: kern.WahlJa, 4: kern.WahlNein, 5: kern.WahlEnthaltung}
 	for platz, wahl := range stimmen {
-		if err := p.kern.StimmeAbgeben(ctx, platz, wahl); err != nil {
+		if err := p.kern.StimmeAbgeben(ctx, platz, wahl, "", ""); err != nil {
 			t.Fatalf("platz %d: %v", platz, err)
 		}
 	}
@@ -138,7 +138,7 @@ func TestZwischenstandBleibtVerborgen(t *testing.T) {
 	if err := p.kern.AbstimmungStarten(ctx, 1, "Beschluss", kern.AbstimmungOffen); err != nil {
 		t.Fatalf("starten: %v", err)
 	}
-	if err := p.kern.StimmeAbgeben(ctx, 1, kern.WahlJa); err != nil {
+	if err := p.kern.StimmeAbgeben(ctx, 1, kern.WahlJa, "", ""); err != nil {
 		t.Fatalf("stimme: %v", err)
 	}
 
@@ -164,10 +164,10 @@ func TestDoppelteStimmeAbgelehnt(t *testing.T) {
 			if err := p.kern.AbstimmungStarten(ctx, 1, "Beschluss", art); err != nil {
 				t.Fatalf("starten: %v", err)
 			}
-			if err := p.kern.StimmeAbgeben(ctx, 2, kern.WahlJa); err != nil {
+			if err := p.kern.StimmeAbgeben(ctx, 2, kern.WahlJa, "", ""); err != nil {
 				t.Fatalf("erste stimme: %v", err)
 			}
-			if code := codeVon(t, p.kern.StimmeAbgeben(ctx, 2, kern.WahlNein)); code != kern.CodeSchonAbgestimmt {
+			if code := codeVon(t, p.kern.StimmeAbgeben(ctx, 2, kern.WahlNein, "", "")); code != kern.CodeSchonAbgestimmt {
 				t.Fatalf("code %q erwartet, %q bekommen", kern.CodeSchonAbgestimmt, code)
 			}
 			if err := p.kern.AbstimmungBeenden(ctx, 1); err != nil {
@@ -190,7 +190,7 @@ func TestOhneStimmrechtKeineStimme(t *testing.T) {
 	if err := p.kern.AbstimmungStarten(ctx, 1, "Beschluss", kern.AbstimmungOffen); err != nil {
 		t.Fatalf("starten: %v", err)
 	}
-	if code := codeVon(t, p.kern.StimmeAbgeben(ctx, 3, kern.WahlJa)); code != kern.CodeNichtBerechtigt {
+	if code := codeVon(t, p.kern.StimmeAbgeben(ctx, 3, kern.WahlJa, "", "")); code != kern.CodeNichtBerechtigt {
 		t.Fatalf("code %q erwartet, %q bekommen", kern.CodeNichtBerechtigt, code)
 	}
 	// Und ein Delegierter startet keine Abstimmung.
@@ -253,7 +253,7 @@ func TestAbstimmungZustandskette(t *testing.T) {
 	anmeldenAlle(t, p, 1, 2, 4, 5)
 
 	// Ohne laufende Abstimmung geht nichts.
-	if code := codeVon(t, p.kern.StimmeAbgeben(ctx, 2, kern.WahlJa)); code != kern.CodeKeineAbstimmung {
+	if code := codeVon(t, p.kern.StimmeAbgeben(ctx, 2, kern.WahlJa, "", "")); code != kern.CodeKeineAbstimmung {
 		t.Fatalf("code %q erwartet, %q bekommen", kern.CodeKeineAbstimmung, code)
 	}
 	if err := p.kern.AbstimmungStarten(ctx, 1, "Beschluss", kern.AbstimmungNamentlich); err != nil {
@@ -268,7 +268,7 @@ func TestAbstimmungZustandskette(t *testing.T) {
 		t.Errorf("feststellen vor dem auszählen hätte scheitern müssen, code %q", code)
 	}
 
-	if err := p.kern.StimmeAbgeben(ctx, 2, kern.WahlNein); err != nil {
+	if err := p.kern.StimmeAbgeben(ctx, 2, kern.WahlNein, "", ""); err != nil {
 		t.Fatalf("stimme: %v", err)
 	}
 	if err := p.kern.AbstimmungBeenden(ctx, 1); err != nil {
@@ -298,4 +298,112 @@ func errorsAs(err error, ziel **kern.Fehler) bool {
 		*ziel = f
 	}
 	return ok
+}
+
+// TestGepufferteStimmeDarfWiederholtWerden: dieselbe Marke noch einmal ist
+// dieselbe Stimme — Erfolg, aber nur einmal gezählt. Eine fremde Marke ist
+// ein Doppelversuch und wird abgewiesen. Darauf steht der Offline-Puffer:
+// das Gerät darf nach einem Verbindungsabriss blind nachliefern.
+func TestGepufferteStimmeDarfWiederholtWerden(t *testing.T) {
+	p := aufbauen(t, 5, 3, standardbesetzung())
+	eroeffnen(t, p)
+	ctx := context.Background()
+	anmeldenAlle(t, p, 1, 2, 4, 5)
+
+	if err := p.kern.AbstimmungStarten(ctx, 1, "Beschluss", kern.AbstimmungOffen); err != nil {
+		t.Fatalf("abstimmung starten: %v", err)
+	}
+	id := p.kern.Zustand().Abstimmung.ID
+	if id == "" {
+		t.Fatal("die abstimmung braucht eine kennung im zustand, sonst kann kein gerät puffern")
+	}
+
+	if err := p.kern.StimmeAbgeben(ctx, 2, kern.WahlJa, "marke-eins", id); err != nil {
+		t.Fatalf("erste abgabe: %v", err)
+	}
+	// Die Wiederholung mit derselben Marke: Erfolg, keine zweite Stimme.
+	if err := p.kern.StimmeAbgeben(ctx, 2, kern.WahlJa, "marke-eins", id); err != nil {
+		t.Fatalf("die wiederholung der eigenen stimme muss erfolg melden: %v", err)
+	}
+	// Eine andere Marke vom selben Platz ist ein Doppelversuch.
+	if code := codeVon(t, p.kern.StimmeAbgeben(ctx, 2, kern.WahlNein, "marke-zwei", id)); code != kern.CodeSchonAbgestimmt {
+		t.Fatalf("code %q erwartet, %q bekommen", kern.CodeSchonAbgestimmt, code)
+	}
+
+	if err := p.kern.AbstimmungBeenden(ctx, 1); err != nil {
+		t.Fatalf("auszählen: %v", err)
+	}
+	e := p.kern.Zustand().Abstimmung.Ergebnis
+	if e.Ja != 1 || e.Nein != 0 {
+		t.Errorf("genau eine ja-stimme erwartet, ja=%d nein=%d", e.Ja, e.Nein)
+	}
+}
+
+// TestVerspaeteteStimmeVerfaellt: eine gepufferte Stimme für eine Abstimmung,
+// die inzwischen vorbei ist, verfällt mit klarer Ansage — sie darf vor allem
+// nicht in der nächsten Abstimmung mitgezählt werden.
+func TestVerspaeteteStimmeVerfaellt(t *testing.T) {
+	p := aufbauen(t, 5, 3, standardbesetzung())
+	eroeffnen(t, p)
+	ctx := context.Background()
+	anmeldenAlle(t, p, 1, 2, 4, 5)
+
+	if err := p.kern.AbstimmungStarten(ctx, 1, "Erster Beschluss", kern.AbstimmungOffen); err != nil {
+		t.Fatalf("abstimmung starten: %v", err)
+	}
+	alteID := p.kern.Zustand().Abstimmung.ID
+	if err := p.kern.StimmeAbgeben(ctx, 1, kern.WahlJa, "", ""); err != nil {
+		t.Fatalf("stimme der leitung: %v", err)
+	}
+	if err := p.kern.AbstimmungBeenden(ctx, 1); err != nil {
+		t.Fatalf("auszählen: %v", err)
+	}
+
+	// Nach dem Auszählen: verfallen, nicht "schon abgestimmt".
+	if code := codeVon(t, p.kern.StimmeAbgeben(ctx, 2, kern.WahlJa, "m", alteID)); code != kern.CodeStimmeVerfallen {
+		t.Fatalf("code %q erwartet, %q bekommen", kern.CodeStimmeVerfallen, code)
+	}
+
+	// Und in der nächsten Abstimmung erst recht: die alte Kennung passt nicht.
+	if err := p.kern.AbstimmungStarten(ctx, 1, "Zweiter Beschluss", kern.AbstimmungOffen); err != nil {
+		t.Fatalf("zweite abstimmung: %v", err)
+	}
+	if code := codeVon(t, p.kern.StimmeAbgeben(ctx, 2, kern.WahlJa, "m", alteID)); code != kern.CodeStimmeVerfallen {
+		t.Fatalf("code %q erwartet, %q bekommen", kern.CodeStimmeVerfallen, code)
+	}
+	if abgegeben := p.kern.Zustand().Abstimmung.Abgegeben; abgegeben != 0 {
+		t.Errorf("die verfallene stimme wurde mitgezählt: %d abgegeben", abgegeben)
+	}
+	// Ohne Kennung gilt das alte Verhalten: die Stimme zählt für die laufende.
+	if err := p.kern.StimmeAbgeben(ctx, 2, kern.WahlJa, "", ""); err != nil {
+		t.Fatalf("stimme ohne bindung: %v", err)
+	}
+}
+
+// TestMarkeBleibtAusDerKette: die Marke ist ein Gerätewert und hat im
+// Ereignisprotokoll nichts verloren — bei geheimer Wahl stünde sonst ein
+// Bindeglied zur Person in der Kette.
+func TestMarkeBleibtAusDerKette(t *testing.T) {
+	p := aufbauen(t, 5, 3, standardbesetzung())
+	eroeffnen(t, p)
+	ctx := context.Background()
+	anmeldenAlle(t, p, 1, 2, 4, 5)
+
+	if err := p.kern.AbstimmungStarten(ctx, 1, "Wahl", kern.AbstimmungGeheim); err != nil {
+		t.Fatalf("abstimmung starten: %v", err)
+	}
+	id := p.kern.Zustand().Abstimmung.ID
+	if err := p.kern.StimmeAbgeben(ctx, 2, kern.WahlJa, "geraete-marke", id); err != nil {
+		t.Fatalf("stimme: %v", err)
+	}
+
+	kette, err := p.ablage.Ereignisse(ctx, p.saalID)
+	if err != nil {
+		t.Fatalf("kette lesen: %v", err)
+	}
+	for _, e := range kette {
+		if _, da := e.Nutzlast["marke"]; da {
+			t.Fatalf("die marke steht in der kette: %v", e.Nutzlast)
+		}
+	}
 }

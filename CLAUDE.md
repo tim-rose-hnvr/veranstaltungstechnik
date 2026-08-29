@@ -51,7 +51,7 @@ Diese sechs Punkte müssen von der ersten Zeile an stimmen. Alles andere ist add
 1. **Mandantenfähigkeit** — `organisation_id` in jeder Tabelle
 2. **Ereignisprotokoll als Hash-Kette**, nur anfügbar, mit täglichem signiertem Abschluss — gebaut, siehe `intern/siegel`
 3. **Eine Zeitachse je Sitzung** — Audio, Video, Transkript, Abstimmungen und Telemetrie in Millisekunden seit Sitzungsbeginn
-4. **Offline-First im Client** — Gerät arbeitet weiter, wenn der Server weg ist, und synchronisiert nach. **Noch nicht gebaut**: der Client puffert nichts, eine Stimme bei getrennter Verbindung geht verloren. Braucht eine Entscheidung über Browser-Speicher.
+4. **Offline-First im Client** — Gerät arbeitet weiter, wenn der Server weg ist, und synchronisiert nach. **Teilweise gebaut**: die Stimme wird auf dem Gerät gepuffert (sessionStorage, die eine bewusste Ausnahme vom Browser-Speicher-Verbot) und nach Wiederverbindung mit Marke idempotent nachgeliefert — gezählt wird sie genau einmal, zu spät verfällt sie mit Ansage. Wiederanmeldung nach Abriss geschieht selbsttätig. Offen: Signatur auf dem Gerät, Puffer für Wortmeldungen.
 5. **Rollen statt Gerätetypen**, Rechte zentral im Kern geprüft, nie in der Oberfläche
 6. **Mix-Minus im Audiorouting** — getrennte Summen für Saal und Zuschaltung
 

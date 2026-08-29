@@ -29,7 +29,11 @@ type Nachricht struct {
 	Titel string `json:"titel"`
 	Art   string `json:"art"`
 	Wahl  string `json:"wahl"`
-	Top   int    `json:"top"`
+	// Marke ist der Einmalwert einer gepufferten Stimme; Abstimmung bindet
+	// sie an genau eine Abstimmung. Beides vergibt das Gerät.
+	Marke      string `json:"marke"`
+	Abstimmung string `json:"abstimmung"`
+	Top        int    `json:"top"`
 	// Unterlage ist die Kennung eines Dokuments der Sitzungsmappe.
 	Unterlage string `json:"unterlage"`
 }
@@ -323,7 +327,12 @@ func (v *verbindung) ausfuehren(ctx context.Context, n Nachricht) {
 			v.melde(&kern.Fehler{Code: kern.CodeKeineAbstimmung, Text: fehler.Error()})
 			return
 		}
-		err = s.kern.StimmeAbgeben(ctx, absender, wahl)
+		err = s.kern.StimmeAbgeben(ctx, absender, wahl, n.Marke, n.Abstimmung)
+		// Das Gerät löscht seinen Puffer erst auf diese Bestätigung hin —
+		// der Zustandsrundruf sagt nicht, wessen Stimme angekommen ist.
+		if err == nil && n.Marke != "" {
+			v.bestaetigen(n.Marke)
+		}
 	case kern.AktionAbstimmungBeenden:
 		err = s.kern.AbstimmungBeenden(ctx, absender)
 	case kern.AktionAbstimmungFeststellen:
@@ -407,6 +416,19 @@ func (v *verbindung) anmelden(ctx context.Context, n Nachricht) {
 
 	// Die Rechte hängen am Platz — nach der Anmeldung neu verteilen.
 	s.Verteilen()
+}
+
+// bestaetigen meldet dem Gerät, dass seine Stimme angekommen ist. Erst
+// darauf hin löscht es die auf dem Gerät gepufferte Stimme.
+func (v *verbindung) bestaetigen(marke string) {
+	roh, err := json.Marshal(struct {
+		Typ   string `json:"typ"`
+		Marke string `json:"marke"`
+	}{Typ: "stimme_angekommen", Marke: marke})
+	if err != nil {
+		return
+	}
+	v.abschicken(roh)
 }
 
 func (v *verbindung) antworten(n Nachricht, err error) {
