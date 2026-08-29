@@ -144,21 +144,22 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 
 	steuerung := kamera.NeuViscaIP(konfiguration.KameraZeitlimit())
 	aufbau := kern.Aufbau{
-		SaalID:         saalID,
-		Saal:           saaldaten.Saal,
-		SitzungID:      stand.SitzungID,
-		Titel:          stand.Titel,
-		SitzungZustand: stand.Zustand,
-		Beginn:         stand.Beginn,
-		Plaetze:        plaetze,
-		Teilnahmen:     stand.Teilnahmen,
-		Tagesordnung:   stand.Tagesordnung,
-		Unterlagen:     stand.Unterlagen,
-		Wortmeldungen:  stand.Wortmeldungen,
-		Abstimmung:     abstimmung,
-		LeitungPlatz:   leitungPlatz,
-		MaxOffen:       konfiguration.MaxOffeneMikrofone,
-		Zeitlimit:      konfiguration.KameraZeitlimit(),
+		SaalID:              saalID,
+		Saal:                saaldaten.Saal,
+		SitzungID:           stand.SitzungID,
+		Titel:               stand.Titel,
+		SitzungZustand:      stand.Zustand,
+		Beginn:              stand.Beginn,
+		Plaetze:             plaetze,
+		Teilnahmen:          stand.Teilnahmen,
+		Tagesordnung:        stand.Tagesordnung,
+		Unterlagen:          stand.Unterlagen,
+		Wortmeldungen:       stand.Wortmeldungen,
+		Abstimmung:          abstimmung,
+		LeitungPlatz:        leitungPlatz,
+		MaxOffen:            konfiguration.MaxOffeneMikrofone,
+		EinmessungReserveDB: konfiguration.EinmessungReserveDB,
+		Zeitlimit:           konfiguration.KameraZeitlimit(),
 	}
 	sitzung, err := kern.Neu(aufbau, steuerung, ablage, protokoll)
 	if err != nil {

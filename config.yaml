@@ -2,6 +2,11 @@ datenbank: postgres://sitzung:geheim@localhost:5432/sitzung?sslmode=disable
 adresse: ":8080"
 saal_datei: saal.json
 sitzungs_datei: sitzung.json
+# Reserve aus dem Ring-out in dB. Gesetzt: die Höchstzahl offener Mikrofone
+# folgt aus ihr (jede Verdopplung kostet 3 dB), und eine höhere Höchstzahl
+# wird beim Start abgewiesen. Null oder weggelassen: die Höchstzahl unten
+# ist gesetzt, nicht gemessen — der Vorabcheck weist darauf hin.
+# einmessung_reserve_db: 9
 max_offene_mikrofone: 3
 kamera_zeitlimit_ms: 500
 

@@ -226,3 +226,56 @@ func punktMit(t *testing.T, p *vorabcheck.Pruefer, titel string) vorabcheck.Punk
 	t.Fatalf("keine prüfung %q im bericht", titel)
 	return vorabcheck.Punkt{}
 }
+
+// TestEinmessungImVorabcheck: der Bericht sagt, ob die Höchstzahl offener
+// Mikrofone gemessen oder nur gesetzt ist — und schlägt Alarm, wenn die
+// Konfiguration mehr verlangt, als die Reserve trägt.
+func TestEinmessungImVorabcheck(t *testing.T) {
+	// Ohne Einmessung: ein Hinweis, der zum Ring-out schickt.
+	p, _ := aufbauen(t, vollbesetzt(), nil)
+	bericht, err := p.Laufen(context.Background())
+	if err != nil {
+		t.Fatalf("vorabcheck: %v", err)
+	}
+	punkt := finde(t, bericht, "Sitzung", "Einmessung")
+	if punkt.Ergebnis != vorabcheck.Hinweis || !strings.Contains(punkt.Text, "Ring-out") {
+		t.Errorf("ohne einmessung ein hinweis mit ring-out erwartet: %s %q", punkt.Ergebnis, punkt.Text)
+	}
+
+	// Mit 9 dB Reserve und MaxOffen 2: alles im Rahmen, der Text nennt die Zahlen.
+	aufbauen(t, vollbesetzt(), nil)
+	mitReserve := letzterAufbau
+	mitReserve.EinmessungReserveDB = 9
+	pruefer := vorabcheck.Neu(mitReserve, neuerKern(t, mitReserve), &stilleKamera{}, letzteAblage, 50*time.Millisecond)
+	bericht, err = pruefer.Laufen(context.Background())
+	if err != nil {
+		t.Fatalf("vorabcheck: %v", err)
+	}
+	punkt = finde(t, bericht, "Sitzung", "Einmessung")
+	if punkt.Ergebnis != vorabcheck.Ok || !strings.Contains(punkt.Text, "9.0 dB") {
+		t.Errorf("mit messung ok samt zahlen erwartet: %s %q", punkt.Ergebnis, punkt.Text)
+	}
+
+	// Konfiguration über der Messung: Fehler, keine Beschönigung.
+	mitReserve.EinmessungReserveDB = 3 // trägt 2 — verlangt sind 4
+	mitReserve.MaxOffen = 4
+	pruefer = vorabcheck.Neu(mitReserve, neuerKern(t, mitReserve), &stilleKamera{}, letzteAblage, 50*time.Millisecond)
+	bericht, err = pruefer.Laufen(context.Background())
+	if err != nil {
+		t.Fatalf("vorabcheck: %v", err)
+	}
+	punkt = finde(t, bericht, "Sitzung", "Einmessung")
+	if punkt.Ergebnis != vorabcheck.Fehler || !strings.Contains(punkt.Text, "Rückkopplung") {
+		t.Errorf("zu viel verlangt: fehler mit rückkopplungs-warnung erwartet: %s %q", punkt.Ergebnis, punkt.Text)
+	}
+}
+
+// neuerKern baut für Abwandlungen des Aufbaus einen frischen Kern.
+func neuerKern(t *testing.T, aufbau kern.Aufbau) *kern.Kern {
+	t.Helper()
+	k, err := kern.Neu(aufbau, &stilleKamera{}, letzteAblage, nil)
+	if err != nil {
+		t.Fatalf("kern: %v", err)
+	}
+	return k
+}

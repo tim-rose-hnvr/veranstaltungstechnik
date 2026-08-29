@@ -16,6 +16,7 @@ import (
 
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/siegel"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/ton"
 )
 
 // ErrSitzungLaeuft meldet, dass der Vorabcheck abgelehnt wurde. Er fährt die
@@ -170,6 +171,28 @@ func (p *Pruefer) sitzungPruefen(z kern.Zustand) []Punkt {
 		punkte = append(punkte, Punkt{"Sitzung", "Offene Mikrofone", Ok,
 			fmt.Sprintf("Höchstens %d von %d Mikrofonen gleichzeitig offen.",
 				p.aufbau.MaxOffen, len(p.aufbau.Plaetze))})
+	}
+
+	// Worauf die Höchstzahl fußt: auf einer Messung oder auf einer Annahme.
+	// Beides trägt eine Sitzung — aber der Bericht soll sagen, welches von
+	// beiden es ist, denn nur die Messung hält, wenn es laut wird.
+	if r := p.aufbau.EinmessungReserveDB; r > 0 {
+		ausMessung, err := ton.MaxOffeneMikrofone(r)
+		switch {
+		case err != nil:
+			punkte = append(punkte, Punkt{"Sitzung", "Einmessung", Fehler, err.Error()})
+		case p.aufbau.MaxOffen > ausMessung:
+			punkte = append(punkte, Punkt{"Sitzung", "Einmessung", Fehler,
+				fmt.Sprintf("Eingestellt sind %d offene Mikrofone, die Reserve von %.1f dB trägt nur %d — Rückkopplung mit Ansage.",
+					p.aufbau.MaxOffen, r, ausMessung)})
+		default:
+			punkte = append(punkte, Punkt{"Sitzung", "Einmessung", Ok,
+				fmt.Sprintf("Reserve %.1f dB aus dem Ring-out trägt %d offene Mikrofone; bei %d offenen senkt der Automixer die Summe um %.1f dB.",
+					r, ausMessung, p.aufbau.MaxOffen, ton.Daempfung(p.aufbau.MaxOffen))})
+		}
+	} else {
+		punkte = append(punkte, Punkt{"Sitzung", "Einmessung", Hinweis,
+			"Keine Einmessung hinterlegt — die Höchstzahl offener Mikrofone ist gesetzt, nicht gemessen. Vor dem ersten lauten Saal: Ring-out fahren und einmessung_reserve_db eintragen."})
 	}
 	return punkte
 }

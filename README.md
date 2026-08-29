@@ -63,7 +63,9 @@ Namensschild und Dolmetscherplatz lesen nur mit — sie melden keinen Platz an.
 ## Konfiguration
 
 `config.yaml`: `datenbank`, `adresse`, `saal_datei`, `sitzungs_datei`,
-`max_offene_mikrofone`, `kamera_zeitlimit_ms`.
+`max_offene_mikrofone`, `kamera_zeitlimit_ms`, `einmessung_reserve_db`
+(Reserve aus dem Ring-out in dB — gesetzt, folgt die Höchstzahl offener
+Mikrofone aus ihr, und eine höhere Konfiguration wird beim Start abgewiesen).
 
 Dazu zwei Schalter, die nur außerhalb des Saals etwas zu suchen haben:
 
@@ -216,6 +218,27 @@ Marke lebt nur im Arbeitsspeicher des Servers, nie in Kette oder Datenbank —
 bei geheimer Wahl entstünde sonst ein Bindeglied zur Person. Auch ein
 Neuladen der Seite übersteht der Puffer; die Wiederanmeldung nach einem
 Abriss geschieht selbsttätig, solange die Seite offen blieb.
+
+## Ton-Regelwerk
+
+Die Signalverarbeitung ist nicht gebaut — die Regeln, nach denen sie arbeiten
+wird, schon: `intern/ton` rechnet und entscheidet, bewegt aber keine Samples.
+
+- **NOM-Gesetz:** jede Verdopplung offener Mikrofone kostet 3 dB Reserve.
+  `MaxOffeneMikrofone(reserve)` rechnet den Ring-out in die Höchstzahl um,
+  `Daempfung(n)` ist die Absenkung der Summe des Automixers. Der Zustand
+  trägt sie als `daempfung_db`, die Sprechstelle zeigt sie im Statusband.
+- **Mix-Minus:** `MixMinus(quellen)` baut je Ausgang die Summe ohne die
+  eigene Quelle — sonst entsteht zwischen Saal und Zuschaltung die Schleife.
+- **Filterhaushalt:** feste Filter aus dem Ring-out und kurzlebige für neu
+  auftretende Frequenzen, zusammen höchstens sechs bis acht. Feste weichen
+  nie; ist alles fest belegt, lautet die Antwort „Verstärkung senken", nicht
+  „noch ein Filter".
+- **Latenzbudgets:** unter 10 ms zur Saalbeschallung (Kammfilter), unter
+  60 ms zum Dolmetschkopfhörer (der Zuhörer hört den Saal parallel).
+
+Der Vorabcheck sagt, ob die Höchstzahl offener Mikrofone gemessen oder nur
+gesetzt ist.
 
 ## Test
 

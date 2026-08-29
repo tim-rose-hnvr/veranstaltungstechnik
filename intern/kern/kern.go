@@ -4,11 +4,14 @@ import (
 	"context"
 	"fmt"
 	"log/slog"
+	"math"
 	"sort"
 	"sync"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
+
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/ton"
 )
 
 // Platzaufbau beschreibt einen Sitzplatz samt der Kamera, die ihn zeigt.
@@ -68,9 +71,12 @@ type Kamerazustand struct {
 // Zustand ist der gemeinsame Zustand des Saals. Der Server sendet immer
 // alles, nie Teiländerungen — dann heilen sich Aussetzer von selbst.
 type Zustand struct {
-	Typ          string             `json:"typ"`
-	Stand        uint64             `json:"stand"`
-	MaxOffen     int                `json:"max_offen"`
+	Typ      string `json:"typ"`
+	Stand    uint64 `json:"stand"`
+	MaxOffen int    `json:"max_offen"`
+	// DaempfungDB: die Absenkung der Summenverstärkung nach dem NOM-Gesetz
+	// des Automixers bei der aktuellen Zahl offener Mikrofone.
+	DaempfungDB  float64            `json:"daempfung_db"`
 	Aufzeichnung bool               `json:"aufzeichnung"`
 	Sitzung      SitzungZustand     `json:"sitzung"`
 	Plaetze      []PlatzZustand     `json:"plaetze"`
@@ -103,7 +109,11 @@ type Aufbau struct {
 	Abstimmung     *Abstimmung   // laufende oder zuletzt beendete
 	LeitungPlatz   int           // 0: aus der Rolle ableiten
 	MaxOffen       int
-	Zeitlimit      time.Duration
+	// EinmessungReserveDB: die Reserve aus dem Ring-out, 0 = nicht gemessen.
+	// Der Kern rechnet damit nicht — er reicht sie an Anzeige und
+	// Vorabcheck weiter, damit dort steht, worauf die Höchstzahl fußt.
+	EinmessungReserveDB float64
+	Zeitlimit           time.Duration
 }
 
 // Kern hält den Zustand einer Sitzung und setzt die Regeln durch.
@@ -991,6 +1001,7 @@ func (k *Kern) zustandIntern() Zustand {
 		Typ:          "zustand",
 		Stand:        k.stand,
 		MaxOffen:     k.maxOffen,
+		DaempfungDB:  math.Round(ton.Daempfung(k.offeneIntern())*10) / 10,
 		Aufzeichnung: k.aufzeichnung,
 		Sitzung: SitzungZustand{
 			Saal:         k.saal,

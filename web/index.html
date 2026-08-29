@@ -405,6 +405,14 @@ function fehlerVomServer(n) {
   if (merkzettel && (n.code === "stimme_verfallen" || n.code === "schon_abgestimmt")) {
     merkzettel = null;
     stimmeMerken();
+    if (n.code === "schon_abgestimmt") {
+      // Nach einem Server-Neustart kennt der Server die Marke nicht mehr,
+      // die Stimme selbst aber schon. Für die Person ist das keine
+      // Fehlermeldung, sondern eine Entwarnung.
+      melden("Für Ihren Platz ist bereits eine Stimme gezählt — doppelt gezählt wird nie.", true);
+      if (z) wahlschirm(z);
+      return;
+    }
   }
   melden(n.text || n.code);
 }
@@ -507,7 +515,10 @@ function band(n, offen) {
   knoten.aufzeichnung.appendChild(document.createTextNode(
     n.aufzeichnung ? "Aufzeichnung läuft" : "Aufzeichnung pausiert"));
 
-  knoten.offen.textContent = offen + " von " + n.max_offen + " Mikrofonen offen";
+  // Das NOM-Gesetz sichtbar gemacht: der Automixer senkt die Summe je
+  // Verdopplung offener Mikrofone um 3 dB. Die Zahl kommt aus dem Kern.
+  knoten.offen.textContent = offen + " von " + n.max_offen + " Mikrofonen offen" +
+    (n.daempfung_db > 0 ? " · Summe −" + n.daempfung_db.toFixed(1).replace(".", ",") + " dB" : "");
   knoten.offen.style.color = offen >= n.max_offen ? "var(--achtung)" : "";
   knoten.kamera.textContent = n.kamera
     ? n.kamera.name + " · Preset " + n.kamera.preset + (n.kamera.erreichbar ? "" : " · stumm")

@@ -114,7 +114,7 @@ Zustandsketten:
 
 **Erledigt:** Kern (Sitzungszustand, Rollen, Rechte), Kamerasteuerung über VISCA, Sprechstelle, Redeliste, Abstimmung, Protokoll, Vorabcheck, Tagesordnung mit automatischer Aufzeichnungspause, Sitzungsmappe mit Vertraulichkeitsstufen.
 
-**Jetzt:** Ton (Automixer, Mix-Minus, Einmessung) — braucht einen echten Raum, keinen Schreibtisch.
+**Jetzt:** Ton. Das Regelwerk ist gebaut und getestet (`intern/ton`: NOM-Gesetz, Mix-Minus-Matrix, Filterhaushalt, Latenzbudgets, Ableitung der Mikrofonzahl aus der Reserve — `einmessung_reserve_db`). Was fehlt, braucht den echten Raum: Einmessung, Signalverarbeitung (GStreamer), Anlagentechnik.
 
 **Danach:** Transkript → Kompositor.
 

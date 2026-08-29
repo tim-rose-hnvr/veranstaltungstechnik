@@ -407,3 +407,45 @@ func TestMarkeBleibtAusDerKette(t *testing.T) {
 		}
 	}
 }
+
+// TestGepufferteStimmeNachNeustart: stürzt der Server mitten in der
+// Abstimmung ab, kommt "wer hat schon abgestimmt" aus der Ablage zurück —
+// die Marken aber nicht, sie leben nur im Arbeitsspeicher. Ein Gerät, das
+// seine Stimme nachreichert, bekommt dann "schon abgestimmt" statt der
+// Bestätigung. Das ist die ehrliche Antwort: gezählt ist gezählt, doppelt
+// wird nie.
+func TestGepufferteStimmeNachNeustart(t *testing.T) {
+	p := aufbauen(t, 5, 3, standardbesetzung())
+	eroeffnen(t, p)
+	ctx := context.Background()
+	anmeldenAlle(t, p, 1, 2, 4, 5)
+
+	if err := p.kern.AbstimmungStarten(ctx, 1, "Beschluss", kern.AbstimmungOffen); err != nil {
+		t.Fatalf("abstimmung starten: %v", err)
+	}
+	id := p.kern.Zustand().Abstimmung.ID
+	// Die Stimme kommt an, aber die Bestätigung erreicht das Gerät nie —
+	// genau dann bleibt der Puffer stehen und wird später nachgereicht.
+	if err := p.kern.StimmeAbgeben(ctx, 2, kern.WahlJa, "marke-vor-dem-sturz", id); err != nil {
+		t.Fatalf("stimme: %v", err)
+	}
+
+	nachher := neustarten(t, p)
+
+	z := nachher.Zustand().Abstimmung
+	if z == nil || z.Zustand != kern.AbstimmungLaufend {
+		t.Fatalf("die laufende abstimmung muss den neustart überleben: %+v", z)
+	}
+	if z.Abgegeben != 1 {
+		t.Fatalf("eine abgegebene stimme erwartet, %d bekommen", z.Abgegeben)
+	}
+
+	// Das Gerät reicht nach: dieselbe Marke, aber der Server kennt sie nicht
+	// mehr. Die Antwort ist "schon abgestimmt" — das Gerät räumt den Puffer.
+	if code := codeVon(t, nachher.StimmeAbgeben(ctx, 2, kern.WahlJa, "marke-vor-dem-sturz", id)); code != kern.CodeSchonAbgestimmt {
+		t.Fatalf("code %q erwartet, %q bekommen", kern.CodeSchonAbgestimmt, code)
+	}
+	if z := nachher.Zustand().Abstimmung; z.Abgegeben != 1 {
+		t.Errorf("die nachgereichte stimme wurde doppelt gezählt: %d", z.Abgegeben)
+	}
+}

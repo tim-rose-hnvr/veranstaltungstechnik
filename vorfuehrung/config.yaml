@@ -5,6 +5,11 @@ adresse: ":8080"
 saal_datei: vorfuehrung/saal.json
 sitzungs_datei: vorfuehrung/sitzung.json
 max_offene_mikrofone: 3
+# Die Vorführung tut so, als wäre der Raum eingemessen: 9 dB Reserve aus dem
+# Ring-out. Im echten Saal kommt diese Zahl aus der Messung — und eine
+# Konfiguration, die mehr Mikrofone verlangt, als die Reserve trägt, wird
+# beim Start abgewiesen.
+einmessung_reserve_db: 9
 kamera_zeitlimit_ms: 500
 
 # Simulierte Kameras hören auf den Adressen aus saal.json und quittieren wie
