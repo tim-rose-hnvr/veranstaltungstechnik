@@ -108,3 +108,28 @@ footer a { color: var(--schrift); }
 footer h3 { font-size: .74rem; letter-spacing: .12em; text-transform: uppercase; color: var(--leise); }
 footer ul { list-style: none; padding: 0; margin: 0; }
 footer li { padding: .2rem 0; }
+
+/* Bilder. Symbolbilder, keine Referenzfotos — die Bildunterschrift sagt das
+   ehrlich. Randlinie und Radius wie die Karten, damit sie zur Fläche gehören. */
+figure.bild { margin: 0; }
+.bild img { display: block; width: 100%; height: auto; border-radius: .85rem;
+            border: 1px solid var(--rand); }
+.bild figcaption { font-size: .8rem; color: var(--leise); margin-top: .55rem; }
+
+.buehne { margin-top: 3.2rem; }
+.buehne img { display: block; width: 100%; height: auto; border-radius: 1rem;
+              border: 1px solid var(--rand); }
+
+/* Text und Bild nebeneinander, auf schmalen Schirmen untereinander. */
+.paar { display: grid; gap: 2rem; align-items: center; margin-top: 2rem; }
+@media (min-width: 52rem) {
+  .paar { grid-template-columns: 1fr 1fr; }
+  .paar.getauscht > figure { order: -1; }
+}
+
+/* Schaubilder: Inline-SVG in Seitenfarben, currentColor als Stiftfarbe. */
+figure.schema { margin: 2.5rem 0 0; background: var(--karte); border: 1px solid var(--rand);
+                border-radius: .85rem; padding: 1.4rem 1.4rem 1.1rem; }
+.schema { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.schema svg { display: block; width: 100%; min-width: 42rem; height: auto; color: var(--schrift); }
+.schema figcaption { font-size: .8rem; color: var(--leise); margin-top: .8rem; }

@@ -48,6 +48,52 @@
       <li><b>Keine Hintertür.</b> Wo der Kunde den Schlüssel hält, kann der Hersteller nicht
         entschlüsseln. Das ist eine Zusage, kein Schalter.</li>
     </ul>
+    <figure class="schema" role="group">
+      <svg viewBox="0 0 940 250" role="img" font-family="inherit"
+        aria-label="Die Ereigniskette: jeder Eintrag trägt den Hash seines Vorgängers, das Siegel unterschreibt das Kettenende mit einem Schlüssel außerhalb der Datenbank. Ein ausgetauschter Eintrag bricht die Kette sichtbar.">
+        <defs>
+          <marker id="kpfeil" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <g stroke="currentColor" fill="none">
+          <rect x="20"  y="60" width="180" height="90" rx="8"/>
+          <rect x="260" y="60" width="180" height="90" rx="8"/>
+          <rect x="500" y="60" width="180" height="90" rx="8"/>
+        </g>
+        <rect x="740" y="52" width="180" height="106" rx="8" fill="none" stroke="var(--akzent, #c8102e)" stroke-width="2"/>
+
+        <g fill="currentColor" font-size="13" text-anchor="middle">
+          <text x="110" y="86" font-weight="600">Ereignis 41</text>
+          <text x="110" y="106">mikro_an · Platz 7</text>
+          <text x="110" y="132" opacity=".55" font-size="11">trägt Hash von Nr. 40</text>
+          <text x="350" y="86" font-weight="600">Ereignis 42</text>
+          <text x="350" y="106">stimme_abgegeben</text>
+          <text x="350" y="132" opacity=".55" font-size="11">trägt Hash von Nr. 41</text>
+          <text x="590" y="86" font-weight="600">Ereignis 43</text>
+          <text x="590" y="106">top_abgeschlossen</text>
+          <text x="590" y="132" opacity=".55" font-size="11">trägt Hash von Nr. 42</text>
+        </g>
+        <g fill="var(--akzent, #c8102e)" font-size="13" text-anchor="middle">
+          <text x="830" y="82" font-weight="600">Siegel</text>
+          <text x="830" y="102">Unterschrift über</text>
+          <text x="830" y="120">das Kettenende</text>
+          <text x="830" y="144" font-size="11" opacity=".8">Schlüssel liegt nicht in der DB</text>
+        </g>
+
+        <g stroke="currentColor" marker-end="url(#kpfeil)">
+          <line x1="204" y1="105" x2="254" y2="105"/>
+          <line x1="444" y1="105" x2="494" y2="105"/>
+        </g>
+        <line x1="684" y1="105" x2="734" y2="105" stroke="var(--akzent, #c8102e)" marker-end="url(#kpfeil)"/>
+
+        <text x="20" y="196" fill="currentColor" font-size="13" opacity=".75">Wer einen Eintrag ändert, müsste jeden folgenden Hash neu rechnen —</text>
+        <text x="20" y="216" fill="currentColor" font-size="13" opacity=".75">und scheitert am Siegel: die Unterschrift lässt sich ohne den Schlüssel nicht nachmachen.</text>
+      </svg>
+      <figcaption>Täglich und beim Herunterfahren wird das Kettenende unterschrieben.
+        Eine nachgebaute Kette rechnet zwar auf, aber sie trägt die falsche
+        Unterschrift — der Vorabcheck zeigt das an.</figcaption>
+    </figure>
   </div>
 </section>
 

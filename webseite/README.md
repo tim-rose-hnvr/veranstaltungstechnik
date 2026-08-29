@@ -12,6 +12,20 @@ Schriftart, kein Analytics — dieselbe Regel wie im Saal.
 | `sicherheit.html` | Betrieb im eigenen Haus, Ereigniskette, geheime Wahl, Vorabcheck |
 | `stand.html` | was läuft und was nicht — bewusst unbequem |
 | `kontakt.html` | Vorführung, Pilotpartner |
+| `bilder/` | sechs Symbolbilder (JPEG, je unter 350 KiB) |
+
+## Bilder und Schaubilder
+
+Die Fotos sind **computergenerierte Symbolbilder**, keine Referenzfotos — die
+Bildunterschriften sagen das ausdrücklich. Sie zeigen keine echten Kunden,
+keine echten Räume und keine erkennbaren Personen realer Herkunft. Vor der
+Veröffentlichung dürfen sie bleiben, sollten aber gegen Fotos der ersten
+echten Installation getauscht werden, sobald es eine gibt.
+
+Die Schaubilder (Signalfluss auf `system.html`, Ereigniskette auf
+`sicherheit.html`) sind eingebettetes SVG in Seitenfarben — `currentColor`
+als Stiftfarbe, das Akzentrot nur für die eine Aussage des Bilds. Auf
+schmalen Schirmen rollen sie seitlich, statt unlesbar zu schrumpfen.
 
 ## Ansehen
 

@@ -71,6 +71,93 @@
           Was eine Rolle nicht sehen darf, wird nicht ausgegraut, sondern nie gesendet.</p>
       </div>
     </div>
+    <figure class="schema" role="group">
+      <svg viewBox="0 0 980 400" role="img" font-family="inherit"
+        aria-label="Signalfluss im Saal: Sprechstellen und Namensschilder sprechen über WebSocket mit dem Server; der Server fährt die Kameras über VISCA; die Kameras liefern verkabelt an die Bildmischung. Alles liegt im abgeschotteten Saalnetz, zum Internet führt kein Pfeil.">
+        <defs>
+          <marker id="pfeil" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="currentColor"/>
+          </marker>
+        </defs>
+        <!-- Saalnetz-Grenze: die eine Aussage des Bilds -->
+        <rect x="10" y="14" width="830" height="372" rx="14" fill="none" stroke="currentColor" stroke-dasharray="7 6" opacity=".45"/>
+        <text x="28" y="42" fill="currentColor" opacity=".65" font-size="13" letter-spacing=".08em">ABGESCHOTTETES SAALNETZ</text>
+
+        <!-- Sprechstellen -->
+        <g stroke="currentColor" fill="none">
+          <rect x="40" y="80" width="170" height="46" rx="8"/>
+          <rect x="40" y="136" width="170" height="46" rx="8"/>
+          <rect x="40" y="192" width="170" height="46" rx="8"/>
+          <rect x="40" y="266" width="170" height="46" rx="8" opacity=".55"/>
+        </g>
+        <text x="125" y="108" fill="currentColor" font-size="14" text-anchor="middle">Sprechstelle · Platz 1</text>
+        <text x="125" y="164" fill="currentColor" font-size="14" text-anchor="middle">Sprechstelle · Platz 2</text>
+        <text x="125" y="220" fill="currentColor" font-size="14" text-anchor="middle">Sprechstelle · Platz n</text>
+        <text x="125" y="288" fill="currentColor" font-size="13" text-anchor="middle" opacity=".7">Namensschild · iPhone quer</text>
+        <text x="125" y="304" fill="currentColor" font-size="11" text-anchor="middle" opacity=".5">nur lesend</text>
+
+        <!-- Server -->
+        <rect x="330" y="66" width="240" height="268" rx="10" fill="none" stroke="currentColor"/>
+        <text x="450" y="94" fill="currentColor" font-size="15" font-weight="600" text-anchor="middle">Server im Saal</text>
+        <g stroke="currentColor" fill="none" opacity=".8">
+          <rect x="350" y="112" width="200" height="42" rx="6"/>
+          <rect x="350" y="166" width="200" height="42" rx="6"/>
+          <rect x="350" y="220" width="200" height="42" rx="6"/>
+          <rect x="350" y="274" width="200" height="42" rx="6"/>
+        </g>
+        <text x="450" y="138" fill="currentColor" font-size="13" text-anchor="middle">Kern: Zustand, Rollen, Rechte</text>
+        <text x="450" y="192" fill="currentColor" font-size="13" text-anchor="middle">Ereigniskette + Siegel</text>
+        <text x="450" y="246" fill="currentColor" font-size="13" text-anchor="middle">Abstimmung, Redeliste, Mappe</text>
+        <text x="450" y="300" fill="currentColor" font-size="13" text-anchor="middle">Ablage: PostgreSQL</text>
+
+        <!-- Kameras und Regie -->
+        <g stroke="currentColor" fill="none">
+          <rect x="680" y="88" width="140" height="52" rx="8"/>
+          <rect x="680" y="166" width="140" height="52" rx="8"/>
+          <rect x="680" y="258" width="140" height="52" rx="8"/>
+        </g>
+        <text x="750" y="110" fill="currentColor" font-size="14" text-anchor="middle">PTZ-Kamera 1</text>
+        <text x="750" y="128" fill="currentColor" font-size="11" text-anchor="middle" opacity=".55">Presets je Platz</text>
+        <text x="750" y="188" fill="currentColor" font-size="14" text-anchor="middle">PTZ-Kamera 2</text>
+        <text x="750" y="206" fill="currentColor" font-size="11" text-anchor="middle" opacity=".55">Presets je Platz</text>
+        <text x="750" y="280" fill="currentColor" font-size="14" text-anchor="middle">Bildmischung</text>
+        <text x="750" y="298" fill="currentColor" font-size="11" text-anchor="middle" opacity=".55">Beamer, Stream, Aufzeichnung</text>
+
+        <!-- Wege -->
+        <g stroke="currentColor" fill="none" marker-end="url(#pfeil)" marker-start="url(#pfeil)">
+          <line x1="216" y1="160" x2="324" y2="160" />
+        </g>
+        <text x="270" y="148" fill="currentColor" font-size="11" text-anchor="middle" opacity=".7">WebSocket, mTLS</text>
+
+        <g stroke="var(--akzent, #c8102e)" fill="none" marker-end="url(#pfeilrot)">
+          <path d="M576 128 H674" marker-end="url(#pfeilrot)"/>
+          <path d="M576 180 H674 " marker-end="url(#pfeilrot)"/>
+        </g>
+        <defs>
+          <marker id="pfeilrot" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="var(--akzent, #c8102e)"/>
+          </marker>
+        </defs>
+        <text x="625" y="116" fill="var(--akzent, #c8102e)" font-size="11" text-anchor="middle">VISCA über IP</text>
+        <text x="625" y="170" fill="var(--akzent, #c8102e)" font-size="11" text-anchor="middle">UDP 52381</text>
+
+        <g stroke="currentColor" fill="none" marker-end="url(#pfeil)">
+          <path d="M750 146 V252"/>
+          <path d="M820 114 C 872 130, 872 260, 826 278"/>
+        </g>
+        <text x="762" y="236" fill="currentColor" font-size="11" opacity=".7">SDI/NDI,</text>
+        <text x="762" y="250" fill="currentColor" font-size="11" opacity=".7">verkabelt</text>
+
+        <!-- Kein Weg nach draußen -->
+        <line x1="840" y1="352" x2="906" y2="352" stroke="currentColor" opacity=".5" stroke-dasharray="4 5"/>
+        <line x1="866" y1="340" x2="882" y2="364" stroke="var(--akzent, #c8102e)" stroke-width="2.5"/>
+        <line x1="882" y1="340" x2="866" y2="364" stroke="var(--akzent, #c8102e)" stroke-width="2.5"/>
+        <text x="906" y="356" fill="currentColor" font-size="12" opacity=".6">Internet</text>
+      </svg>
+      <figcaption>Alle Wege bleiben im Saal: Sprechstellen über WebSocket zum Server, der
+        Server über VISCA zu den Kameras, die Kameras verkabelt zur Bildmischung. Zum
+        Internet führt kein Pfeil — das ist keine Einschränkung, sondern die Zusage.</figcaption>
+    </figure>
   </div>
 </section>
 
@@ -126,6 +213,20 @@
     </div>
     <p class="hinweis" style="margin-top:2rem">Bewusst nicht verwendet: vMix und OBS im
       Produkt, Windows als Kern, macOS als Dauerserver, eigene Kryptografie.</p>
+    <div class="paar">
+      <figure class="bild">
+        <img src="bilder/kamera.jpg" width="1800" height="1208" loading="lazy"
+          alt="Weiße PTZ-Kamera an einer Holzwand, im Hintergrund der Sitzungstisch — Symbolbild">
+        <figcaption>Die Presets liegen in der Kamera, nicht nur im Server — fällt der
+          Server aus, bleiben sie erhalten. Symbolbild.</figcaption>
+      </figure>
+      <figure class="bild">
+        <img src="bilder/server.jpg" width="1800" height="1208" loading="lazy"
+          alt="Kompakter Serverschrank in einem Technikraum mit sauber gebündelten Kabeln — Symbolbild">
+        <figcaption>Der ganze Kern ist eine Binärdatei auf einem Server im Haus. Kein
+          Cloud-Konto, kein Lizenzabruf, keine Ferne. Symbolbild.</figcaption>
+      </figure>
+    </div>
   </div>
 </section>
 
