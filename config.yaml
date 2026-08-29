@@ -4,3 +4,10 @@ saal_datei: saal.json
 sitzungs_datei: sitzung.json
 max_offene_mikrofone: 3
 kamera_zeitlimit_ms: 500
+
+# Siegel: die Ereigniskette wird taeglich zu dieser Ortszeit und beim
+# Herunterfahren abgeschlossen und unterschrieben. Der Schluessel wird beim
+# ersten Start angelegt; der oeffentliche Teil liegt daneben als .pub und darf
+# weitergegeben werden.
+siegel_schluessel: schluessel/kette.key
+siegel_uhrzeit: "23:55"

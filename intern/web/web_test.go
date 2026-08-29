@@ -15,6 +15,7 @@ import (
 	"github.com/coder/websocket"
 
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/siegel"
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/speicher"
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/vorabcheck"
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/web"
@@ -140,6 +141,12 @@ func aufbauenMit(t *testing.T, pruefstelle bool, mappenordner string) *httptest.
 	}
 
 	oberflaeche := web.Neu(k, "../../web", nil)
+	schluessel, err := siegel.Laden(filepath.Join(t.TempDir(), "kette.key"))
+	if err != nil {
+		t.Fatalf("siegelschlüssel: %v", err)
+	}
+	oberflaeche.SetzeSiegler(siegel.Neu(saalID, schluessel, ablage, nil),
+		schluessel.Oeffentlich, saalID, ablage)
 	oberflaeche.SetzeVorabcheck(vorabcheck.Neu(aufbau, k, stilleKamera{}, ablage, 50*time.Millisecond))
 	if pruefstelle {
 		oberflaeche.SetzeEmulator(web.Emulatordaten{
@@ -500,4 +507,64 @@ func TestUnterlageUeberDenGanzenWeg(t *testing.T) {
 	if zweite.StatusCode == http.StatusOK {
 		t.Error("die marke ließ sich ein zweites mal einlösen")
 	}
+}
+
+// TestSiegelUeberHTTP: die Kette lässt sich abschließen und die Prüfung sagt
+// danach, wie viel gedeckt ist. Ohne Prüfstelle, denn das gehört in jeden Saal.
+func TestSiegelUeberHTTP(t *testing.T) {
+	dienst := aufstellen(t)
+
+	// Erst etwas in die Kette bringen.
+	k := verbinden(t, dienst)
+	k.anmelden(1, "1111")
+
+	vorher := siegelbericht(t, dienst)
+	if vorher["ok"] != true {
+		t.Fatalf("eine ungesiegelte kette ist in ordnung: %+v", vorher)
+	}
+	if vorher["siegel"].(float64) != 0 {
+		t.Errorf("noch kein siegel erwartet: %+v", vorher)
+	}
+
+	antwort, err := http.Post(dienst.URL+"/siegel", "", nil)
+	if err != nil {
+		t.Fatalf("siegeln: %v", err)
+	}
+	var abschluss map[string]any
+	json.NewDecoder(antwort.Body).Decode(&abschluss) //nolint:errcheck
+	antwort.Body.Close()
+	if antwort.StatusCode != http.StatusOK || abschluss["neu"] != true {
+		t.Fatalf("HTTP %d, abschluss %+v", antwort.StatusCode, abschluss)
+	}
+
+	nachher := siegelbericht(t, dienst)
+	if nachher["ok"] != true {
+		t.Fatalf("die prüfung schlägt fehl: %+v", nachher)
+	}
+	if nachher["siegel"].(float64) != 1 {
+		t.Errorf("ein siegel erwartet: %+v", nachher)
+	}
+	if nachher["gedeckt"].(float64) < 1 {
+		t.Errorf("das siegel deckt nichts: %+v", nachher)
+	}
+	if abdruecke, passt := nachher["fingerabdruecke"].([]any); !passt || len(abdruecke) != 1 {
+		t.Errorf("genau ein fingerabdruck erwartet: %+v", nachher["fingerabdruecke"])
+	}
+}
+
+func siegelbericht(t *testing.T, dienst *httptest.Server) map[string]any {
+	t.Helper()
+	antwort, err := http.Get(dienst.URL + "/siegel.json")
+	if err != nil {
+		t.Fatalf("siegel.json: %v", err)
+	}
+	defer antwort.Body.Close()
+	if antwort.StatusCode != http.StatusOK {
+		t.Fatalf("HTTP %d von siegel.json", antwort.StatusCode)
+	}
+	var bericht map[string]any
+	if err := json.NewDecoder(antwort.Body).Decode(&bericht); err != nil {
+		t.Fatalf("bericht nicht lesbar: %v", err)
+	}
+	return bericht
 }

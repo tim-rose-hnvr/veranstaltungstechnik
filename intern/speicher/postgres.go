@@ -113,9 +113,11 @@ func (p *Postgres) SaalImportieren(ctx context.Context, d Saaldaten) (string, []
 		for _, pl := range d.Plaetze {
 			var platzID string
 			if err := tx.QueryRow(ctx, `
-				INSERT INTO platz (saal_id, nummer, name) VALUES ($1, $2, $3)
-				ON CONFLICT (saal_id, nummer) DO UPDATE SET name = EXCLUDED.name
-				RETURNING id`, saalID, pl.Nummer, pl.Name).Scan(&platzID); err != nil {
+				INSERT INTO platz (saal_id, nummer, name, reihe, spalte) VALUES ($1, $2, $3, $4, $5)
+				ON CONFLICT (saal_id, nummer) DO UPDATE SET
+				  name = EXCLUDED.name, reihe = EXCLUDED.reihe, spalte = EXCLUDED.spalte
+				RETURNING id`, saalID, pl.Nummer, pl.Name,
+				leerAlsNull(pl.Reihe), pl.Spalte).Scan(&platzID); err != nil {
 				return fmt.Errorf("platz %d: %w", pl.Nummer, err)
 			}
 
@@ -130,6 +132,8 @@ func (p *Postgres) SaalImportieren(ctx context.Context, d Saaldaten) (string, []
 			aufbau = append(aufbau, kern.Platzaufbau{
 				Nummer:        pl.Nummer,
 				Name:          pl.Name,
+				Reihe:         pl.Reihe,
+				Spalte:        pl.Spalte,
 				KameraName:    pl.Kamera,
 				KameraAdresse: adressen[pl.Kamera],
 				Kanal:         kanaele[pl.Kamera],
@@ -245,7 +249,7 @@ func (p *Postgres) Zaehlen(ctx context.Context, tabelle string) (int, error) {
 		"platz": true, "preset": true, "ereignis": true,
 		"person": true, "sitzung": true, "teilnahme": true, "wortmeldung": true,
 		"abstimmung": true, "stimme": true, "stimmabgabe": true,
-		"tagesordnungspunkt": true, "unterlage": true,
+		"tagesordnungspunkt": true, "unterlage": true, "saalplan_geprueft": true,
 	}
 	if !erlaubt[tabelle] {
 		return 0, fmt.Errorf("unbekannte tabelle %q", tabelle)
@@ -280,4 +284,14 @@ var Migrationen = []struct{ Datei, Waechter string }{
 	{"003_abstimmung.sql", "stimmabgabe"},
 	{"004_tagesordnung.sql", "tagesordnungspunkt"},
 	{"005_unterlage.sql", "unterlage"},
+	{"006_saalplan.sql", "saalplan_geprueft"},
+}
+
+// leerAlsNull macht aus einer leeren Angabe NULL — die Prüfregel der Spalte
+// lässt NULL zu, aber keine leere Zeichenkette.
+func leerAlsNull(wert string) any {
+	if wert == "" {
+		return nil
+	}
+	return wert
 }

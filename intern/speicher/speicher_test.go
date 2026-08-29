@@ -40,10 +40,10 @@ func frischePostgres(t *testing.T, dsn string) speicher.Ablage {
 		t.Fatalf("testdatenbank: %v", err)
 	}
 	defer teich.Close()
-	if _, err := teich.Exec(ctx, `
-		DROP TABLE IF EXISTS tagesordnungspunkt, stimmabgabe, stimme, abstimmung,
-		                     wortmeldung, teilnahme, sitzung, person,
-		                     ereignis, preset, platz, kamera, saal, organisation CASCADE`); err != nil {
+	// Das ganze Schema wegwerfen statt einer Liste von Tabellen: eine
+	// Aufzählung von Hand driftet von den Migrationen weg, und dann läuft der
+	// Test gegen ein halb altes Schema, ohne dass etwas auffällt.
+	if _, err := teich.Exec(ctx, "DROP SCHEMA public CASCADE; CREATE SCHEMA public"); err != nil {
 		t.Fatalf("testdatenbank leeren: %v", err)
 	}
 
@@ -369,5 +369,68 @@ func testsitzung() speicher.Sitzungsdaten {
 			{Platz: 2, Person: "Jonas Öztürk", Rolle: "delegierter", Pin: "2345"},
 			{Platz: 3, Person: "Rita Falk", Rolle: "schriftfuehrung", Pin: "3456", Widerspruch: true},
 		},
+	}
+}
+
+// TestSitzordnungUeberlebtDenImport: der Saalplan braucht Geometrie. Kommt sie
+// nicht durch, zeigt die Oberfläche eine Kachelreihe statt eines Plans — und
+// niemand merkt, dass etwas fehlt.
+func TestSitzordnungUeberlebtDenImport(t *testing.T) {
+	for name, bauen := range ablagen(t) {
+		t.Run(name, func(t *testing.T) {
+			ctx := context.Background()
+			ablage := bauen(t)
+
+			saal := testsaal()
+			saal.Plaetze[0].Reihe, saal.Plaetze[0].Spalte = "links", 1
+			saal.Plaetze[1].Reihe, saal.Plaetze[1].Spalte = "oben", 1
+			// Platz 3 bleibt ohne Geometrie — das muss erlaubt sein.
+
+			_, aufbau, err := ablage.SaalImportieren(ctx, saal)
+			if err != nil {
+				t.Fatalf("saal einlesen: %v", err)
+			}
+			nach := map[int]kern.Platzaufbau{}
+			for _, p := range aufbau {
+				nach[p.Nummer] = p
+			}
+			if nach[1].Reihe != "links" || nach[1].Spalte != 1 {
+				t.Errorf("platz 1: links/1 erwartet, %q/%d bekommen", nach[1].Reihe, nach[1].Spalte)
+			}
+			if nach[2].Reihe != "oben" {
+				t.Errorf("platz 2: oben erwartet, %q bekommen", nach[2].Reihe)
+			}
+			if nach[3].Reihe != "" {
+				t.Errorf("platz 3 sollte ohne reihe bleiben, hat %q", nach[3].Reihe)
+			}
+
+			// Und ein zweiter Import ändert die Geometrie mit.
+			saal.Plaetze[1].Reihe = "unten"
+			_, erneut, err := ablage.SaalImportieren(ctx, saal)
+			if err != nil {
+				t.Fatalf("zweiter import: %v", err)
+			}
+			for _, p := range erneut {
+				if p.Nummer == 2 && p.Reihe != "unten" {
+					t.Errorf("platz 2 nach dem zweiten import: unten erwartet, %q bekommen", p.Reihe)
+				}
+			}
+		})
+	}
+}
+
+// TestUnbekannteReiheWirdAbgewiesen: ein Tippfehler in der Sitzordnung darf
+// nicht zu einem stillschweigend falschen Plan führen.
+func TestUnbekannteReiheWirdAbgewiesen(t *testing.T) {
+	saal := testsaal()
+	saal.Plaetze[0].Reihe = "mitte"
+	if err := saal.Pruefen(); err == nil {
+		t.Error("die reihe \"mitte\" wurde angenommen")
+	}
+
+	saal = testsaal()
+	saal.Plaetze[0].Spalte = 3
+	if err := saal.Pruefen(); err == nil {
+		t.Error("eine spalte ohne reihe wurde angenommen")
 	}
 }

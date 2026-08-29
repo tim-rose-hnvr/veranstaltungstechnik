@@ -3,13 +3,23 @@ package vorabcheck_test
 import (
 	"context"
 	"errors"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/siegel"
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/speicher"
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/vorabcheck"
+)
+
+// letzteAblage und letzterAufbau merken sich, was aufbauen zuletzt gebaut hat
+// — die Siegelprüfung braucht beides und der vorhandene Aufbau gibt es nicht
+// heraus.
+var (
+	letzteAblage  *speicher.Gedaechtnis
+	letzterAufbau kern.Aufbau
 )
 
 type stilleKamera struct{ antwort error }
@@ -57,6 +67,8 @@ func aufbauen(t *testing.T, teilnahmen []speicher.Teilnahmedaten, kameraFehler e
 	if err != nil {
 		t.Fatalf("kern nicht aufgebaut: %v", err)
 	}
+	letzterAufbau = aufbau
+	letzteAblage = ablage
 	return vorabcheck.Neu(aufbau, k, steuerung, ablage, 50*time.Millisecond), k
 }
 
@@ -157,4 +169,60 @@ func TestVorabcheckGesperrtWaehrendDerSitzung(t *testing.T) {
 	if _, err := pruefer.Laufen(context.Background()); !errors.Is(err, vorabcheck.ErrSitzungLaeuft) {
 		t.Fatalf("ablehnung erwartet, %v bekommen", err)
 	}
+}
+
+// TestSiegelImVorabcheck: der Vorabcheck sagt, ob die Kette abgeschlossen ist
+// — und weist einen Nachbau ab.
+func TestSiegelImVorabcheck(t *testing.T) {
+	p, k := aufbauen(t, vollbesetzt(), nil)
+	ablage, saalID := letzteAblage, letzterAufbau.SaalID
+	ctx := context.Background()
+
+	// Eine leere Kette lässt sich nicht abschließen — erst muss etwas
+	// geschehen sein.
+	if err := k.Anmelden(ctx, 1, "1111"); err != nil {
+		t.Fatalf("anmelden: %v", err)
+	}
+
+	schluessel, err := siegel.Laden(filepath.Join(t.TempDir(), "kette.key"))
+	if err != nil {
+		t.Fatalf("schlüssel: %v", err)
+	}
+
+	// Ohne Schlüssel: ein Hinweis, kein Fehler.
+	if punkt := punktMit(t, p, "Siegel"); punkt.Ergebnis != vorabcheck.Hinweis {
+		t.Errorf("ohne schlüssel ein hinweis erwartet, %s bekommen: %s", punkt.Ergebnis, punkt.Text)
+	}
+
+	p.SetzeSiegelschluessel(schluessel.Oeffentlich)
+	// Mit Schlüssel, aber ohne Abschluss: ebenfalls ein Hinweis.
+	if punkt := punktMit(t, p, "Siegel"); punkt.Ergebnis != vorabcheck.Hinweis {
+		t.Errorf("ohne abschluss ein hinweis erwartet, %s bekommen: %s", punkt.Ergebnis, punkt.Text)
+	}
+
+	if _, err := siegel.Neu(saalID, schluessel, ablage, nil).Siegeln(ctx); err != nil {
+		t.Fatalf("siegeln: %v", err)
+	}
+	punkt := punktMit(t, p, "Siegel")
+	if punkt.Ergebnis != vorabcheck.Ok {
+		t.Errorf("nach dem abschluss ok erwartet, %s bekommen: %s", punkt.Ergebnis, punkt.Text)
+	}
+	if !strings.Contains(punkt.Text, siegel.Fingerabdruck(schluessel.Oeffentlich)) {
+		t.Errorf("der fingerabdruck fehlt im bericht: %s", punkt.Text)
+	}
+}
+
+func punktMit(t *testing.T, p *vorabcheck.Pruefer, titel string) vorabcheck.Punkt {
+	t.Helper()
+	bericht, err := p.Laufen(context.Background())
+	if err != nil {
+		t.Fatalf("vorabcheck: %v", err)
+	}
+	for _, punkt := range bericht.Punkte {
+		if punkt.Titel == titel {
+			return punkt
+		}
+	}
+	t.Fatalf("keine prüfung %q im bericht", titel)
+	return vorabcheck.Punkt{}
 }

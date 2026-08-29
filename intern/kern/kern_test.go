@@ -219,6 +219,10 @@ func TestGrenzeOffenerMikrofone(t *testing.T) {
 			t.Fatalf("mikro %d ließ sich nicht öffnen: %v", platz, err)
 		}
 	}
+	// Erst warten, dann den Vergleichsstand nehmen: die Kamera fährt in einem
+	// eigenen Ablauf und erhöht den Stand, wenn sie fertig ist. Ohne das Warten
+	// misst der Vergleich unten die Kamera statt der abgelehnten Schaltung.
+	p.kern.KameraAbwarten()
 	vorher := p.kern.Zustand()
 
 	err := p.kern.MikroAn(ctx, 1, 4)
@@ -236,7 +240,6 @@ func TestGrenzeOffenerMikrofone(t *testing.T) {
 		}
 	}
 
-	p.kern.KameraAbwarten()
 	if abrufe := p.kamera.Abrufe(); len(abrufe) != 3 {
 		t.Errorf("3 kameraabrufe erwartet, %d bekommen", len(abrufe))
 	}

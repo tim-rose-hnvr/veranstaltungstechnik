@@ -29,6 +29,12 @@ type Platzdaten struct {
 	Name   string `json:"name"`
 	Kamera string `json:"kamera"`
 	Preset uint8  `json:"preset"`
+	// Reihe und Spalte beschreiben die Sitzordnung an einem rechteckigen
+	// Tisch: "oben" und "unten" sind die Längsseiten, "links" und "rechts"
+	// die Kopfenden. Fehlt die Angabe, zeigt die Oberfläche eine Kachelreihe
+	// statt eines Plans — ein falscher Plan wäre schlimmer als keiner.
+	Reihe  string `json:"reihe,omitempty"`
+	Spalte int    `json:"spalte,omitempty"`
 }
 
 // SaalLesen liest die Saaldatei und prüft sie auf Vollständigkeit.
@@ -87,6 +93,15 @@ func (d Saaldaten) Pruefen() error {
 		}
 		if !kameras[p.Kamera] {
 			return fmt.Errorf("platz %d verweist auf unbekannte kamera %q", p.Nummer, p.Kamera)
+		}
+		switch p.Reihe {
+		case "", "oben", "unten", "links", "rechts":
+		default:
+			return fmt.Errorf("platz %d: reihe %q gibt es nicht, erlaubt sind oben, unten, links, rechts",
+				p.Nummer, p.Reihe)
+		}
+		if p.Reihe == "" && p.Spalte != 0 {
+			return fmt.Errorf("platz %d hat eine spalte, aber keine reihe", p.Nummer)
 		}
 	}
 	return nil

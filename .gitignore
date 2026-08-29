@@ -1,3 +1,8 @@
 
 # Erzeugnis der Entwurfsflaeche, nicht Quelle.
 entwurf/conferencecue-entwurf.html
+
+# Siegelschluessel gehoeren nie ins Repository.
+schluessel/
+*.key
+vorfuehrung/kette.key*

@@ -49,9 +49,9 @@ Diese vier Sätze entscheiden fast jede Detailfrage. Bei Zweifeln hierauf zurüc
 Diese sechs Punkte müssen von der ersten Zeile an stimmen. Alles andere ist additiv.
 
 1. **Mandantenfähigkeit** — `organisation_id` in jeder Tabelle
-2. **Ereignisprotokoll als Hash-Kette**, nur anfügbar, mit täglichem signiertem Abschluss
+2. **Ereignisprotokoll als Hash-Kette**, nur anfügbar, mit täglichem signiertem Abschluss — gebaut, siehe `intern/siegel`
 3. **Eine Zeitachse je Sitzung** — Audio, Video, Transkript, Abstimmungen und Telemetrie in Millisekunden seit Sitzungsbeginn
-4. **Offline-First im Client** — Gerät arbeitet weiter, wenn der Server weg ist, und synchronisiert nach
+4. **Offline-First im Client** — Gerät arbeitet weiter, wenn der Server weg ist, und synchronisiert nach. **Noch nicht gebaut**: der Client puffert nichts, eine Stimme bei getrennter Verbindung geht verloren. Braucht eine Entscheidung über Browser-Speicher.
 5. **Rollen statt Gerätetypen**, Rechte zentral im Kern geprüft, nie in der Oberfläche
 6. **Mix-Minus im Audiorouting** — getrennte Summen für Saal und Zuschaltung
 

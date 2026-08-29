@@ -54,6 +54,7 @@ Andere Konfiguration: `-konfiguration pfad.yaml`.
 | `/testumgebung` | die drei Geräte nebeneinander in einem Fenster |
 | `/vorabcheck` | Selbsttest vor der Sitzung: Kette, Besetzung, jede Kamera |
 | `/protokoll.md` | Sitzungsprotokoll aus der Ereigniskette, als Markdown |
+| `/siegel.json` | Prüfbericht der Kettenabschlüsse; `POST /siegel` schließt jetzt ab |
 | `/unterlage/{marke}` | eine Unterlage der Sitzungsmappe, nur gegen eine gültige Marke |
 | `/emulator` | Prüfstelle — nur bei `emulator: true`, sie gibt die PINs preis |
 
@@ -69,10 +70,16 @@ Dazu zwei Schalter, die nur außerhalb des Saals etwas zu suchen haben:
 | Schlüssel | Wirkung |
 |---|---|
 | `kamera_attrappe: true` | simulierte Kameras hören auf den Adressen aus `saal.json` und quittieren wie echte Geräte |
+| `siegel_schluessel` | Ed25519-Schlüssel für den Kettenabschluss, Vorgabe `schluessel/kette.key`. Fehlt die Datei, wird sie mit 0600 angelegt |
+| `siegel_uhrzeit: "23:55"` | Ortszeit des täglichen Abschlusses. Leer: nur beim Herunterfahren und auf Anforderung |
 | `emulator: true` | schaltet `/emulator` frei. **Gibt die PINs im Klartext preis** — ohne den Schalter gibt es die Adressen nicht |
 
 `saal.json` beschreibt Kameras und Plätze samt Presetnummer; die Presets liegen
-in der Kamera, der Server merkt sich nur die Nummer. `sitzung.json` verbindet
+in der Kamera, der Server merkt sich nur die Nummer. Ein Platz kann zusätzlich
+`"reihe"` (`oben`, `unten`, `links`, `rechts`) und `"spalte"` tragen — das ist
+die Sitzordnung an einem rechteckigen Tisch. Fehlt sie, zeigt die Sprechstelle
+eine Kachelreihe statt eines Saalplans: ein geratener Plan wäre schlimmer als
+keiner. `sitzung.json` verbindet
 Person, Platz, Rolle und PIN und enthält die `tagesordnung`. Die PIN liegt in
 der Datenbank nur als bcrypt-Hash und geht nie an einen Client.
 
@@ -154,6 +161,32 @@ Die ausgelieferte Datei trägt ein **Wasserzeichen** im Kopf `X-Wasserzeichen`:
 Person, Platz, Sitzung, Zeit. Es ist in die Datei selbst noch nicht
 eingebrannt — dafür bräuchte es eine PDF-Verarbeitung, die es hier nicht gibt.
 
+## Siegel: der Abschluss der Ereigniskette
+
+Die Kette zeigt, dass niemand **einen Eintrag** geändert hat. Sie zeigt nicht,
+dass niemand die **ganze Kette** neu gerechnet hat — wer Schreibrechte auf die
+Datenbank hat, kann eine zweite, in sich stimmige Kette bauen.
+
+Ein Siegel schließt diese Lücke. Es unterschreibt Kopf und Länge der Kette mit
+einem Ed25519-Schlüssel, der **nicht in der Datenbank liegt**. Eine nachgebaute
+Kette hat entweder kein Siegel oder eines, das nicht aufgeht.
+
+- **Wann.** Täglich zur eingestellten Uhrzeit, beim Herunterfahren und auf
+  `POST /siegel`. Sind seit dem letzten Abschluss nur Siegel dazugekommen, wird
+  keines gesetzt — sonst wüchse die Kette bei jedem Aufruf um einen Eintrag.
+- **Wo.** Das Siegel steht als Ereignis `kette_gesiegelt` **in der Kette
+  selbst**, nicht in einer eigenen Tabelle. Eine zweite Liste daneben könnte
+  auseinanderlaufen.
+- **Womit.** `schluessel/kette.key`, 0600; ein weltweit lesbarer Schlüssel wird
+  beim Start abgelehnt. Daneben liegt `kette.key.pub` — der darf weitergegeben
+  werden und ist das, womit von außen geprüft wird. Der Fingerabdruck ist kurz
+  genug, um ihn mündlich zu vergleichen.
+- **Prüfung.** `GET /siegel.json` und der Vorabcheck rechnen jedes Siegel nach
+  und melden, wie viel der Kette gedeckt ist. Ein Siegel mit fremdem Schlüssel
+  oder einem Kopf, der nicht zur Kette passt, ist ein Fehler, kein Hinweis.
+
+Der Schlüssel gehört **nie ins Repository** — `.gitignore` hält ihn heraus.
+
 ## Abstimmung
 
 Offen, namentlich oder geheim. Beschlussfähigkeit wird beim Start geprüft und
@@ -202,6 +235,9 @@ Achtung: Die Testdatenbank wird dabei geleert.
 - **Vorabcheck.** `POST /vorabcheck` fährt jeden Platz an und prüft Kette und
   Besetzung. Während einer laufenden Sitzung ist er gesperrt — er bewegt
   Kameras. Antwort 409, wenn es trotzdem jemand versucht.
+- **Der Saalplan wird nicht geraten.** Ohne `reihe` in `saal.json` zeigt die
+  Sprechstelle eine Kachelreihe. Aus einer Platznummer lässt sich keine
+  Sitzordnung ableiten, und ein falscher Plan ist schlimmer als keiner.
 - **Prüfung bei jedem Push.** `.github/workflows/pruefung.yml` baut, prüft die
   Formatierung und lässt die Tests laufen, auch gegen eine echte PostgreSQL.
 - **Wenn die Leitung ausfällt**, übernimmt eine andere berechtigte Person

@@ -137,6 +137,8 @@ func (g *Gedaechtnis) SaalImportieren(ctx context.Context, d Saaldaten) (string,
 		aufbau = append(aufbau, kern.Platzaufbau{
 			Nummer:        p.Nummer,
 			Name:          p.Name,
+			Reihe:         p.Reihe,
+			Spalte:        p.Spalte,
 			KameraName:    p.Kamera,
 			KameraAdresse: adresse,
 			Kanal:         kanal,

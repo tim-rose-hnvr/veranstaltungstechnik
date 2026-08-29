@@ -98,6 +98,7 @@ type Wortmeldung struct {
 
 // SitzungZustand ist die Sitzung, wie sie der Client sieht.
 type SitzungZustand struct {
+	Saal         string          `json:"saal"`
 	Titel        string          `json:"titel"`
 	Zustand      Sitzungszustand `json:"zustand"`
 	LeitungPlatz int             `json:"leitung_platz"`

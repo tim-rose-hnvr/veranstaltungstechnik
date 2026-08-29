@@ -14,8 +14,12 @@ import (
 // Platzaufbau beschreibt einen Sitzplatz samt der Kamera, die ihn zeigt.
 // Der Aufbau kommt aus der Datenbank und ändert sich zur Laufzeit nicht.
 type Platzaufbau struct {
-	Nummer        int
-	Name          string
+	Nummer int
+	Name   string
+	// Reihe und Spalte sind die Sitzordnung im Saal. Leer: keine Geometrie
+	// hinterlegt, die Oberfläche zeigt dann eine Kachelreihe.
+	Reihe         string
+	Spalte        int
 	KameraName    string
 	KameraAdresse string
 	Kanal         uint8
@@ -47,6 +51,8 @@ type PlatzZustand struct {
 	Mikro   bool   `json:"mikro"`
 	Belegt  bool   `json:"belegt"`
 	HatWort bool   `json:"hat_wort"`
+	Reihe   string `json:"reihe,omitempty"`
+	Spalte  int    `json:"spalte,omitempty"`
 	// Widerspruch gegen die Aufzeichnung. Steht im Zustand, damit die
 	// Oberfläche erklären kann, warum die Kamera nicht fährt.
 	Widerspruch bool `json:"widerspruch"`
@@ -84,6 +90,7 @@ type platz struct {
 // Aufbau ist alles, was der Kern beim Start braucht.
 type Aufbau struct {
 	SaalID         string
+	Saal           string // Name des Saals, für die Beschriftung des Saalplans
 	SitzungID      string
 	Titel          string
 	SitzungZustand Sitzungszustand
@@ -103,6 +110,7 @@ type Aufbau struct {
 // Jede Rechteprüfung liegt hier — nie in der Oberfläche.
 type Kern struct {
 	saalID    string
+	saal      string
 	sitzungID string
 	titel     string
 	maxOffen  int
@@ -144,6 +152,7 @@ func Neu(a Aufbau, steuerung Kamerasteuerung, ablage Ablage, protokoll *slog.Log
 
 	k := &Kern{
 		saalID:    a.SaalID,
+		saal:      a.Saal,
 		sitzungID: a.SitzungID,
 		titel:     a.Titel,
 		maxOffen:  a.MaxOffen,
@@ -984,6 +993,7 @@ func (k *Kern) zustandIntern() Zustand {
 		MaxOffen:     k.maxOffen,
 		Aufzeichnung: k.aufzeichnung,
 		Sitzung: SitzungZustand{
+			Saal:         k.saal,
 			Titel:        k.titel,
 			Zustand:      k.sitzung,
 			LeitungPlatz: k.leitungPlatz,
@@ -1004,6 +1014,8 @@ func (k *Kern) zustandIntern() Zustand {
 			Mikro:   p.mikro,
 			Belegt:  p.belegt,
 			HatWort: k.hatWortIntern(p.aufbau.Nummer),
+			Reihe:   p.aufbau.Reihe,
+			Spalte:  p.aufbau.Spalte,
 		}
 		if p.teilnahme != nil {
 			pz.Person = p.teilnahme.Person

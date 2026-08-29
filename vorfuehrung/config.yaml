@@ -11,6 +11,12 @@ kamera_zeitlimit_ms: 500
 # echte. Der Weg bleibt derselbe: Rahmen bauen, UDP senden, auf Antwort warten.
 kamera_attrappe: true
 
+# Der Siegelschlüssel wird beim ersten Start angelegt. Im Vorführbetrieb liegt
+# er unter vorfuehrung/, damit er nicht mit dem Betriebsschlüssel verwechselt
+# wird. Die Kette wird beim Herunterfahren abgeschlossen; taeglich hier nicht,
+# weil eine Vorführung keinen Tag dauert.
+siegel_schluessel: vorfuehrung/kette.key
+
 # Die Prüfstelle unter /emulator. Sie gibt die PINs preis und gehört deshalb
 # nie in eine Konfiguration, die im Saal läuft.
 emulator: true

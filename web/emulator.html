@@ -197,6 +197,10 @@
 
     <section>
       <h2>Ereigniskette <span class="leise klein" id="kettenzeile"></span></h2>
+      <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.6rem">
+        <span class="klein leise" id="siegelzeile">Siegel: wird geholt …</span>
+        <button id="siegeln" style="margin-left:auto">Kette abschließen</button>
+      </div>
       <div class="rollen">
         <table class="kette">
           <thead><tr><th>Nr</th><th>ms</th><th>Ereignis</th><th>Hash</th></tr></thead>
@@ -231,6 +235,8 @@ const knoten = {
   strom: document.getElementById("strom"),
   kette: document.getElementById("kette"),
   kettenzeile: document.getElementById("kettenzeile"),
+  siegelzeile: document.getElementById("siegelzeile"),
+  siegeln: document.getElementById("siegeln"),
   kameras: document.getElementById("kameras"),
   kamerazeile: document.getElementById("kamerazeile"),
   viscastrom: document.getElementById("viscastrom"),
@@ -775,6 +781,41 @@ function zelle(text, klasse) {
   return td;
 }
 
+// Das Siegel beantwortet eine Frage, die die Kette allein nicht beantwortet:
+// ob jemand die ganze Kette neu gerechnet hat.
+async function siegelHolen() {
+  try {
+    const antwort = await fetch("/siegel.json", { cache: "no-store" });
+    const d = await antwort.json();
+    if (d.fehler) { knoten.siegelzeile.textContent = "Siegel: " + d.fehler; return; }
+
+    const punkt = document.createElement("span");
+    punkt.className = "punkt " + (d.ok ? "gut" : "schlecht");
+    const text = d.siegel === 0
+      ? " noch nie abgeschlossen — " + d.laenge + " Einträge ungedeckt"
+      : " " + d.siegel + " Abschlüsse, gedeckt bis " + d.gedeckt + " von " + d.laenge +
+        " · Schlüssel " + (d.fingerabdruecke || []).join(", ") +
+        (d.ok ? "" : " · FEHLER: " + (d.fehler || []).join("; "));
+    knoten.siegelzeile.replaceChildren(punkt, document.createTextNode(text));
+  } catch (_) { /* nächster Durchlauf */ }
+}
+
+knoten.siegeln.onclick = async function () {
+  knoten.siegeln.disabled = true;
+  try {
+    const antwort = await fetch("/siegel", { method: "POST" });
+    const d = await antwort.json();
+    if (d.fehler) melden("Siegel", d.fehler, "schlecht");
+    else if (d.neu) melden("Kette abgeschlossen", "Einträge " + d.von + " bis " + d.bis +
+      " unterschrieben, Schlüssel " + d.schluessel, "gut");
+    else melden("Siegel", "Seit dem letzten Abschluss ist nichts dazugekommen.");
+    await siegelHolen();
+  } catch (fehler) {
+    melden("Siegel", String(fehler), "schlecht");
+  }
+  knoten.siegeln.disabled = false;
+};
+
 let letzterViscaStand = 0;
 
 async function kamerasHolen() {
@@ -1089,6 +1130,8 @@ async function starten() {
   zuschauer.onclose = function () { setTimeout(starten, 1500); };
 
   setInterval(ketteHolen, 1000);
+  setInterval(siegelHolen, 3000);
+  siegelHolen();
   setInterval(kamerasHolen, 700);
   ketteHolen();
   kamerasHolen();

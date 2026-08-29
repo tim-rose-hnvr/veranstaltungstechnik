@@ -18,6 +18,7 @@ import (
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kamera"
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
 	protokollpaket "github.com/tim-rose-hnvr/veranstaltungstechnik/intern/protokoll"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/siegel"
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/speicher"
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/vorabcheck"
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/web"
@@ -144,6 +145,7 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 	steuerung := kamera.NeuViscaIP(konfiguration.KameraZeitlimit())
 	aufbau := kern.Aufbau{
 		SaalID:         saalID,
+		Saal:           saaldaten.Saal,
 		SitzungID:      stand.SitzungID,
 		Titel:          stand.Titel,
 		SitzungZustand: stand.Zustand,
@@ -163,11 +165,31 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 		return err
 	}
 
+	// Die Kette wird abgeschlossen und unterschrieben: sie allein zeigt nur,
+	// dass niemand einen Eintrag geändert hat — nicht, dass niemand die ganze
+	// Kette neu gerechnet hat.
+	schluessel, err := siegel.Laden(konfiguration.SiegelSchluessel)
+	if err != nil {
+		return err
+	}
+	siegler := siegel.Neu(saalID, schluessel, ablage, protokoll)
+	protokoll.Info("siegelschlüssel bereit",
+		"datei", konfiguration.SiegelSchluessel,
+		"fingerabdruck", siegel.Fingerabdruck(schluessel.Oeffentlich))
+	if konfiguration.SiegelUhrzeit != "" {
+		if err := siegler.Taeglich(ctx, konfiguration.SiegelUhrzeit); err != nil {
+			return err
+		}
+		protokoll.Info("täglicher kettenabschluss eingerichtet", "uhrzeit", konfiguration.SiegelUhrzeit)
+	}
+
 	oberflaeche := web.Neu(sitzung, webVerzeichnis, protokoll)
+	oberflaeche.SetzeSiegler(siegler, schluessel.Oeffentlich, saalID, ablage)
 	oberflaeche.SetzeProtokoll(
 		protokollpaket.Neu(saalID, saaldaten.Saal, ablage, stand.Teilnahmen), stand.SitzungID)
-	oberflaeche.SetzeVorabcheck(
-		vorabcheck.Neu(aufbau, sitzung, steuerung, ablage, konfiguration.KameraZeitlimit()))
+	pruefer := vorabcheck.Neu(aufbau, sitzung, steuerung, ablage, konfiguration.KameraZeitlimit())
+	pruefer.SetzeSiegelschluessel(schluessel.Oeffentlich)
+	oberflaeche.SetzeVorabcheck(pruefer)
 
 	if konfiguration.Emulator {
 		protokoll.Warn("prüfstelle unter /emulator freigeschaltet — sie gibt die PINs preis")
@@ -207,8 +229,15 @@ func starten(konfigPfad string, protokoll *slog.Logger) error {
 		return err
 	case <-ctx.Done():
 		protokoll.Info("server fährt herunter")
-		aus, fertig := context.WithTimeout(context.Background(), 5*time.Second)
+		aus, fertig := context.WithTimeout(context.Background(), 10*time.Second)
 		defer fertig()
+		// Ein Server, der ohne Siegel stoppt, hinterlässt eine ungeschlossene
+		// Kette. Das Siegel kommt vor dem Herunterfahren, nicht danach.
+		if abschluss, err := siegler.Siegeln(aus); err != nil {
+			protokoll.Error("abschlusssiegel nicht gesetzt", "grund", err)
+		} else if abschluss.Neu {
+			protokoll.Info("kette abgeschlossen", "von", abschluss.Von, "bis", abschluss.Bis)
+		}
 		return dienst.Shutdown(aus)
 	}
 }

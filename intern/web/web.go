@@ -57,6 +57,7 @@ type Server struct {
 	schreiber   *protokoll.Schreiber
 	sitzungID   string
 	emulator    *Emulatordaten
+	siegel      *Siegelstelle
 
 	mu           sync.Mutex
 	verbindungen map[*verbindung]struct{}
@@ -98,6 +99,8 @@ func (s *Server) Handler() http.Handler {
 	weiche.HandleFunc("POST /vorabcheck", s.vorabcheck)
 	weiche.HandleFunc("GET /protokoll.md", s.protokollSeite)
 	weiche.HandleFunc("GET /unterlage/{marke}", s.unterlage)
+	weiche.HandleFunc("GET /siegel.json", s.siegelPruefen)
+	weiche.HandleFunc("POST /siegel", s.siegelSetzen)
 	// Die Prüfstelle gibt die PINs preis. Ohne Freischaltung in der
 	// Konfiguration gibt es ihre Adressen nicht.
 	if s.emulator != nil {

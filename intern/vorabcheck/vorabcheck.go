@@ -8,11 +8,14 @@ package vorabcheck
 
 import (
 	"context"
+	"crypto/ed25519"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/kern"
+	"github.com/tim-rose-hnvr/veranstaltungstechnik/intern/siegel"
 )
 
 // ErrSitzungLaeuft meldet, dass der Vorabcheck abgelehnt wurde. Er fährt die
@@ -61,6 +64,16 @@ type Pruefer struct {
 	ablage    Kettenleser
 	zeitlimit time.Duration
 	jetzt     func() time.Time
+
+	// siegelschluessel ist der öffentliche Teil des Siegelschlüssels. Ist er
+	// nicht gesetzt, wird die Kette geprüft, aber nicht der Abschluss.
+	siegelschluessel ed25519.PublicKey
+}
+
+// SetzeSiegelschluessel hinterlegt den Schlüssel, gegen den die Abschlüsse der
+// Kette geprüft werden.
+func (p *Pruefer) SetzeSiegelschluessel(oeffentlich ed25519.PublicKey) {
+	p.siegelschluessel = oeffentlich
 }
 
 // Neu baut den Prüfer. aufbau ist der Stand beim Serverstart, sitzung liefert
@@ -172,8 +185,32 @@ func (p *Pruefer) kettePruefen(ctx context.Context) []Punkt {
 			fmt.Sprintf("Die Kette ist nicht in Ordnung: %v. Das Protokoll dieser Sitzung "+
 				"ist nicht mehr beweiskräftig — vor der Sitzung klären.", err)}}
 	}
-	return []Punkt{{"Protokoll", "Ereigniskette", Ok,
+	punkte := []Punkt{{"Protokoll", "Ereigniskette", Ok,
 		fmt.Sprintf("%d Einträge, lückenlos und nachgerechnet.", len(kette))}}
+
+	// Die Kette zeigt, dass niemand einen Eintrag geändert hat. Erst das
+	// Siegel zeigt, dass niemand die ganze Kette neu gerechnet hat.
+	if p.siegelschluessel == nil {
+		return append(punkte, Punkt{"Protokoll", "Siegel", Hinweis,
+			"Es ist kein Siegelschlüssel hinterlegt. Die Kette ist in sich stimmig, " +
+				"aber ein vollständiger Nachbau fiele nicht auf."})
+	}
+	bericht := siegel.Pruefen(p.aufbau.SaalID, kette, p.siegelschluessel)
+	switch {
+	case !bericht.Ok():
+		return append(punkte, Punkt{"Protokoll", "Siegel", Fehler,
+			fmt.Sprintf("Ein Abschluss geht nicht auf: %s. Das Protokoll ist nicht "+
+				"beweiskräftig — vor der Sitzung klären.", strings.Join(bericht.Fehler, "; "))})
+	case bericht.Siegel == 0:
+		return append(punkte, Punkt{"Protokoll", "Siegel", Hinweis,
+			"Die Kette ist noch nie abgeschlossen worden. Der erste Abschluss kommt " +
+				"beim Herunterfahren oder zur eingestellten Uhrzeit."})
+	default:
+		return append(punkte, Punkt{"Protokoll", "Siegel", Ok,
+			fmt.Sprintf("%d Abschlüsse, gedeckt bis Eintrag %d von %d, Schlüssel %s.",
+				bericht.Siegel, bericht.Gedeckt, bericht.Laenge,
+				strings.Join(bericht.Fingerabdruecke, ", "))})
+	}
 }
 
 func (p *Pruefer) plaetzePruefen(z kern.Zustand) []Punkt {

@@ -21,6 +21,12 @@ type Konfiguration struct {
 	// hören. Der Weg bleibt derselbe — Rahmen, UDP, Quittung —, nur steht am
 	// Ende keine Optik.
 	KameraAttrappe bool `yaml:"kamera_attrappe"`
+	// SiegelSchluessel ist der Ed25519-Schlüssel, mit dem die Ereigniskette
+	// abgeschlossen wird. Fehlt die Datei, wird sie beim Start angelegt.
+	SiegelSchluessel string `yaml:"siegel_schluessel"`
+	// SiegelUhrzeit ist die Ortszeit des täglichen Abschlusses, "23:55".
+	// Leer: nur beim Herunterfahren und auf Anforderung.
+	SiegelUhrzeit string `yaml:"siegel_uhrzeit"`
 	// Emulator schaltet /emulator frei. Die Seite braucht die PINs im
 	// Klartext, deshalb ist das eine ausdrückliche Entscheidung und kein
 	// Nebeneffekt des Vorführbetriebs.
@@ -56,6 +62,9 @@ func KonfigurationLesen(pfad string) (Konfiguration, error) {
 	}
 	if k.KameraZeitlimitMs < 1 {
 		k.KameraZeitlimitMs = 500
+	}
+	if k.SiegelSchluessel == "" {
+		k.SiegelSchluessel = "schluessel/kette.key"
 	}
 	return k, nil
 }
