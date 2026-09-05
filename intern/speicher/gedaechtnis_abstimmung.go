@@ -20,8 +20,16 @@ type gAbstimmung struct {
 	quorum          int
 	// abgegeben hält fest, DASS eine Teilnahme abgestimmt hat.
 	abgegeben map[string]bool
-	// stimmen ist die Zählung. teilnahmeID bleibt bei geheimer Wahl leer.
+	// stimmen ist die Zählung bei offener und namentlicher Wahl — dort ist
+	// die Zuordnung zur Person gewollt.
 	stimmen []gStimme
+	// zaehler ist die Zählung bei geheimer Wahl: nur Summen, keine
+	// Einzelstimmen. Die Reihenfolge des Eintreffens ist damit weg, und mit
+	// ihr die Möglichkeit, über sie auf die Person zu schließen. Dieselbe
+	// Regel wie in der Datenbank, siehe migrationen/007_geheime_wahl.sql —
+	// die beiden Ablagen müssen sich gleich verhalten, sonst zeigt ein Test
+	// gegen die eine nicht, was die andere tut.
+	zaehler map[kern.Wahl]int
 }
 
 type gStimme struct {
@@ -97,11 +105,14 @@ func (g *Gedaechtnis) StimmeAbgeben(ctx context.Context, abstimmungID, teilnahme
 	}
 	a.abgegeben[teilnahmeID] = true
 
-	stimme := gStimme{wahl: wahl}
-	if !geheim {
-		stimme.teilnahmeID = teilnahmeID
+	if geheim {
+		if a.zaehler == nil {
+			a.zaehler = map[kern.Wahl]int{}
+		}
+		a.zaehler[wahl]++
+		return nil
 	}
-	a.stimmen = append(a.stimmen, stimme)
+	a.stimmen = append(a.stimmen, gStimme{teilnahmeID: teilnahmeID, wahl: wahl})
 	return nil
 }
 
@@ -134,6 +145,9 @@ func (g *Gedaechtnis) LetzteAbstimmung(ctx context.Context, sitzungID string) (*
 	for teilnahmeID := range jüngste.abgegeben {
 		a.Abgegeben[platzVon[teilnahmeID]] = true
 	}
+	a.Ja = jüngste.zaehler[kern.WahlJa]
+	a.Nein = jüngste.zaehler[kern.WahlNein]
+	a.Enthaltung = jüngste.zaehler[kern.WahlEnthaltung]
 	for _, s := range jüngste.stimmen {
 		switch s.wahl {
 		case kern.WahlJa:

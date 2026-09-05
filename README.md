@@ -197,10 +197,17 @@ Mehrheit der Stimmberechtigten. Solange abgestimmt wird, bleibt die Zählung
 unsichtbar; erst das Auszählen zeigt das Ergebnis, das Feststellen macht es
 verbindlich.
 
-Bei **geheimer Wahl** existiert die Zuordnung Stimme zu Person nirgends: nicht
-in der Tabelle `stimme`, nicht im Ereignisprotokoll, nicht im Zustand. Nur
-`stimmabgabe` hält fest, *dass* jemand abgestimmt hat — sonst ließe sich
-doppeltes Abstimmen nicht verhindern.
+Bei **geheimer Wahl** existiert die Zuordnung Stimme zu Person nirgends: es
+wird gar keine einzelne Stimme gespeichert, sondern nur in `stimme_zaehler`
+gezählt. Jede Stimmabgabe rührt alle drei Zähler an, die beiden nicht
+gewählten mit einem Zuschlag von null. Nur `stimmabgabe` hält fest, *dass*
+jemand abgestimmt hat — sonst ließe sich doppeltes Abstimmen nicht verhindern.
+
+Das war einmal anders und war aufdeckbar: `stimmabgabe` und `stimme` wurden in
+derselben Transaktion geschrieben und trugen deshalb dieselbe PostgreSQL-
+Systemspalte `xmin`. Ein einziges JOIN darüber deckte jede Stimme auf. Der
+Angriff steht heute als Test in `intern/speicher/geheime_wahl_test.go`; die
+Begründung in `migrationen/007_geheime_wahl.sql`.
 
 ### Die Stimme übersteht den Verbindungsabriss
 

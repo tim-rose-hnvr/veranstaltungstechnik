@@ -151,26 +151,42 @@ durch einen Handgriff, den jemand vergessen kann.
 ## Abstimmung (`003_abstimmung.sql`)
 
 ```sql
-abstimmung  (id, sitzung_id, folge_nr, titel, art, zustand,
-             stimmberechtigt, quorum, anwesend, beginn, ende)
-stimme      (id, abstimmung_id, teilnahme_id NULL, wahl)
-stimmabgabe (abstimmung_id, teilnahme_id, PRIMARY KEY beide)
+abstimmung     (id, sitzung_id, folge_nr, titel, art, zustand,
+                stimmberechtigt, quorum, anwesend, beginn, ende)
+stimme         (id, abstimmung_id, teilnahme_id, wahl)   -- nur offen/namentlich
+stimmabgabe    (abstimmung_id, teilnahme_id, PRIMARY KEY beide)
+stimme_zaehler (abstimmung_id, wahl, anzahl, PRIMARY KEY beide)  -- nur geheim
 ```
 
 `stimmberechtigt`, `quorum` und `anwesend` werden **beim Start eingefroren**.
 Wer später kommt, ändert die Beschlussfähigkeit einer laufenden Abstimmung
 nicht mehr.
 
-Die Trennung in zwei Tabellen ist der Kern der geheimen Wahl:
+`stimmabgabe` sagt **dass** ein Platz abgestimmt hat — nie, wie. Ohne diese
+Liste ließe sich doppelte Stimmabgabe nicht verhindern.
 
-- `stimme` sagt **was** gewählt wurde. Bei geheimer Wahl bleibt
-  `teilnahme_id` leer.
-- `stimmabgabe` sagt **dass** ein Platz abgestimmt hat — nie, wie. Ohne diese
-  Liste ließe sich doppelte Stimmabgabe nicht verhindern.
+Bei **offener und namentlicher** Wahl steht das Wie in `stimme`, mit
+`teilnahme_id`: dort ist die Zuordnung gewollt und nachweispflichtig.
 
-Beides zusammenzuführen ist bei geheimer Wahl nicht schwer gemacht, sondern
-unmöglich: die Verbindung existiert nirgends, auch nicht im Ereignisprotokoll
-und nicht im Zustand zum Client.
+Bei **geheimer** Wahl entsteht überhaupt keine Zeile für eine einzelne Stimme.
+Gezählt wird in `stimme_zaehler`, drei Zeilen je Abstimmung, und jede
+Stimmabgabe rührt **alle drei** an — die beiden nicht gewählten mit einem
+Zuschlag von null.
+
+Das ist kein Umweg, sondern die Reparatur eines echten Lecks. Zwei Zeilen,
+die PostgreSQL in derselben Transaktion schreibt, tragen dieselbe
+Systemspalte `xmin`. Solange `stimmabgabe` (wer) und `stimme` (was) zusammen
+geschrieben wurden, genügte ein einziges JOIN über `xmin`, um jede Stimme
+ihrer Person zuzuordnen. Der Angriff steht als Test in
+`intern/speicher/geheime_wahl_test.go` und läuft bei jedem Testlauf gegen
+PostgreSQL mit. Die ausführliche Begründung steht in
+`migrationen/007_geheime_wahl.sql`.
+
+Offen gesagt, was damit **nicht** verteidigt ist: wer als Superuser mit
+`pageinspect` die toten Zeilenversionen vor dem nächsten `VACUUM` ausliest,
+kann die Zwischenstände der Zähler sehen und zurückrechnen. Dagegen hilft kein
+Tabellenentwurf, sondern nur der Zugriffsschutz der Datenbank — und
+langfristig das blind signierte Einmal-Token, das die Leitlinien vorsehen.
 
 Die **Marke** des Offline-Puffers (siehe unten) steht bewusst in keiner
 Tabelle und in keinem Ereignis — sie lebt nur im Arbeitsspeicher des Servers,

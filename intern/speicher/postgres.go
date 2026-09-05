@@ -285,6 +285,7 @@ var Migrationen = []struct{ Datei, Waechter string }{
 	{"004_tagesordnung.sql", "tagesordnungspunkt"},
 	{"005_unterlage.sql", "unterlage"},
 	{"006_saalplan.sql", "saalplan_geprueft"},
+	{"007_geheime_wahl.sql", "stimme_zaehler"},
 }
 
 // leerAlsNull macht aus einer leeren Angabe NULL — die Prüfregel der Spalte

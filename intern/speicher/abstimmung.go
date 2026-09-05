@@ -26,6 +26,17 @@ func (p *Postgres) AbstimmungAnlegen(ctx context.Context, sitzungID, titel strin
 			FROM abstimmung WHERE sitzung_id = $1
 			RETURNING id::text, folge_nr`, sitzungID, titel, string(art)).Scan(&id, &folgeNr)
 		if err == nil {
+			// Bei geheimer Wahl entstehen die drei Zähler sofort. Sie müssen
+			// vor der ersten Stimme dastehen, denn jede Stimmabgabe rührt
+			// alle drei an — nur so verrät xmin nicht, welche gewählt wurde.
+			if art == kern.AbstimmungGeheim {
+				if _, err := p.teich.Exec(ctx, `
+					INSERT INTO stimme_zaehler (abstimmung_id, wahl)
+					VALUES ($1,'ja'), ($1,'nein'), ($1,'enthaltung')
+					ON CONFLICT DO NOTHING`, id); err != nil {
+					return "", 0, fmt.Errorf("zähler anlegen: %w", err)
+				}
+			}
 			return id, folgeNr, nil
 		}
 		var pgFehler *pgconn.PgError
@@ -89,10 +100,23 @@ func (p *Postgres) StimmeAbgeben(ctx context.Context, abstimmungID, teilnahmeID 
 		}
 
 		if geheim {
-			_, err := tx.Exec(ctx,
-				"INSERT INTO stimme (abstimmung_id, wahl) VALUES ($1, $2)",
-				abstimmungID, string(wahl))
-			return err
+			// Keine Einzelzeile. Alle drei Zähler werden angefasst, zwei davon
+			// mit einem Zuschlag von null: damit tragen sie dasselbe xmin wie
+			// die Stimmabgabe, aber xmin sagt nur noch, DASS abgestimmt wurde.
+			// Warum das nötig ist, steht ausführlich in migrationen/007.
+			marke, err := tx.Exec(ctx, `
+				UPDATE stimme_zaehler
+				SET anzahl = anzahl + (CASE WHEN wahl = $2 THEN 1 ELSE 0 END)
+				WHERE abstimmung_id = $1`, abstimmungID, string(wahl))
+			if err != nil {
+				return fmt.Errorf("stimme zählen: %w", err)
+			}
+			if marke.RowsAffected() != 3 {
+				// Fehlt ein Zähler, würde still falsch gezählt. Lieber die
+				// Stimme abweisen als sie unbemerkt verlieren.
+				return fmt.Errorf("stimme zählen: %d von 3 zählern gefunden", marke.RowsAffected())
+			}
+			return nil
 		}
 		_, err := tx.Exec(ctx,
 			"INSERT INTO stimme (abstimmung_id, teilnahme_id, wahl) VALUES ($1, $2, $3)",
@@ -146,7 +170,39 @@ func (p *Postgres) LetzteAbstimmung(ctx context.Context, sitzungID string) (*ker
 		return nil, err
 	}
 
-	// Zählung, und bei nicht geheimer Wahl auch die Zuordnung.
+	// Bei geheimer Wahl gibt es keine Einzelstimmen, nur Zähler. Genau das
+	// ist der Punkt: es existiert nichts, was sich einer Person zuordnen
+	// ließe. Siehe migrationen/007_geheime_wahl.sql.
+	if a.Art == kern.AbstimmungGeheim {
+		zaehler, err := p.teich.Query(ctx,
+			"SELECT wahl, anzahl FROM stimme_zaehler WHERE abstimmung_id = $1", a.ID)
+		if err != nil {
+			return nil, fmt.Errorf("zähler lesen: %w", err)
+		}
+		defer zaehler.Close()
+		for zaehler.Next() {
+			var rohWahl string
+			var anzahl int
+			if err := zaehler.Scan(&rohWahl, &anzahl); err != nil {
+				return nil, err
+			}
+			wahl, err := kern.WahlLesen(rohWahl)
+			if err != nil {
+				return nil, err
+			}
+			switch wahl {
+			case kern.WahlJa:
+				a.Ja = anzahl
+			case kern.WahlNein:
+				a.Nein = anzahl
+			case kern.WahlEnthaltung:
+				a.Enthaltung = anzahl
+			}
+		}
+		return &a, zaehler.Err()
+	}
+
+	// Offen und namentlich: hier ist die Zuordnung gewollt und nachweispflichtig.
 	stimmen, err := p.teich.Query(ctx, `
 		SELECT s.wahl, pl.nummer
 		FROM stimme s
