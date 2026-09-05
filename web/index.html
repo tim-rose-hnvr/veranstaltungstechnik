@@ -1087,7 +1087,11 @@ knoten.zumsaal.onclick = function () {
 // nachweislich nicht mehr zählen kann. Ein Abriss dazwischen kostet nur Zeit.
 function stimmeAbgeben(wahl) {
   const a = z && z.abstimmung;
-  merkzettel = { marke: marke(), wahl: wahl, abstimmung: a && a.id ? a.id : "" };
+  // Der Platz gehört mit in den Merkzettel. sessionStorage überlebt das
+  // Abmelden: ohne diese Bindung würde eine gepufferte Stimme nach einem
+  // Platzwechsel im selben Tab unter fremdem Namen gezählt.
+  merkzettel = { marke: marke(), wahl: wahl, platz: meinPlatz,
+                 abstimmung: a && a.id ? a.id : "" };
   stimmeMerken();
   zuletztNachgereicht = Date.now();
   senden({ typ: "stimme_abgeben", wahl: wahl, marke: merkzettel.marke,
@@ -1114,6 +1118,17 @@ function stimmeNachreichen(n) {
     return;
   }
   if (meinPlatz === 0) return; // erst wieder anmelden, dann nachreichen
+  // An diesem Gerät sitzt jemand anderes als beim Abgeben. Die Stimme gehört
+  // der vorigen Person und darf hier nicht gezählt werden — lieber verwerfen
+  // und es sagen, als sie der falschen Person zuschreiben.
+  if (merkzettel.platz && merkzettel.platz !== meinPlatz) {
+    const fremder = merkzettel.platz;
+    merkzettel = null;
+    stimmeMerken();
+    melden("Eine gepufferte Stimme von Platz " + fremder + " wurde verworfen: an diesem " +
+           "Gerät ist jetzt Platz " + meinPlatz + " angemeldet. Sie wurde NICHT gezählt.");
+    return;
+  }
   const jetzt = Date.now();
   if (jetzt - zuletztNachgereicht < 2000) return;
   zuletztNachgereicht = jetzt;

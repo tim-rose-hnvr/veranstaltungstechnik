@@ -251,7 +251,25 @@ func Neu(a Aufbau, steuerung Kamerasteuerung, ablage Ablage, protokoll *slog.Log
 		}
 	}
 	sort.Slice(k.redeliste, func(i, j int) bool { return k.redeliste[i].FolgeNr < k.redeliste[j].FolgeNr })
+	// Eine Abstimmung aus der Ablage kommt mit dem, was die Ablage kennt —
+	// die Marken kennt sie bewusst nicht, die leben nur im Arbeitsspeicher.
+	// Genau deshalb werden hier ALLE Karten normalisiert: eine nil-Karte
+	// lässt sich lesen, aber nicht beschreiben, und der Schreibversuch riss
+	// bisher den Kern mitsamt seiner Sperre in den Abgrund. Das gehört an
+	// diese eine Stelle und nicht in jede Ablage — sonst muss jede künftige
+	// Ablage daran denken.
 	k.abstimmung = a.Abstimmung
+	if k.abstimmung != nil {
+		if k.abstimmung.Abgegeben == nil {
+			k.abstimmung.Abgegeben = map[int]bool{}
+		}
+		if k.abstimmung.Namentlich == nil {
+			k.abstimmung.Namentlich = map[int]Wahl{}
+		}
+		if k.abstimmung.Marken == nil {
+			k.abstimmung.Marken = map[int]string{}
+		}
+	}
 
 	// Der Staffelstab kommt aus dem Ereignisprotokoll. Steht dort nichts,
 	// führt die Teilnahme mit der Rolle leitung.

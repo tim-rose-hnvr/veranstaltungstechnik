@@ -449,3 +449,52 @@ func TestGepufferteStimmeNachNeustart(t *testing.T) {
 		t.Errorf("die nachgereichte stimme wurde doppelt gezählt: %d", z.Abgegeben)
 	}
 }
+
+// TestStimmeNachNeustartVonNeuemPlatz: der Fall, den der Neustart-Test oben
+// verfehlt hat. Dort stimmte ein Platz nach, der schon abgestimmt hatte —
+// die Prüfung "schon abgestimmt" griff vor der Stelle, die brach.
+//
+// Hier stimmt ein Platz ab, der VORHER noch nicht abgestimmt hatte, und zwar
+// mit Marke, so wie jedes Gerät es tut. Marken wird von keiner Ablage
+// wiederhergestellt — die Karte kam als nil zurück, und der Schreibversuch
+// riss den Kern samt Sperre mit sich: der Saal fror ein und jede weitere
+// Stimme war verloren. Genau das darf nie wieder passieren.
+func TestStimmeNachNeustartVonNeuemPlatz(t *testing.T) {
+	p := aufbauen(t, 5, 3, standardbesetzung())
+	eroeffnen(t, p)
+	ctx := context.Background()
+	anmeldenAlle(t, p, 1, 2, 4, 5)
+
+	if err := p.kern.AbstimmungStarten(ctx, 1, "Beschluss", kern.AbstimmungOffen); err != nil {
+		t.Fatalf("abstimmung starten: %v", err)
+	}
+	id := p.kern.Zustand().Abstimmung.ID
+	if err := p.kern.StimmeAbgeben(ctx, 1, kern.WahlJa, "marke-eins", id); err != nil {
+		t.Fatalf("erste stimme: %v", err)
+	}
+
+	nachher := neustarten(t, p)
+
+	// Platz 2 hatte noch nicht abgestimmt und reicht jetzt mit Marke nach.
+	if err := nachher.StimmeAbgeben(ctx, 2, kern.WahlNein, "marke-zwei", id); err != nil {
+		t.Fatalf("stimme nach dem neustart: %v", err)
+	}
+	// Und die Wiederholung derselben Marke muss weiterhin bestätigt werden,
+	// sonst hätte der Neustart den Offline-Puffer stillschweigend entwertet.
+	if err := nachher.StimmeAbgeben(ctx, 2, kern.WahlNein, "marke-zwei", id); err != nil {
+		t.Fatalf("wiederholung nach dem neustart: %v", err)
+	}
+
+	// Der Kern muss weiter ansprechbar sein — eine stehengebliebene Sperre
+	// würde hier hängen, nicht fehlschlagen.
+	if err := nachher.StimmeAbgeben(ctx, 4, kern.WahlJa, "marke-vier", id); err != nil {
+		t.Fatalf("dritte stimme: %v", err)
+	}
+	if err := nachher.AbstimmungBeenden(ctx, 1); err != nil {
+		t.Fatalf("auszählen: %v", err)
+	}
+	e := nachher.Zustand().Abstimmung.Ergebnis
+	if e.Ja != 2 || e.Nein != 1 {
+		t.Errorf("ja=2 nein=1 erwartet, ja=%d nein=%d enthaltung=%d", e.Ja, e.Nein, e.Enthaltung)
+	}
+}

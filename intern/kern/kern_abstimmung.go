@@ -89,33 +89,47 @@ func (k *Kern) AbstimmungStarten(ctx context.Context, absender int, titel string
 // in der nächsten Abstimmung zu landen. Beide dürfen leer sein — dann gilt
 // das alte Verhalten.
 func (k *Kern) StimmeAbgeben(ctx context.Context, absender int, wahl Wahl, marke, abstimmung string) error {
+	gemeldet, err := k.stimmeAbgebenIntern(ctx, absender, wahl, marke, abstimmung)
+	if gemeldet {
+		k.melder()
+	}
+	return err
+}
+
+// stimmeAbgebenIntern hält die Sperre — und gibt sie über defer wieder frei.
+// Das ist hier keine Geschmacksfrage: dieser Weg verarbeitet Werte, die vom
+// Gerät kommen, und eine Panik unter gehaltener Sperre hätte den ganzen Saal
+// eingefroren, nicht nur diese eine Stimme. Genau das ist einmal passiert,
+// als Marken nach einem Neustart als leere Karte ankam.
+//
+// Zurück kommt, ob sich der Zustand geändert hat: den Rundruf an alle Geräte
+// darf erst der Aufrufer auslösen, nach der Freigabe der Sperre.
+func (k *Kern) stimmeAbgebenIntern(ctx context.Context, absender int, wahl Wahl,
+	marke, abstimmung string) (bool, error) {
+
 	k.mu.Lock()
+	defer k.mu.Unlock()
 
 	// Die eigene Wiederholung zuerst: sie ist kein Fehler, sondern die
 	// Bestätigung, auf die das Gerät wartet. Marken leben nur in der
 	// laufenden Abstimmung, eine neue Abstimmung beginnt mit leeren Marken —
 	// ein Treffer kann also nie aus einer früheren Abstimmung stammen.
 	if marke != "" && k.abstimmung != nil && k.abstimmung.Marken[absender] == marke {
-		k.mu.Unlock()
-		return nil
+		return false, nil
 	}
 	if abstimmung != "" && (k.abstimmung == nil || k.abstimmung.ID != abstimmung ||
 		k.abstimmung.Zustand != AbstimmungLaufend) {
-		k.mu.Unlock()
-		return fehler(CodeStimmeVerfallen,
+		return false, fehler(CodeStimmeVerfallen,
 			"Die Abstimmung ist inzwischen geschlossen — diese Stimme wurde nicht gezählt")
 	}
 	if err := k.darfPlatz(absender, AktionStimmeAbgeben); err != nil {
-		k.mu.Unlock()
-		return err
+		return false, err
 	}
 	if k.abstimmung == nil || k.abstimmung.Zustand != AbstimmungLaufend {
-		k.mu.Unlock()
-		return fehler(CodeKeineAbstimmung, "Es läuft keine Abstimmung")
+		return false, fehler(CodeKeineAbstimmung, "Es läuft keine Abstimmung")
 	}
 	if k.abstimmung.Abgegeben[absender] {
-		k.mu.Unlock()
-		return fehler(CodeSchonAbgestimmt, "Für diesen Platz ist bereits eine Stimme abgegeben")
+		return false, fehler(CodeSchonAbgestimmt, "Für diesen Platz ist bereits eine Stimme abgegeben")
 	}
 
 	p := k.nach[absender]
@@ -129,13 +143,11 @@ func (k *Kern) StimmeAbgeben(ctx context.Context, absender int, wahl Wahl, marke
 		nutzlast["wahl"] = string(wahl)
 	}
 	if err := k.schreiben(ctx, "stimme_abgegeben", nutzlast); err != nil {
-		k.mu.Unlock()
-		return err
+		return false, err
 	}
 	if err := k.ablage.StimmeAbgeben(ctx, k.abstimmung.ID, p.teilnahme.ID, wahl, geheim); err != nil {
 		k.protokoll.Error("stimme nicht gespeichert", "grund", err)
-		k.mu.Unlock()
-		return fehler(CodeSpeicherFehler, "Die Stimme konnte nicht festgehalten werden")
+		return false, fehler(CodeSpeicherFehler, "Die Stimme konnte nicht festgehalten werden")
 	}
 
 	k.abstimmung.Abgegeben[absender] = true
@@ -154,10 +166,7 @@ func (k *Kern) StimmeAbgeben(ctx context.Context, absender int, wahl Wahl, marke
 		k.abstimmung.Enthaltung++
 	}
 	k.stand++
-	k.mu.Unlock()
-
-	k.melder()
-	return nil
+	return true, nil
 }
 
 // AbstimmungBeenden zählt aus. Erst jetzt wird das Ergebnis sichtbar.
