@@ -54,7 +54,15 @@ type pruefstand struct {
 func aufbauen(t *testing.T, plaetze, maxOffen int, teilnahmen []speicher.Teilnahmedaten,
 	tagesordnung ...speicher.Topdaten) *pruefstand {
 	t.Helper()
-	return aufbauenIntern(t, plaetze, maxOffen, "", teilnahmen, tagesordnung)
+	return aufbauenIntern(t, plaetze, maxOffen, "", teilnahmen, tagesordnung, nil)
+}
+
+// aufbauenMitKamera baut denselben Prüfstand mit einer eigenen Kamera-
+// attrappe — für Tests, die den Ablauf der Fahrten steuern müssen.
+func aufbauenMitKamera(t *testing.T, plaetze, maxOffen int,
+	teilnahmen []speicher.Teilnahmedaten, kamera kern.Kamerasteuerung) *pruefstand {
+	t.Helper()
+	return aufbauenIntern(t, plaetze, maxOffen, "", teilnahmen, nil, kamera)
 }
 
 // aufbauenMitMappe baut denselben Prüfstand samt Sitzungsmappe. mappenordner
@@ -62,11 +70,12 @@ func aufbauen(t *testing.T, plaetze, maxOffen int, teilnahmen []speicher.Teilnah
 func aufbauenMitMappe(t *testing.T, mappenordner string, teilnahmen []speicher.Teilnahmedaten,
 	tagesordnung []speicher.Topdaten) *pruefstand {
 	t.Helper()
-	return aufbauenIntern(t, 6, 3, mappenordner, teilnahmen, tagesordnung)
+	return aufbauenIntern(t, 6, 3, mappenordner, teilnahmen, tagesordnung, nil)
 }
 
 func aufbauenIntern(t *testing.T, plaetze, maxOffen int, mappenordner string,
-	teilnahmen []speicher.Teilnahmedaten, tagesordnung []speicher.Topdaten) *pruefstand {
+	teilnahmen []speicher.Teilnahmedaten, tagesordnung []speicher.Topdaten,
+	eigene kern.Kamerasteuerung) *pruefstand {
 	t.Helper()
 	ctx := context.Background()
 	ablage := speicher.NeuGedaechtnis()
@@ -93,6 +102,15 @@ func aufbauenIntern(t *testing.T, plaetze, maxOffen int, mappenordner string,
 	}
 
 	kamera := &stilleKamera{}
+	var steuerung kern.Kamerasteuerung = kamera
+	if eigene != nil {
+		steuerung = eigene
+		// Der Prüfstand gibt die Abrufe heraus; bei einer eigenen Attrappe
+		// fragt der Test sie direkt bei ihr ab.
+		if b, ok := eigene.(*bremsendeKamera); ok {
+			kamera = &b.stilleKamera
+		}
+	}
 	k, err := kern.Neu(kern.Aufbau{
 		SaalID:         saalID,
 		SitzungID:      stand.SitzungID,
@@ -104,7 +122,7 @@ func aufbauenIntern(t *testing.T, plaetze, maxOffen int, mappenordner string,
 		Unterlagen:     stand.Unterlagen,
 		MaxOffen:       maxOffen,
 		Zeitlimit:      100 * time.Millisecond,
-	}, kamera, ablage, nil)
+	}, steuerung, ablage, nil)
 	if err != nil {
 		t.Fatalf("kern nicht aufgebaut: %v", err)
 	}
@@ -653,5 +671,88 @@ func TestZeitachseImHash(t *testing.T) {
 	kette[0].Nutzlast["ms"] = int64(999999)
 	if err := kern.KettePruefen(kette); err == nil {
 		t.Fatal("eine verschobene zeitachse hätte auffallen müssen")
+	}
+}
+
+// bremsendeKamera hält genau die erste Fahrt an, bis der Test sie freigibt.
+// Alle weiteren laufen sofort durch. Damit lässt sich das Überholen
+// nachstellen: der ältere Befehl kommt zuletzt an.
+type bremsendeKamera struct {
+	stilleKamera
+	ersteDrin chan struct{}
+	weiter    chan struct{}
+	gebremst  bool
+	bremsMu   sync.Mutex
+}
+
+func neueBremsendeKamera() *bremsendeKamera {
+	return &bremsendeKamera{
+		ersteDrin: make(chan struct{}, 1),
+		weiter:    make(chan struct{}),
+	}
+}
+
+func (b *bremsendeKamera) PresetAbrufen(ctx context.Context, adresse string, kanal, preset uint8) error {
+	b.bremsMu.Lock()
+	erste := !b.gebremst
+	b.gebremst = true
+	b.bremsMu.Unlock()
+
+	if erste {
+		b.ersteDrin <- struct{}{}
+		<-b.weiter
+	}
+	return b.stilleKamera.PresetAbrufen(ctx, adresse, kanal, preset)
+}
+
+// TestUeberholteKamerafahrtSchreibtDenZustandNicht: die Kamerabefehle laufen
+// nebenher und können sich überholen. Kommt der ältere zuletzt an, darf er
+// den Zustand nicht mehr beschreiben — sonst zeigt die Oberfläche eine
+// Kameraposition, die längst überholt ist, und der Techniker sucht den
+// Fehler an der falschen Stelle.
+func TestUeberholteKamerafahrtSchreibtDenZustandNicht(t *testing.T) {
+	kamera := neueBremsendeKamera()
+	p := aufbauenMitKamera(t, 5, 3, standardbesetzung(), kamera)
+	eroeffnen(t, p)
+	ctx := context.Background()
+	anmeldenAlle(t, p, 1, 2, 4)
+
+	// Die Leitung schaltet Platz 2: diese Fahrt wird angehalten.
+	if err := p.kern.MikroAn(ctx, 1, 2); err != nil {
+		t.Fatalf("mikro 2: %v", err)
+	}
+	select {
+	case <-kamera.ersteDrin:
+	case <-time.After(2 * time.Second):
+		t.Fatal("die erste kamerafahrt hat nicht begonnen")
+	}
+
+	// Währenddessen schaltet sie Platz 4. Diese Fahrt läuft durch und ist
+	// damit die jüngere — Platz 4 ist die wahre Kameraposition.
+	if err := p.kern.MikroAn(ctx, 1, 4); err != nil {
+		t.Fatalf("mikro 4: %v", err)
+	}
+	for warten := 0; warten < 200; warten++ {
+		if z := p.kern.Zustand(); z.Kamera != nil && z.Kamera.Preset == 4 {
+			break
+		}
+		time.Sleep(5 * time.Millisecond)
+	}
+	if z := p.kern.Zustand(); z.Kamera == nil || z.Kamera.Preset != 4 {
+		t.Fatalf("die jüngere fahrt sollte den zustand gesetzt haben: %+v", z.Kamera)
+	}
+
+	// Jetzt kommt die ältere Fahrt an. Sie hat die Kamera zwar bewegt, aber
+	// danach hat die jüngere sie weiterbewegt — sie darf nichts überschreiben.
+	close(kamera.weiter)
+	p.kern.KameraAbwarten()
+
+	z := p.kern.Zustand()
+	if z.Kamera == nil || z.Kamera.Preset != 4 {
+		t.Errorf("der überholte befehl hat den zustand überschrieben: %+v", z.Kamera)
+	}
+	// Beide Fahrten haben stattgefunden — verworfen wird nur die Anzeige.
+	if abrufe := kamera.Abrufe(); len(abrufe) != 2 {
+		t.Errorf("zwei kamerafahrten erwartet, %d bekommen", len(abrufe))
 	}
 }

@@ -143,6 +143,11 @@ type Kern struct {
 	abstimmung   *Abstimmung
 	stand        uint64
 	kamera       *Kamerazustand
+	// kamerafolge nummeriert die Kamerabefehle. Sie laufen nebenher und
+	// können sich überholen: ein langsamer Befehl darf den Zustand nicht
+	// mehr überschreiben, nachdem ein jüngerer ihn gesetzt hat — sonst zeigt
+	// die Oberfläche eine Kameraposition, die längst überholt ist.
+	kamerafolge uint64
 
 	melder  func()
 	wartend sync.WaitGroup
@@ -655,6 +660,8 @@ func (k *Kern) MikroAn(ctx context.Context, absender, ziel int) error {
 			k.protokoll.Error("übersprungene kamerafahrt nicht protokolliert", "platz", ziel)
 		}
 	}
+	k.kamerafolge++
+	folge := k.kamerafolge
 	k.mu.Unlock()
 
 	k.melder()
@@ -673,7 +680,7 @@ func (k *Kern) MikroAn(ctx context.Context, absender, ziel int) error {
 	k.wartend.Add(1)
 	go func() {
 		defer k.wartend.Done()
-		k.kameraFahren(aufbau)
+		k.kameraFahren(aufbau, folge)
 	}()
 	return nil
 }
@@ -921,9 +928,28 @@ func (k *Kern) hatWortIntern(nummer int) bool {
 	return w != nil && (w.Zustand == WortErteilt || w.Zustand == WortLaufend)
 }
 
-func (k *Kern) kameraFahren(a Platzaufbau) {
+func (k *Kern) kameraFahren(a Platzaufbau, folge uint64) {
 	ctx, abbrechen := context.WithTimeout(context.Background(), k.zeitlimit)
 	defer abbrechen()
+
+	// Zwischen dem Auslösen und diesem Augenblick kann eine Abstimmung
+	// begonnen haben — der Befehl läuft ja nebenher, und bis die Goroutine
+	// drankommt, kann Zeit vergehen. Deshalb hier noch einmal prüfen, so
+	// spät wie möglich vor dem Senden.
+	//
+	// Das verkleinert das Fenster, es schließt es nicht: zwischen dieser
+	// Prüfung und dem UDP-Paket bleibt ein Rest. Ganz zu wäre es erst, wenn
+	// der Start einer Abstimmung auf laufende Fahrten wartet — das würde
+	// den Start um das Kamerazeitlimit verzögern, und eine verzögerte
+	// Abstimmung ist schlimmer als eine Kamera, die 20 ms zu spät stehen
+	// bleibt.
+	k.mu.Lock()
+	laeuft := k.abstimmung.Laeuft()
+	k.mu.Unlock()
+	if laeuft {
+		k.protokoll.Info("kamerafahrt verworfen, die abstimmung begann dazwischen", "platz", a.Nummer)
+		return
+	}
 
 	art := "kamera_preset_abgerufen"
 	erreichbar := true
@@ -948,7 +974,12 @@ func (k *Kern) kameraFahren(a Platzaufbau) {
 		k.protokoll.Error("kameraereignis nicht geschrieben", "art", art, "grund", err)
 		return
 	}
-	k.kamera = &Kamerazustand{Name: a.KameraName, Preset: a.Preset, Erreichbar: erreichbar}
+	// Nur der jüngste Befehl beschreibt den Zustand. Ein überholter hat die
+	// Kamera zwar bewegt, aber danach hat ein anderer sie weiterbewegt —
+	// seine Position ist die wahre.
+	if folge >= k.kamerafolge {
+		k.kamera = &Kamerazustand{Name: a.KameraName, Preset: a.Preset, Erreichbar: erreichbar}
+	}
 	k.stand++
 	k.mu.Unlock()
 
