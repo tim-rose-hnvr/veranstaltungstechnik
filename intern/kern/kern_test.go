@@ -756,3 +756,87 @@ func TestUeberholteKamerafahrtSchreibtDenZustandNicht(t *testing.T) {
 		t.Errorf("zwei kamerafahrten erwartet, %d bekommen", len(abrufe))
 	}
 }
+
+// TestSitzungsschlussStehtVollstaendigInDerKette: das Protokoll entsteht aus
+// der Kette. Werden beim Schließen offene Mikrofone und Wortmeldungen an der
+// Kette vorbei geschlossen, behauptet das Protokoll bis in alle Ewigkeit,
+// jemand habe noch das Wort und ein Mikrofon sei offen. Und ein Übergang,
+// den die Zustandskette nicht kennt, wäre eine Regel nur auf dem Papier.
+func TestSitzungsschlussStehtVollstaendigInDerKette(t *testing.T) {
+	p := aufbauen(t, 5, 3, standardbesetzung())
+	eroeffnen(t, p)
+	ctx := context.Background()
+	anmeldenAlle(t, p, 1, 2, 4)
+
+	// Platz 2 spricht, Platz 4 ist nur gemeldet — zwei verschiedene Zustände.
+	if err := p.kern.WortMelden(ctx, 2); err != nil {
+		t.Fatalf("wort melden 2: %v", err)
+	}
+	if err := p.kern.WortErteilen(ctx, 1, 2); err != nil {
+		t.Fatalf("wort erteilen: %v", err)
+	}
+	if err := p.kern.MikroAn(ctx, 2, 2); err != nil {
+		t.Fatalf("mikro an: %v", err)
+	}
+	if err := p.kern.WortMelden(ctx, 4); err != nil {
+		t.Fatalf("wort melden 4: %v", err)
+	}
+	p.kern.KameraAbwarten()
+
+	vorher := len(ketteVon(t, p))
+	if err := p.kern.SitzungSchliessen(ctx, 1); err != nil {
+		t.Fatalf("sitzung schließen: %v", err)
+	}
+
+	kette := ketteVon(t, p)
+	neu := kette[vorher:]
+	arten := map[string]int{}
+	for _, e := range neu {
+		arten[e.Art]++
+	}
+
+	// Das offene Mikrofon muss als geschlossen in der Kette stehen.
+	if arten["mikro_aus"] != 1 {
+		t.Errorf("ein mikro_aus erwartet, %d in der kette: %v", arten["mikro_aus"], arten)
+	}
+	// Der laufende Beitrag endet beendet, die bloße Meldung entzogen.
+	if arten["wort_beendet"] != 1 {
+		t.Errorf("ein wort_beendet erwartet, %d bekommen: %v", arten["wort_beendet"], arten)
+	}
+	if arten["wort_entzogen"] != 1 {
+		t.Errorf("ein wort_entzogen für die nur gemeldete wortmeldung erwartet, %d bekommen: %v",
+			arten["wort_entzogen"], arten)
+	}
+
+	// Jeder dieser Einträge nennt den Grund — sonst liest sich das Protokoll,
+	// als hätte die Leitung willkürlich abgeschaltet.
+	for _, e := range neu {
+		if e.Art != "mikro_aus" && e.Art != "wort_beendet" && e.Art != "wort_entzogen" {
+			continue
+		}
+		if grund, _ := e.Nutzlast["grund"].(string); grund != "sitzung geschlossen" {
+			t.Errorf("%s ohne grund in der nutzlast: %v", e.Art, e.Nutzlast)
+		}
+	}
+
+	// Und der Zustand ist wirklich leer.
+	z := p.kern.Zustand()
+	if len(z.Redeliste) != 0 {
+		t.Errorf("die redeliste muss leer sein: %+v", z.Redeliste)
+	}
+	for _, pl := range z.Plaetze {
+		if pl.Mikro {
+			t.Errorf("platz %d hat nach dem schluss noch ein offenes mikrofon", pl.Nummer)
+		}
+	}
+}
+
+// ketteVon liest die Ereigniskette des Prüfstands.
+func ketteVon(t *testing.T, p *pruefstand) []kern.Ereignis {
+	t.Helper()
+	kette, err := p.ablage.Ereignisse(context.Background(), p.saalID)
+	if err != nil {
+		t.Fatalf("kette lesen: %v", err)
+	}
+	return kette
+}

@@ -488,15 +488,47 @@ func (k *Kern) sitzungSetzen(ctx context.Context, absender int, aktion string,
 			}
 			k.abstimmung.Zustand = AbstimmungAbgebrochen
 		}
+		// Offene Mikrofone und Wortmeldungen werden geschlossen — aber über
+		// die Kette und über die Zustandskette, nicht daran vorbei. Das
+		// Protokoll entsteht aus der Kette: ohne diese Einträge stünde dort
+		// bis in alle Ewigkeit, dass ein Mikrofon offen ist und jemand das
+		// Wort hat. Und ein Übergang, den die Zustandskette nicht kennt,
+		// wäre eine Regel, die nur auf dem Papier gilt.
 		for _, p := range k.plaetze {
-			if p.mikro {
-				p.mikro = false
+			if !p.mikro {
+				continue
 			}
+			if err := k.schreiben(ctx, AktionMikroAus, map[string]any{
+				"platz": p.aufbau.Nummer, "von": absender, "grund": "sitzung geschlossen",
+			}); err != nil {
+				k.protokoll.Error("mikro_aus nicht protokolliert", "platz", p.aufbau.Nummer)
+			}
+			p.mikro = false
 		}
-		for _, w := range k.redeliste {
-			if err := k.ablage.WortmeldungZustandSetzen(ctx, w.ID, WortBeendet); err != nil {
-				k.protokoll.Error("wortmeldung nicht gespeichert", "grund", err)
+		// Von hinten durchgehen: wortmeldungSetzenIntern nimmt geschlossene
+		// Meldungen aus der Liste, während wir über sie laufen.
+		for i := len(k.redeliste) - 1; i >= 0; i-- {
+			w := k.redeliste[i]
+			// Eine nur gemeldete Wortmeldung wurde nie erteilt — sie endet
+			// entzogen, nicht beendet. Was schon lief, endet beendet. Beides
+			// steht so in der Zustandskette.
+			ziel := WortBeendet
+			if !WortUebergangErlaubt(w.Zustand, ziel) {
+				ziel = WortEntzogen
 			}
+			if !WortUebergangErlaubt(w.Zustand, ziel) {
+				continue
+			}
+			art := "wort_beendet"
+			if ziel == WortEntzogen {
+				art = "wort_entzogen"
+			}
+			if err := k.schreiben(ctx, art, map[string]any{
+				"platz": w.PlatzNummer, "von": absender, "grund": "sitzung geschlossen",
+			}); err != nil {
+				k.protokoll.Error("wortende nicht protokolliert", "platz", w.PlatzNummer)
+			}
+			k.wortmeldungSetzenIntern(ctx, w.PlatzNummer, ziel)
 		}
 		k.redeliste = nil
 		// Ein aufgerufener Punkt bleibt sonst für immer laufend stehen.
