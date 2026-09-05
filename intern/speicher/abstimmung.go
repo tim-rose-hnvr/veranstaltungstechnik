@@ -20,23 +20,28 @@ func (p *Postgres) AbstimmungAnlegen(ctx context.Context, sitzungID, titel strin
 	for versuch := 0; versuch < 5; versuch++ {
 		var id string
 		var folgeNr int64
-		err := p.teich.QueryRow(ctx, `
-			INSERT INTO abstimmung (sitzung_id, folge_nr, titel, art)
-			SELECT $1, coalesce(max(folge_nr), 0) + 1, $2, $3
-			FROM abstimmung WHERE sitzung_id = $1
-			RETURNING id::text, folge_nr`, sitzungID, titel, string(art)).Scan(&id, &folgeNr)
-		if err == nil {
-			// Bei geheimer Wahl entstehen die drei Zähler sofort. Sie müssen
-			// vor der ersten Stimme dastehen, denn jede Stimmabgabe rührt
-			// alle drei an — nur so verrät xmin nicht, welche gewählt wurde.
-			if art == kern.AbstimmungGeheim {
-				if _, err := p.teich.Exec(ctx, `
-					INSERT INTO stimme_zaehler (abstimmung_id, wahl)
-					VALUES ($1,'ja'), ($1,'nein'), ($1,'enthaltung')
-					ON CONFLICT DO NOTHING`, id); err != nil {
-					return "", 0, fmt.Errorf("zähler anlegen: %w", err)
-				}
+		// Abstimmung und Zähler in EINEM Vorgang: eine geheime Abstimmung ohne
+		// ihre Zähler nähme keine Stimme mehr an. Lieber beides oder nichts.
+		err := p.imVorgang(ctx, func(tx pgx.Tx) error {
+			if err := tx.QueryRow(ctx, `
+				INSERT INTO abstimmung (sitzung_id, folge_nr, titel, art)
+				SELECT $1, coalesce(max(folge_nr), 0) + 1, $2, $3
+				FROM abstimmung WHERE sitzung_id = $1
+				RETURNING id::text, folge_nr`, sitzungID, titel, string(art)).Scan(&id, &folgeNr); err != nil {
+				return err
 			}
+			// Bei geheimer Wahl müssen die drei Zähler vor der ersten Stimme
+			// dastehen, denn jede Stimmabgabe rührt alle drei an — nur so
+			// verrät xmin nicht, welche gewählt wurde.
+			if art != kern.AbstimmungGeheim {
+				return nil
+			}
+			_, err := tx.Exec(ctx, `
+				INSERT INTO stimme_zaehler (abstimmung_id, wahl)
+				VALUES ($1,'ja'), ($1,'nein'), ($1,'enthaltung')`, id)
+			return err
+		})
+		if err == nil {
 			return id, folgeNr, nil
 		}
 		var pgFehler *pgconn.PgError
