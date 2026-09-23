@@ -1,0 +1,102 @@
+{
+  "runId": "cc2026",
+  "fileKey": "cKPTYwkOrRq2nsy1oyiUx2",
+  "phase": "phase2",
+  "step": "unterbrochen: Figma-Verbindung abgerissen",
+  "entities": {
+    "collections": {
+      "Grundwerte": "VariableCollectionId:2:2",
+      "Farbe": "VariableCollectionId:2:24",
+      "Abstand": "VariableCollectionId:2:38",
+      "Radius": "VariableCollectionId:2:48"
+    },
+    "modi": {
+      "hell": "2:1",
+      "dunkel": "2:2"
+    },
+    "variables": {
+      "flaeche/grund": "VariableID:2:25",
+      "flaeche/blatt": "VariableID:2:26",
+      "flaeche/vertieft": "VariableID:2:27",
+      "linie/normal": "VariableID:2:28",
+      "linie/stark": "VariableID:2:29",
+      "text/stark": "VariableID:2:30",
+      "text/leise": "VariableID:2:31",
+      "text/auf-marke": "VariableID:2:32",
+      "signal/mikro": "VariableID:2:34",
+      "signal/wort": "VariableID:2:35",
+      "signal/frei": "VariableID:2:36",
+      "signal/achtung": "VariableID:2:37",
+      "abstand/2xs": "VariableID:2:39",
+      "abstand/xs": "VariableID:2:40",
+      "abstand/sm": "VariableID:2:41",
+      "abstand/md": "VariableID:2:42",
+      "abstand/lg": "VariableID:2:43",
+      "abstand/xl": "VariableID:2:44",
+      "abstand/2xl": "VariableID:2:45",
+      "abstand/3xl": "VariableID:2:46",
+      "abstand/4xl": "VariableID:2:47",
+      "radius/keiner": "VariableID:2:49",
+      "radius/sm": "VariableID:2:50",
+      "radius/md": "VariableID:2:51",
+      "radius/lg": "VariableID:2:52",
+      "radius/rund": "VariableID:2:53",
+      "marke/haus": "VariableID:2:33"
+    },
+    "pages": {
+      "Titel": "0:1",
+      "Fundament": "4:2",
+      "——— Bausteine ———": "4:3",
+      "Knopf": "4:4",
+      "Platz": "4:5",
+      "Abstimmung": "4:6",
+      "Listen": "4:7",
+      "——— Oberflächen ———": "4:8",
+      "Sprechstelle": "4:9",
+      "Abstimmungsschirm": "4:10",
+      "Namensschild": "4:11"
+    },
+    "components": {},
+    "textStyles": {
+      "Schrift/Beschluss": "Source Serif 4 SemiBold 40/46",
+      "Schrift/Punkt": "Source Serif 4 SemiBold 24/30",
+      "Schrift/Zitat": "Source Serif 4 Regular 17/26",
+      "Schrift/Titel": "IBM Plex Sans SemiBold 28/34",
+      "Schrift/Überschrift": "IBM Plex Sans SemiBold 19/26",
+      "Schrift/Fließtext": "IBM Plex Sans Regular 16/24",
+      "Schrift/Betont": "IBM Plex Sans Medium 16/24",
+      "Schrift/Klein": "IBM Plex Sans Regular 13/18",
+      "Schrift/Marke": "IBM Plex Sans SemiBold 11/14 versal",
+      "Schrift/Zahl gross": "IBM Plex Mono Medium 48/54",
+      "Schrift/Zahl": "IBM Plex Mono Medium 20/26",
+      "Schrift/Zahl klein": "IBM Plex Mono Regular 13/18"
+    },
+    "nodes": {
+      "Titelblatt": "4:12",
+      "Titelspalte": "4:13",
+      "Farbstreifen": "4:18"
+    }
+  },
+  "completedSteps": [
+    "phase0",
+    "P1.a",
+    "P1.b",
+    "P1.c",
+    "P1.d",
+    "P1.e",
+    "P1.f",
+    "P2.a"
+  ],
+  "fileUrl": "https://www.figma.com/design/cKPTYwkOrRq2nsy1oyiUx2",
+  "offen": [
+    "P2.a-nachtrag: Fliesstext auf dem Titelblatt sagt noch \"Siegelrot als Marke\" — die Hausfarbe ist inzwischen Tintengruen #14453F. Muss korrigiert werden.",
+    "P2.b: Fundamentseite (Farbtafeln, Schriftmuster, Abstandsleiter)",
+    "P3: Komponenten — Knopf, Platz-Kachel, Wahlknopf, Statusband, Karte, Stufen-Marke, TOP-Zeile",
+    "P4: Oberflaechen — Sprechstelle (iPad quer 1194x834), Abstimmungsschirm, Namensschild (iPhone quer 852x393)"
+  ],
+  "gestaltung": {
+    "leitgedanke": "Die Oberflaeche gehoert zu dem, was das System herstellt: einer Niederschrift.",
+    "schriftzuordnung": "Source Serif 4 traegt ausschliesslich rechtlich bindende Texte (Beschluss, TOP-Titel). IBM Plex Sans die Bedienung. IBM Plex Mono die Zahlen.",
+    "farbregel": "Vier Signalfarben bedeuten im Saal etwas: Mikrofon offen (rot), hat das Wort (blau), frei (gruen), Achtung (bernstein). Die Hausfarbe haelt sich davon fern — Tintengruen."
+  }
+}
