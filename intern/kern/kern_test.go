@@ -4,6 +4,8 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"os"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -839,4 +841,71 @@ func ketteVon(t *testing.T, p *pruefstand) []kern.Ereignis {
 		t.Fatalf("kette lesen: %v", err)
 	}
 	return kette
+}
+
+// TestWortMeldenVertraegtWiederholung: der Offline-Puffer im Gerät steht
+// darauf, dass eine wiederholte Wortmeldung nichts kaputtmacht. Steht der
+// Platz schon auf der Liste, ist die Antwort Erfolg — kein Fehler, kein
+// zweiter Eintrag. Ohne diese Zusicherung dürfte das Gerät nicht blind
+// nachreichen, und ohne diesen Test kann sie still wegbrechen.
+func TestWortMeldenVertraegtWiederholung(t *testing.T) {
+	p := aufbauen(t, 5, 3, standardbesetzung())
+	eroeffnen(t, p)
+	ctx := context.Background()
+	anmeldenAlle(t, p, 1, 2)
+
+	for lauf := 0; lauf < 3; lauf++ {
+		if err := p.kern.WortMelden(ctx, 2); err != nil {
+			t.Fatalf("lauf %d: %v", lauf, err)
+		}
+	}
+
+	liste := p.kern.Zustand().Redeliste
+	if len(liste) != 1 {
+		t.Fatalf("genau ein eintrag erwartet, %d bekommen: %+v", len(liste), liste)
+	}
+	if liste[0].Platz != 2 || liste[0].Zustand != kern.WortGemeldet {
+		t.Errorf("falscher eintrag: %+v", liste[0])
+	}
+
+	// Und die Kette hält nur eine Meldung fest — sonst läse sich das
+	// Protokoll, als hätte sich jemand dreimal gemeldet.
+	gemeldet := 0
+	for _, e := range ketteVon(t, p) {
+		if e.Art == "wort_gemeldet" {
+			gemeldet++
+		}
+	}
+	if gemeldet != 1 {
+		t.Errorf("ein wort_gemeldet in der kette erwartet, %d gefunden", gemeldet)
+	}
+}
+
+// TestNamensschildKenntDieAbstimmungNicht: das Namensschild hängt am Platz
+// und ist von außen lesbar. Bei geheimer Wahl darf es nichts über die Stimme
+// verraten — auch nicht, DASS jemand abgestimmt hat, denn wer den Saal filmt,
+// könnte aus der Reihenfolge zurückrechnen.
+//
+// Heute hält die Regel von Bauart wegen: die Seite liest den
+// Abstimmungszustand gar nicht. Dieser Test hält genau das fest, damit eine
+// spätere Erweiterung es nicht still aufhebt.
+func TestNamensschildKenntDieAbstimmungNicht(t *testing.T) {
+	roh, err := os.ReadFile("../../web/namensschild.html")
+	if err != nil {
+		t.Fatalf("namensschild lesen: %v", err)
+	}
+	seite := string(roh)
+
+	// Die Felder, aus denen das Schild seinen Zustand bildet, sind erlaubt.
+	for _, erlaubt := range []string{"mikro", "hat_wort", "belegt", "person"} {
+		if !strings.Contains(seite, erlaubt) {
+			t.Errorf("das schild sollte %q lesen, tut es aber nicht mehr", erlaubt)
+		}
+	}
+	// Alles, was an der Abstimmung hängt, hat dort nichts verloren.
+	for _, verboten := range []string{"abstimmung", "abgegeben", "geheim", "wahl", "stimme"} {
+		if strings.Contains(seite, verboten) {
+			t.Errorf("das namensschild greift auf %q zu — bei geheimer wahl ist das ein seitenkanal", verboten)
+		}
+	}
 }

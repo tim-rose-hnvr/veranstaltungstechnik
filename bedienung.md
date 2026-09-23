@@ -140,9 +140,9 @@ Bedienteil**. Niemand meldet sich daran an, niemand tippt darauf.
 **Stand:** gebaut (`web/namensschild.html`). Die Abstimmungsregel hält von
 Bauart wegen: das Schild liest den Abstimmungszustand gar nicht, es kennt nur
 `mikro`, `hat_wort` und `belegt`. Das ist die stärkste Form der Zusage — was
-nicht gelesen wird, kann nicht durchsickern. **Ungesichert ist sie trotzdem:**
-kein Test hält fest, dass das so bleiben muss, und eine spätere Erweiterung
-könnte es still aufheben.
+nicht gelesen wird, kann nicht durchsickern. Ein Test hält das jetzt fest
+(`TestNamensschildKenntDieAbstimmungNicht`): er schlägt an, sobald die Seite
+`abstimmung`, `abgegeben`, `geheim`, `wahl` oder `stimme` anfasst.
 
 ---
 
@@ -275,11 +275,22 @@ nie allein an der Farbe: jede Kachel trägt zusätzlich Text.
 ### Ein Ausfall kostet Komfort, nie Daten
 
 Auf jeder Oberfläche, die etwas absendet, gilt derselbe Ablauf: erst auf dem
-Gerät sichern, dann schicken, erst auf Bestätigung löschen. Gebaut ist das für
-die Stimme. **Für die Wortmeldung nicht:** `wort_melden` geht unmittelbar
-hinaus, und `senden()` verwirft die Nachricht, wenn die Leitung zu ist. Wer
-sich im Moment eines Abrisses meldet, steht nicht auf der Liste und merkt es
-nicht.
+Gerät sichern, dann schicken, erst löschen, wenn es angekommen ist. Gebaut für
+**Stimme und Wortmeldung**.
+
+Die beiden Puffer sind verschieden gebaut, weil die Sache verschieden ist. Die
+Stimme braucht eine **Marke**: sie darf genau einmal zählen, und nur ein
+Einmalwert macht die Wiederholung unterscheidbar von einer zweiten Stimme. Die
+Wortmeldung braucht keine — der Kern nimmt je Platz ohnehin nur eine offene
+Meldung an und antwortet auf eine Wiederholung mit Erfolg. Das Gerät darf also
+blind nachreichen.
+
+Beide verfallen, wenn sie nicht mehr passen, und sagen es: die Stimme, wenn die
+Abstimmung geschlossen ist; die Wortmeldung, wenn der Tagesordnungspunkt
+gewechselt hat. Wer sich zu Punkt 3 gemeldet hat, meldet sich nicht
+stillschweigend zu Punkt 4. Und beide sind an den **Platz** gebunden: meldet
+sich am selben Gerät jemand anderes an, werden sie verworfen statt unter
+fremdem Namen gezählt.
 
 ### Die Oberfläche prüft nicht
 
@@ -296,9 +307,5 @@ werden — er wird im Kern abgewiesen, und das ist die Prüfung.
 2. **PIN-Ausgabe** — es gibt keinen sicheren Weg, eine PIN zur Person zu bringen.
 3. **Einrichtung von Saal und Sitzung** — heute von Hand in JSON.
 4. **Begleitrolle auf dem privaten Gerät** — samt NFC am Platz.
-5. **Offline-Puffer für die Wortmeldung** — die Stimme ist versorgt, die
-   Wortmeldung nicht.
-6. **Eskalationsleiter** — sechs Stufen, ab Stufe 4 mit Bestätigung.
-7. **Zuschaltung** — braucht die Tonstrecke, die den echten Raum braucht.
-8. **Test für die Namensschild-Regel** — heute richtig, aber nur, weil niemand
-   den Abstimmungszustand hineingeschrieben hat. Ein Test muss das festhalten.
+5. **Eskalationsleiter** — sechs Stufen, ab Stufe 4 mit Bestätigung.
+6. **Zuschaltung** — braucht die Tonstrecke, die den echten Raum braucht.

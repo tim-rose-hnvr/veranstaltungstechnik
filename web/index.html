@@ -181,6 +181,9 @@
                             padding: 1rem; }
   #wahlknoepfe .gepuffert b { font-size: 1.25rem; }
   #wahlknoepfe .gepuffert.wartet { border-color: var(--wort); }
+  .gemerkt { border: 2px dashed var(--rand); border-radius: .8rem; padding: 1rem 1.1rem;
+             display: flex; flex-direction: column; gap: .3rem; }
+  .gemerkt b { font-size: 1.05rem; }
   #quorum { border-top: 1px solid var(--rand); padding-top: 1.1rem; display: flex;
             flex-wrap: wrap; gap: 1.5rem; align-items: flex-end; }
   .balken { flex: 1 1 18rem; }
@@ -327,10 +330,12 @@ let meineAnmeldung = null;   // bestätigte Anmeldung { platz, pin } für die Wi
 let anmeldeMerker = null;    // laufender Anmeldeversuch, noch unbestätigt
 let anmeldeVersuche = 0;     // Wiederanmeldung nach Abriss: begrenzte Versuche
 let autoAnmeldung = false;   // still wiederholen statt Fehlerbanner zeigen
-let merkzettel = null;       // die gepufferte Stimme { marke, wahl, abstimmung }
+let merkzettel = null;       // die gepufferte Stimme { marke, wahl, platz, abstimmung }
+let wortmerker = null;       // die gepufferte Wortmeldung { platz, top }
 let beschlussentwurf = "";   // halb getippter Beschlusstext, überlebt den Neuaufbau der Karte
 let entwurfsart = "offen";
 let zuletztNachgereicht = 0;
+let zuletztWortNachgereicht = 0;
 let z = null;               // letzter Zustand
 let gewaehlterPlatz = 0;    // im Saalplan angetippt
 let schirmZu = false;       // Abstimmungsschirm von Hand geschlossen
@@ -487,6 +492,7 @@ function zustand(n) {
     autoAnmeldung = false;
   }
   if (merkzettel) stimmeNachreichen(n);
+  if (wortmerker) wortNachreichen(n);
 
   let offen = 0;
   for (let i = 0; i < n.plaetze.length; i++) if (n.plaetze[i].mikro) offen++;
@@ -553,11 +559,27 @@ function meinPlatzZeichnen(n) {
     unterschrift = "Sie haben das Wort.";
   } else if (meldung && darf("wort_zurueckziehen")) {
     neu.appendChild(knopf("Meldung zurückziehen", function () {
+      wortmerker = null; wortMerken();
       senden({ typ: "wort_zurueckziehen" }); }, "gross"));
     unterschrift = "Sie stehen auf der Redeliste.";
+  } else if (wortmerker && wortmerker.platz === meinPlatz) {
+    // Getippt, aber noch nicht beim Server angekommen. Ohne diesen Zustand
+    // sähe die Person keinen Unterschied und tippte weiter ins Leere.
+    const warte = document.createElement("div");
+    warte.className = "gemerkt";
+    const kopf = document.createElement("b");
+    kopf.textContent = "Ihre Wortmeldung liegt auf dem Gerät";
+    const text = document.createElement("small");
+    text.className = "leise";
+    text.textContent = netzDa
+      ? "Sie wird gerade übertragen."
+      : "Verbindung getrennt — sie wird nachgereicht, sobald die Verbindung zurück ist.";
+    warte.appendChild(kopf); warte.appendChild(text);
+    neu.appendChild(warte);
+    unterschrift = "";
   } else if (darf("wort_melden")) {
     neu.appendChild(knopf("Wort melden", function () {
-      senden({ typ: "wort_melden" }); }, "gross stark"));
+      wortMelden(); }, "gross stark"));
     unterschrift = "Das Mikrofon geht auf, sobald die Leitung das Wort erteilt.";
   } else if (darf("sitzung_eroeffnen")) {
     neu.appendChild(knopf("Sitzung eröffnen", function () {
@@ -1136,6 +1158,68 @@ function stimmeNachreichen(n) {
            abstimmung: merkzettel.abstimmung });
 }
 
+// Die Wortmeldung wird wie die Stimme zuerst gesichert, dann geschickt. Sie
+// braucht dafür keine Marke: der Kern nimmt je Platz nur eine offene Meldung
+// an und antwortet auf eine Wiederholung mit Erfolg. Das Gerät darf also blind
+// nachreichen (Test: TestWortMeldenVertraegtWiederholung).
+function wortMelden() {
+  wortmerker = { platz: meinPlatz, top: (z && z.sitzung && z.sitzung.aktueller_top) || 0 };
+  wortMerken();
+  senden({ typ: "wort_melden" });
+  if (z) meinPlatzZeichnen(z);
+}
+
+// wortNachreichen läuft bei jedem Zustand: erledigt, verfallen oder erneut hin.
+function wortNachreichen(n) {
+  // Auf der Liste angekommen — der Puffer hat seinen Zweck erfüllt.
+  for (let i = 0; i < n.redeliste.length; i++) {
+    if (n.redeliste[i].platz === wortmerker.platz) {
+      wortmerker = null;
+      wortMerken();
+      return;
+    }
+  }
+  // An diesem Gerät sitzt jemand anderes: die Meldung gehört der vorigen
+  // Person und darf hier nicht unter fremdem Namen gesetzt werden.
+  if (wortmerker.platz && meinPlatz !== 0 && wortmerker.platz !== meinPlatz) {
+    const fremder = wortmerker.platz;
+    wortmerker = null;
+    wortMerken();
+    melden("Eine gemerkte Wortmeldung von Platz " + fremder + " wurde verworfen: " +
+           "an diesem Gerät ist jetzt Platz " + meinPlatz + " angemeldet.");
+    return;
+  }
+  // Der Punkt hat gewechselt. Wer sich zu Punkt 3 gemeldet hat, meldet sich
+  // nicht stillschweigend zu Punkt 4 — lieber verwerfen und es sagen.
+  const jetztTop = (n.sitzung && n.sitzung.aktueller_top) || 0;
+  if (wortmerker.top && jetztTop !== wortmerker.top) {
+    wortmerker = null;
+    wortMerken();
+    melden("Ihre gemerkte Wortmeldung ist verfallen — der Tagesordnungspunkt hat " +
+           "inzwischen gewechselt. Melden Sie sich bitte erneut.");
+    return;
+  }
+  if (meinPlatz === 0) return; // erst wieder anmelden, dann nachreichen
+  const jetzt = Date.now();
+  if (jetzt - zuletztWortNachgereicht < 2000) return;
+  zuletztWortNachgereicht = jetzt;
+  senden({ typ: "wort_melden" });
+}
+
+function wortLaden() {
+  try {
+    const roh = sessionStorage.getItem("wortmeldung");
+    return roh ? JSON.parse(roh) : null;
+  } catch (_) { return null; }
+}
+
+function wortMerken() {
+  try {
+    if (wortmerker) sessionStorage.setItem("wortmeldung", JSON.stringify(wortmerker));
+    else sessionStorage.removeItem("wortmeldung");
+  } catch (_) { /* ohne Speicher lebt der Merker nur im Arbeitsspeicher */ }
+}
+
 function stimmeLaden() {
   try {
     const roh = sessionStorage.getItem("stimme");
@@ -1179,6 +1263,7 @@ function pinFragen(p) {
 }
 
 merkzettel = stimmeLaden();
+wortmerker = wortLaden();
 verbinden();
 </script>
 </body>
