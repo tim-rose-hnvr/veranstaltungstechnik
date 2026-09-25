@@ -2,7 +2,7 @@
   "runId": "cc2026",
   "fileKey": "cKPTYwkOrRq2nsy1oyiUx2",
   "phase": "phase4",
-  "step": "oberflaechen",
+  "step": "fertig",
   "entities": {
     "collections": {
       "Grundwerte": "VariableCollectionId:2:2",
@@ -83,13 +83,59 @@
       "Schrift/Marke": "IBM Plex Sans SemiBold 11/14 versal",
       "Schrift/Zahl gross": "IBM Plex Mono Medium 48/54",
       "Schrift/Zahl": "IBM Plex Mono Medium 20/26",
-      "Schrift/Zahl klein": "IBM Plex Mono Regular 13/18"
+      "Schrift/Zahl klein": "IBM Plex Mono Regular 13/18",
+      "Schrift/Schild": "IBM Plex Sans SemiBold 68/105% — nur Namensschild"
     },
     "nodes": {
       "Titelblatt": "4:12",
       "Titelspalte": "4:13",
       "Farbstreifen": "4:18",
       "Fundament": "9:2"
+    },
+    "oberflaechen": {
+      "Sprechstelle": {
+        "gemeldet": "19:2",
+        "am Platz": "21:426",
+        "hat das Wort": "21:499",
+        "spricht": "21:593",
+        "Verbindung weg": "22:257",
+        "Anmeldung": "22:362",
+        "gemeldet · dunkel": "34:504",
+        "spricht · dunkel": "34:463"
+      },
+      "Abstimmungsschirm": {
+        "Stimmzettel": "24:2",
+        "Stimme gezählt": "24:36",
+        "Verbindung weg": "24:69",
+        "Leitung": "24:96",
+        "Ergebnis": "24:129"
+      },
+      "Namensschild": {
+        "am Platz": "26:3",
+        "hat das Wort": "26:14",
+        "spricht": "26:24",
+        "frei": "26:34",
+        "keine Verbindung": "26:44"
+      },
+      "Begleiter": {
+        "Anmeldung": "27:2",
+        "Mappe": "27:19",
+        "Wortmeldung": "27:53",
+        "Untertitel": "27:77",
+        "Abstimmung läuft": "27:105"
+      },
+      "Browser": {
+        "Zuschaltung": "28:2",
+        "Zuschaltung · nicht öffentlich": "28:43"
+      },
+      "Leitstand": {
+        "Vorabcheck": "30:2",
+        "PIN-Ausgabe": "30:111",
+        "Betrieb · Abstimmung läuft": "32:4",
+        "Siegel": "32:148",
+        "Saal": "33:5",
+        "Sitzung": "33:126"
+      }
     }
   },
   "completedSteps": [
@@ -97,11 +143,13 @@
     "phase1",
     "P2.a",
     "P2.b",
-    "phase3"
+    "phase3",
+    "phase4"
   ],
   "fileUrl": "https://www.figma.com/design/cKPTYwkOrRq2nsy1oyiUx2",
   "offen": [
-    "P4: Sprechstelle, Abstimmungsschirm, Namensschild, Begleiter, Browser, Leitstand"
+    "Leitstand: Protokoll und Ausgabe (OParl) als eigene Schirme",
+    "Code Connect: Bausteine an web/ binden, sobald die Oberfläche nach dem Entwurf umgebaut wird"
   ],
   "gestaltung": {
     "leitgedanke": "Die Oberflaeche gehoert zu dem, was das System herstellt: einer Niederschrift.",
@@ -111,6 +159,9 @@
   "erkenntnisse": [
     "resize() auf einem Textknoten setzt textAutoResize zurueck auf NONE — erst resize, dann textAutoResize.",
     "Schattenausbreitung (spread) zeichnet Figma auf Rahmen nur mit clipsContent = true.",
-    "Nach combineAsVariants Raster aus den echten Kindgroessen und resizeWithoutConstraints."
+    "Nach combineAsVariants Raster aus den echten Kindgroessen und resizeWithoutConstraints.",
+    "Eine Farbe neu an DIESELBE Variable binden (setBoundVariableForPaint auf eine schon gebundene Farbe mit color 0,0,0) laesst den Rohwert Schwarz stehen, und der Renderer zeigt ihn. Beim Binden immer den aufgeloesten Wert als color mitgeben.",
+    "Dunkelmodus: text/auf-marke muss im Modus Dunkel dunkel sein — die gefuellten Flaechen werden hell. Vorher 1,1:1 auf dem Sperrband, jetzt jede Paarung >= 5,5:1.",
+    "Ein fehlgeschlagener use_figma-Lauf rollt vollstaendig zurueck; nach einem Fehler nichts aufraeumen, erst nachsehen."
   ]
 }

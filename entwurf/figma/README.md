@@ -12,9 +12,42 @@ tragen und eine abgerissene Verbindung sie sonst mitnimmt.
 | | |
 |---|---|
 | Datei | `cKPTYwkOrRq2nsy1oyiUx2` |
-| Fertig | 4 Variablensammlungen, 48 Variablen, 12 Textstile, 11 Seiten, Titelblatt |
-| Vorbereitet | `02-fundament.js`, `03-platz.js` |
-| Offen | Knopf, Wahlknopf, Statusband, Karte, Stufen-Marke, TOP-Zeile; die vier Oberflächen |
+| Fundament | 4 Variablensammlungen, 48 Variablen, 13 Textstile, Modus Hell und Dunkel |
+| Bausteine | Knopf, Platz, Wahlknopf, Stimmkarte, Stufe, TOP-Zeile, Redeliste-Zeile, Unterlage-Zeile, Statusband |
+| Oberflächen | 27 Schirme, siehe unten |
+| Offen | Leitstand: Protokoll und Ausgabe (OParl) als eigene Schirme |
+
+### Die Oberflächen
+
+| Seite | Schirme | Format |
+|---|---|---|
+| Sprechstelle | am Platz · gemeldet · hat das Wort · spricht · Verbindung weg · Anmeldung (PIN) · zwei im Modus Dunkel | iPad quer, 1194 × 834 |
+| Abstimmungsschirm | Stimmzettel · Stimme gezählt · Verbindung weg · Leitung · Ergebnis | iPad quer |
+| Namensschild | am Platz · hat das Wort · spricht · frei · keine Verbindung | iPhone quer, 852 × 393 |
+| Begleiter | Anmeldung über NFC · Mappe · Wortmeldung · Untertitel · Abstimmung läuft | iPhone hoch, 393 × 852 |
+| Browser | Zuschaltung · Zuschaltung bei nicht öffentlichem Punkt | 1440 × 900 |
+| Leitstand | Saal · Sitzung · PIN-Ausgabe · Vorabcheck · Betrieb (Abstimmung läuft) · Siegel | 1440 × 900 |
+
+Was davon **Entwurf für Ungebautes** ist, steht in `bedienung.md` unter
+„Stand": Begleiter, Zuschaltung, der ganze Leitstand außer Vorabcheck und
+Siegel. Die Schirme zeigen die Zielgestalt; sie behaupten nichts, was der Code
+nicht hält — wo etwas noch fehlt (Signatur auf dem Gerät, OParl), steht es
+nicht auf dem Schirm.
+
+### Entscheidungen, die in den Schirmen stecken
+
+- **Eine große Handlung je Zustand.** Die Sprechstelle hat nie zwei
+  gleichwertige große Knöpfe.
+- **Prüfergebnisse tragen keine Signalfarbe.** Fehler, Hinweis, in Ordnung
+  steigen im Leitstand mit der Tintendichte — Rot bleibt dem Mikrofon.
+- **Gesperrt heißt: nicht da.** Während einer Abstimmung zeigt der Leitstand
+  keine ausgegrauten Eingriffe, sondern ein Band, das sagt, was wartet.
+- **Geheime Wahl bis in den Leitstand:** die Kette zeigt „Stimme abgegeben
+  (7.)" ohne Platz, der Schirm nach der Abgabe zeigt die Wahl nicht.
+- **Die PIN steht nur auf Papier.** Der Kern hält einen bcrypt-Hash; die
+  Vorschau zeigt Punkte.
+- **Zuschaltung ist ein eigener Platz** (Z1), nicht ein Gerät an einem
+  Saalplatz.
 
 `zustand.json` hält jede Knoten- und Variablenkennung. Ohne sie müsste man
 raten, und geraten wird hier nichts.
@@ -56,10 +89,17 @@ gehören nach dem Lauf in `zustand.json`.
 Vorher gilt die Regel des Figma-Werkzeugs: die `figma-use`-Anleitung laden,
 sonst laufen die üblichen Fallen auf.
 
-## Ungeprüft
+## Fallen, die hier aufliefen
 
-`02-fundament.js` und `03-platz.js` sind **nicht gelaufen** — die Verbindung
-riss ab, bevor sie an der Reihe waren. Sie stehen auf Mustern, die in
-derselben Datei schon durchliefen (Variablen, Textstile, Titelblatt), aber
-erwarte beim ersten Lauf Nachbesserung. Insbesondere `combineAsVariants` und
-das Rastern danach sind erfahrungsgemäß die Stellen, an denen es hakt.
+- `resize()` auf einem Textknoten setzt `textAutoResize` zurück — erst
+  `resize`, dann `textAutoResize = 'HEIGHT'`.
+- Schattenausbreitung zeichnet Figma nur mit `clipsContent = true`.
+- Eine Farbe erneut an dieselbe Variable binden, mit `color` 0,0,0 als
+  Platzhalter, lässt den Rohwert Schwarz stehen — und genau den zeigt der
+  Renderer. Beim Binden den aufgelösten Wert mitgeben.
+- `text/auf-marke` war im Modus Dunkel weiß, während die gefüllten Flächen hell
+  werden: 1,1 : 1 auf dem Sperrband. Jetzt dunkel, jede Paarung ≥ 5,5 : 1.
+  **Derselbe Fehler steckt in `web/index.html`** (weiß auf `--an` im Dunkeln,
+  etwa 3,3 : 1) — dort nicht angefasst, weil der Code in diesem Schritt
+  bleiben sollte.
+- Ein fehlgeschlagener `use_figma`-Lauf rollt vollständig zurück.
