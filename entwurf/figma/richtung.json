@@ -1,0 +1,825 @@
+{
+ "name": "Reinschrift",
+ "these": "Reinschrift ist die Niederschrift in fertig gesetzter Form. Die Oberfläche sieht aus wie das Blatt, auf dem die Sitzung sich selbst schreibt. Grundlage ist der Vorschlag Reinschrift mit der höchsten Jurysumme (8,5 + 8 + 7 = 23,5; Pult und Papier 20; Institution 20). Aus den beiden anderen Vorschlägen ist alles übernommen, was die Jurys genannt haben und was passt. Jede Entscheidung tragen drei Stoffe.\n\nTINTE ordnet und handelt. Rang, Stand, Auswahl, Fehler und die eine Handlung je Schirm entstehen immer über die Dichte, nie über Farbe. Die Hausfarbe ist Tinte (#17181A) bzw. Kreide (#ECEBE7). ConferenceCue besitzt keine eigene Buntfarbe.\nLICHT meldet. Rot, Blau, Grün und Bernstein sind die einzigen Buntfarben im ganzen System. Jede hat genau eine Bedeutung und steht immer mit Ikone und Wort. Die zwei Signale, die den Menschen am Platz selbst betreffen, leuchten zusätzlich als 6-px-Signalkante über die volle Schirmbreite: rot bei offenem Mikrofon, blau bei erteiltem Wort.\nSERIFE bindet. TOP-Titel, Beschluss, Feststellung und festgestellte Ergebniszahlen stehen in Source Serif 4, dazu kommt der 3-px-Randstrich als sichtbare Rechtsstimme. Ein ausgezähltes, aber noch nicht festgestelltes Ergebnis steht in Grotesk.\n\nJeder Schirm beantwortet in einer halben Sekunde zwei Fragen. „Bin ich dran?“ beantworten die Heldzeile in 44 pt in der Farbe des Zustands, die Signalkante und die Silhouette der Heldkarte. „Worüber?“ beantwortet der TOP in der Serife darüber. Tiefe entsteht über drei Ebenen (Tisch, Blatt, erhobenes Blatt) und den Bogen. Leitstand, Zuschaltung und Webseite sind das dunkle Pult, Dokumente bleiben darauf Papier.\n\nENTSCHIEDENE WIDERSPRÜCHE\n(1) Hausfarbe. Tintengrün entfällt, so haben es alle drei Jurys verlangt. „Wort melden“, „Mikrofon an“, „Stimme abgeben“ und der Kreis „eingegangen“ sind Tinte. Bei „hat das Wort“ ist das Blau damit die einzige Farbe auf dem Schirm. Die Nähe zu „frei“ ist aufgelöst, nicht nur verschoben.\n(2) Neutrale Rampe. Ist die Marke farblos, wäre ein Grünstich in allen Grautönen die fünfte Farbe. Die Helligkeiten bleiben wie bei Reinschrift, die Buntheit liegt bei C* ≤ 4: warmes Papier, kühles Anthrazit.\n(3) „Spricht“. Eine rote Vollfläche über die ganze Karte 748×516 blendet und färbt das Gesicht im Nahbild rot. Eine blasse Tönung allein ist aus 2 m zu schwach. Deshalb wird der On-Air-Kopf (obere 200 pt der Heldkarte) Vollrot, der Rest rot getönt, dazu kommen die Signalkante und der 4-px-Zustandsrand. Rot bleibt die größte Farbfläche auf dem Schirm.\n(4) „Hat das Wort“. Blaue Signalkante, die ganze Heldkarte in wort-toenung, 4-px-Rand, Wortring und Hinweiston. So ist der Zustand auch ohne Ton klar von „gemeldet“ getrennt.\n(5) „Frei“ folgt dem Code (web/index.html, Z. 631): Eine Teilnahme ist zugeordnet, aber niemand ist angemeldet, der Platz wartet auf die Anmeldung. Ein Platz ohne Teilnahme heißt „nicht besetzt“ und ist neutral. Grün erscheint nur dort, wo jemand darauf handelt: im Anmelde-Saalplan und im Leitstand.\n(6) Grünwert. Übernommen ist #0B7050 / #45C69E statt #2C7630 / #A3CF5E. Unter Deuteranopie trennt sich das Grün damit von Rot mit ΔE00 17,3 statt 6,8 und von Bernstein mit 17,1 statt 7,3; dunkel sind es 21,6 statt 4,4.\n(7) Veraltete Anzeigen bekommen weder Schleier noch geminderte Deckkraft, weil beides Text unter 4,5 : 1 drückt. Stattdessen gibt es die Stand-Plakette, Signalflächen werden zu Konturen und Laufwerte zu „—“.\n(8) Figma. Schatten werden Effektstile mit an Variablen gebundenen Werten und nicht je Modus doppelt angelegt. Das Namensschild läuft im expliziten Modus Dunkel statt in einem dritten Modus, schild/wort geht in signal/wort-voll auf.\n(9) Leitung. Die Redeliste steht dauerhaft neben der Synoptik. Die große Handlung folgt der Verfahrenskette.\n(10) Geheime Wahl. Es gibt keine Quittungsnummer und keinen Zähler auf den Mitgliedergeräten. Die Leitung sieht nur die Zahl und die getrennten Plätze. Zähler laufen nie animiert hoch. Der Abgabeknopf heißt neutral „Stimme abgeben“.\n(11) Rot am Kamerabild erscheint nur als Plakette „spricht“ und nie als Rahmen, weil ein roter Rahmen als Kamera-Tally gelesen wird.\n(12) Die Bauchbinde ist neu gerechnet. Die alte Rampe von 0 auf 64 % über 72 px ergab über hellem Bild für den Namen nur 1,6 bis 2,2 : 1. Neu steht der Text auf einem festen Sockel mit 72 % (9,3 : 1).\n\nKONTRASTNACHWEIS\nJede Paarung Text/Fläche und Text/Signalfläche ist in Hell und Dunkel nachgerechnet (WCAG 2.x, relative Luminanz). Die Farbsehschwächen sind nach Machado 2009 mit Schwere 1,0 und ΔE00 simuliert. Korrigiert wurden:\n– signal/mikro-voll dunkel: #C8102E hatte zur Blattfläche nur 2,93 : 1, neu #D92038 mit 3,46 : 1; Weiß darauf 4,98 : 1.\n– Bauchbinde: siehe (12).\n– Stand-Schleier: gestrichen.\n– Text auf Schraffur: verboten, weil er auf bis zu 3,8 : 1 fiele.\nAlle übrigen Werte liegen bei mindestens 4,5 : 1 für Text und 3 : 1 für Konturen, Ikonen und große Schrift. Der kleinste Textwert im System ist text/leise auf vertieft mit 5,0 : 1.",
+ "farben": [
+  {
+   "token": "flaeche/grund",
+   "hell": "#ECEBE6",
+   "dunkel": "#0E0F11",
+   "einsatz": "Ebene 0, der Tisch bzw. das Pult: Grund jeder Oberfläche. Statusband, TOP-Kopf und Kontextpanel stehen typografisch direkt darauf, ohne Karte. Dunkel ist es das Pult von Leitstand, Zuschaltung und Webseite (--grund). Neutral statt grünstichig (C* 2,6 bzw. 1,2). Text darauf: stark 14,9 / 16,1 : 1, leise 5,5 / 6,6 : 1."
+  },
+  {
+   "token": "flaeche/blatt",
+   "hell": "#FCFBF8",
+   "dunkel": "#1A1B1E",
+   "einsatz": "Ebene 1: Seitenblatt der Sprechstelle, Listen, Saal-Karte, Tagesordnung, Leitstand-Karten, Wahlknopf, PIN-Tasten. Hell mit Effektstil Ebene/1, dunkel über die Helligkeit (1,11 : 1 zum Grund) plus Lichtkante. Nie durch eine 1-px-Linie von der Nachbarebene getrennt. Text: stark 17,2 / 14,4 : 1, leise 6,4 / 5,9 : 1."
+  },
+  {
+   "token": "flaeche/erhoben",
+   "hell": "#FFFFFF",
+   "dunkel": "#25272B",
+   "einsatz": "NEU. Ebene 2, genau die eine aktive Sache je Schirm: Heldkarte, Statuskarte des Begleiters, Synoptik der Leitung, gewähltes Segment, Popover, Bogen, Bestätigungsleiste, Leitstand-Kopfleiste. Zugleich Schriftfarbe auf Tintenflächen (gewählter Wahlknopf, Aufzeichnungs-Pille: 17,8 / 12,5 : 1). Text darauf: stark 17,8 / 12,5 : 1, leise 6,6 / 5,1 : 1."
+  },
+  {
+   "token": "flaeche/vertieft",
+   "hell": "#E2E0DA",
+   "dunkel": "#08090A",
+   "einsatz": "Mulden: leere PIN-Felder, Spur der Segmentsteuerung, Pegelspur, Tischfläche der Synoptik, gedrückter Sekundärzustand, Platz „nicht besetzt“ und „nicht angemeldet“, Vorlagen-Chip, Stand-Plakette. Dunkel liegt die Fläche echt unter dem Grund. Text: stark 13,5 / 16,7 : 1, leise 5,0 / 6,8 : 1 (der kleinste Textwert im System). Signaltext steht hier nie."
+  },
+  {
+   "token": "flaeche/papier",
+   "hell": "#FCFBF8",
+   "dunkel": "#F4F2EC",
+   "einsatz": "NEU. Dokumente bleiben Papier, auch auf dem dunklen Pult: Protokollentwurf, Siegelbericht, PIN-Zettel-Vorschau, geöffnete Unterlage, Sperrband und PGM-Plakette im Leitstand, Schirmbilder auf der Webseite. Aufbau in Figma: Der äußere Rahmen trägt flaeche/papier und Ebene/Papier, der innere Inhaltsrahmen steht im expliziten Modus Hell, so löst jeder Text in die hellen Tintenwerte auf (auf #F4F2EC: stark 15,9, mittel 9,3, leise 5,9 : 1). #F4F2EC statt Weiß, damit das Blatt neben den Vorschaumonitoren nicht blendet."
+  },
+  {
+   "token": "flaeche/abdunkeln",
+   "hell": "rgba(23,24,26,0.40)",
+   "dunkel": "rgba(0,0,0,0.60)",
+   "einsatz": "NEU. Nur als Schleier unter Bogen und Dialog. Nie als Stand-Kennzeichnung über Live-Bereichen (gestrichen, weil er Text unter 4,5 : 1 drückt)."
+  },
+  {
+   "token": "flaeche/bild",
+   "hell": "#000000",
+   "dunkel": "#000000",
+   "einsatz": "NEU. Balken und Grund von Kamerabild, Programmbild und Eigenbild. Fehlende Fläche ist immer Schwarz, nie gestreckt oder beschnitten."
+  },
+  {
+   "token": "linie/normal",
+   "hell": "#D5D3CC",
+   "dunkel": "#2E3034",
+   "einsatz": "Nur dekorative Trennlinien innerhalb eines Blatts: Listen, Tabellen, Zeitleiste der Tagesordnung (2 px), Verbindungslinie der Stufenleiste, inaktive Pegelsegmente. Kontrast nur 1,45 / 1,30 : 1, deshalb nie Umriss eines Bedienelements und nie Grenze zwischen Ebenen."
+  },
+  {
+   "token": "linie/stark",
+   "hell": "#7C7B75",
+   "dunkel": "#72757C",
+   "einsatz": "Kontur von Bedienelementen in 1,5 px, WCAG 1.4.11. Hell 3,6 auf grund, 4,1 auf blatt, 4,2 auf erhoben, 3,2 auf vertieft; dunkel 4,2 / 3,7 / 3,2 / 4,3 : 1. Einsatz: Sekundärknopf, Wahlknopf, PIN-Feld, offener Knoten der Tagesordnung, wartender Knoten der Stufenleiste, Stufe „intern“, Nein-Anteil im Ergebnisbalken, Umriss-Pillen."
+  },
+  {
+   "token": "text/stark",
+   "hell": "#17181A",
+   "dunkel": "#ECEBE7",
+   "einsatz": "Tinte bzw. Kreide. Einsatz: Titel, Heldzeile ohne Signal („Nicht gemeldet“, „Sie sind Nr. 2“), Namen, Ikonen, aktive Pegelsegmente, Rangmarke, Aufzeichnungs-Pille, Zustandsband der Abstimmung, Stufe „vertraulich/geheim“, Ja-Anteil im Ergebnisbalken, Stand-Plakette. Auf allen Flächen mindestens 12,5 : 1, auf jeder Tönung mindestens 12,8 : 1."
+  },
+  {
+   "token": "text/mittel",
+   "hell": "#3E4043",
+   "dunkel": "#BDBCB8",
+   "einsatz": "NEU. Zweite Tintenstufe: Satz unter der Heldzeile, offene und erledigte TOP-Titel, Tabellenwerte, Leerzustandssatz, Uhrzeit in der Ereigniszeile, Stand der Leitungsleiste ohne fällige Handlung. Auf allen Flächen mindestens 7,9 : 1."
+  },
+  {
+   "token": "text/leise",
+   "hell": "#5B5D61",
+   "dunkel": "#95979C",
+   "einsatz": "Dritte Tintenstufe, nur für Metadaten und Kennzeilen: Meldezeit, Seitenzahl, „PLATZ 3 · …“, Vorname, Funktion und Platznummer am Namensschild, ruhende Ikonen, Leerzustands-Ikone. Kleinster Wert: hell 5,0 : 1 auf vertieft, dunkel 5,1 : 1 auf erhoben. Auf allen Tönungen mindestens 5,2 : 1, am Namensschild auf #000 7,2 : 1."
+  },
+  {
+   "token": "text/auf-marke",
+   "hell": "#FFFFFF",
+   "dunkel": "#17181A",
+   "einsatz": "Schrift und Ikone auf marke/haus und auf allen Tintenflächen (Primärknopf, Rangmarke, Zustandsband, Reiter „SIE“, Plakette „FEHLER“, Aufzeichnungs-Pille): 17,8 / 14,9 : 1, im gedrückten Zustand 12,1 / 10,8 : 1."
+  },
+  {
+   "token": "text/auf-signal",
+   "hell": "#FFFFFF",
+   "dunkel": "#FFFFFF",
+   "einsatz": "NEU. Nur auf signal/mikro-voll, signal/mikro-flaeche und signal/wort-voll: Weiß auf #C8102E 5,9, auf #D92038 5,0, auf #3A1519 16,1, auf #2A62B0 6,1 : 1."
+  },
+  {
+   "token": "marke/haus",
+   "hell": "#17181A",
+   "dunkel": "#ECEBE7",
+   "einsatz": "Die Hausfarbe ist Tinte bzw. Kreide, keine Buntfarbe. Nur als Fläche der einen Handlung je Schirm: Wort melden, Mikrofon an, Hier sitzen, Stimme abgeben, Jetzt auszählen, Ergebnis feststellen, TOP aufrufen, Als Begleiter verbinden. Außerdem: Kreis „Stimme eingegangen“, gewählter Wahlknopf, Plakette „neu“, Wortmarke, Signet. Nie als Zustandswort. Zum Grund 14,9 / 16,1 : 1."
+  },
+  {
+   "token": "marke/haus-druck",
+   "hell": "#34363A",
+   "dunkel": "#CBCAC5",
+   "einsatz": "NEU. Gedrückter Primärknopf für 90 ms. Schrift darauf 12,1 / 10,8 : 1."
+  },
+  {
+   "token": "zustand/fokus",
+   "hell": "#17181A",
+   "dunkel": "#ECEBE7",
+   "einsatz": "NEU. Fokusring 3 px außen mit 2 px Abstand, nur bei :focus-visible. Überall derselbe Ring, nie blau, ohne Größenänderung des Elements. Auf jeder Fläche mindestens 12,5 : 1."
+  },
+  {
+   "token": "zustand/stoerung",
+   "hell": "#4B4D51",
+   "dunkel": "#9C9EA3",
+   "einsatz": "NEU. Neutrales Graphit für alles Technische: Netz weg, Kamera ohne Signal, Gerät, Akku, Drucker, gepufferte Meldung. Immer mit Ikone, Wort und 4-px-Kante links. Als Text mindestens 7,1 / 5,6 : 1. Nie eine Signalfarbe. Auf dem Namensschild nur als Glyph ohne Text."
+  },
+  {
+   "token": "zustand/schraffur",
+   "hell": "rgba(23,24,26,0.12)",
+   "dunkel": "rgba(236,235,231,0.12)",
+   "einsatz": "NEU. Linienfarbe des Musters „Schraffur 45°“ (1 px, Periode 6 px). Einsatz: Kamerakachel ohne Signal und Gerätestörung im Leitstand, Fehlerstreifen im Vorabcheck, Übersteuerungszone im Pegel, Enthaltungsanteil im Ergebnisbalken. Nie Text auf Schraffur, denn text/leise fiele auf einer Schraffurlinie über vertieft auf 4,0 : 1."
+  },
+  {
+   "token": "signal/mikro",
+   "hell": "#C8102E",
+   "dunkel": "#FF5A6E",
+   "einsatz": "Einzige Bedeutung: MIKROFON OFFEN. Für Text, Ikone und Kante: Signalkante, Zustandsrand der Heldkarte, mic-offen in „Es spricht“, Kante des On-Air-Kopfs (dunkel), Schrift und Kontur von „Mikrofon aus“. Als Text nur auf blatt, erhoben, grund oder mikro-toenung: hell 5,7 / 5,9 / 4,9 / 4,8 : 1, dunkel 5,7 / 4,9 / 6,3 / 5,8 : 1. Nie für Fehler, Abbruch, Löschen, REC, Kamera-Tally, PGM, Nein, abgelehnt, Marke oder Webseiten-Akzent."
+  },
+  {
+   "token": "signal/mikro-voll",
+   "hell": "#C8102E",
+   "dunkel": "#D92038",
+   "einsatz": "NEU. Vollfläche „Mikrofon offen“ mit text/auf-signal. Einsatz: Platz-Chip „spricht“, Knoten des Sprechers in der Stufenleiste, Mikrofonschalter „offen“ in Leitung und Zuschaltung, Plakette „spricht“ am Kamerabild, Namensschild „spricht“. Dunkel korrigiert: #C8102E hatte zur Blattfläche nur 2,93 : 1. #D92038 hat 3,46 : 1 zu blatt und 3,00 : 1 zu erhoben, Weiß darauf 4,98 : 1."
+  },
+  {
+   "token": "signal/mikro-flaeche",
+   "hell": "#C8102E",
+   "dunkel": "#3A1519",
+   "einsatz": "NEU. On-Air-Kopf der Heldkarte (obere 200 pt) im Zustand „spricht“. Hell Vollrot mit Weiß (5,9 : 1), aus 2 m eindeutig. Dunkel Tiefrot mit 2-px-Innenkante in signal/mikro und Weiß (16,1 : 1), damit ein gedimmter Saal nicht geblendet wird."
+  },
+  {
+   "token": "signal/mikro-toenung",
+   "hell": "#F9E4E7",
+   "dunkel": "#2A1316",
+   "einsatz": "NEU. Unterer Teil der Heldkarte im Zustand „spricht“, Block „Es spricht“ in der Redeliste, Sprecherzeile der Zuschaltungs-Seitenleiste. Rot darauf 4,8 / 5,8 : 1, Tinte 14,6 / 14,6 : 1."
+  },
+  {
+   "token": "signal/wort",
+   "hell": "#1D4E89",
+   "dunkel": "#86AEEB",
+   "einsatz": "Einzige Bedeutung: HAT DAS WORT (Wort erteilt, Mikrofon noch zu). Einsatz: Signalkante, Heldzeile „Sie haben das Wort“, 4-px-Zustandsrand, Wortring, mic-Umriss, Innenrand des Platz-Chips, Block „Wort erteilt“, 12-pt-Rahmen am Namensschild (dunkler Wert auf #000: 9,3 : 1). Als Text hell 8,1 / 8,4 / 7,0 : 1 (blatt / erhoben / grund), auf wort-toenung 7,0 : 1; dunkel 7,6 / 6,6 / 8,5 : 1 und 6,7 : 1. Nie für Fokus, Auswahl, Link oder Information."
+  },
+  {
+   "token": "signal/wort-voll",
+   "hell": "#2A62B0",
+   "dunkel": "#2A62B0",
+   "einsatz": "NEU, ersetzt das doppelte schild/wort. Band „hat das Wort“ am Namensschild: Ein selbstleuchtendes Blau auf Schwarz bei 50 % Helligkeit braucht mehr Licht als #1D4E89. Weiß darauf 6,05 : 1. Die Bedeutung bleibt signal/wort."
+  },
+  {
+   "token": "signal/wort-toenung",
+   "hell": "#E4EBF4",
+   "dunkel": "#16263D",
+   "einsatz": "NEU. Ganze Heldkarte im Zustand „hat das Wort“, Platz-Chip und Redelistenzeile „Wort erteilt“, Statuskarte des Begleiters. Tinte 14,8 / 12,8 : 1, leise 5,5 / 5,2 : 1."
+  },
+  {
+   "token": "signal/frei",
+   "hell": "#0B7050",
+   "dunkel": "#45C69E",
+   "einsatz": "Einzige Bedeutung: PLATZ FREI. Eine Teilnahme ist zugeordnet, aber niemand ist angemeldet, der Platz wartet auf die Anmeldung (so im Code, web/index.html Z. 631). Sichtbar nur, wo jemand darauf handelt: im Anmelde-Saalplan der Sprechstelle und im Leitstand (Saal, Sitzung, PIN-Ausgabe, Vorabcheck). Immer mit armchair und dem Wort „frei“. Hellwert aus Pult und Papier, Dunkelwert feinjustiert: unter Deuteranopie zu Rot ΔE00 17,3 (hell) bzw. 13,8 (dunkel), zu Bernstein 17,1 bzw. 21,6, unter Tritanopie zu Blau 10,3. Als Text hell 5,9 / 6,1 / 5,1 : 1, dunkel 8,1 / 7,0 / 9,0 : 1. Nie für Quorum, Erfolg, „verbunden“, „läuft“, Ja oder angenommen, nie am Namensschild, nie in den Synoptiken einer laufenden Sitzung."
+  },
+  {
+   "token": "signal/frei-toenung",
+   "hell": "#E3F1EB",
+   "dunkel": "#0F2A21",
+   "einsatz": "NEU. Fläche des freien Platz-Chips. Grün darauf 5,2 / 7,2 : 1, Tinte 15,3 / 12,8 : 1."
+  },
+  {
+   "token": "signal/achtung",
+   "hell": "#7A4E00",
+   "dunkel": "#E0A43E",
+   "einsatz": "Einzige Bedeutung: WIDERSPRUCH GEGEN DIE AUFZEICHNUNG. Einsatz: Eckmarke video-off am Platz-Chip, Chip „nicht gefilmt · Widerspruch“ in der eigenen Heldkarte, Spalte „Widerspruch“ im Leitstand. Sichtbar nur für die Person selbst, die Leitung und den Leitstand. Hell von #8A5A00 abgedunkelt: Zu Rot beträgt der Abstand unter Deuteranopie nun ΔE00 8,3 statt 4,1, deshalb bleibt die Ikone Pflicht. Text hell 7,0 / 7,2 / 6,0 : 1, dunkel 7,8 / 6,8 / 8,7 : 1. Nie für Netz, Störung, Pause, nicht öffentlich, Redezeitüberzug oder Vorabcheck."
+  },
+  {
+   "token": "signal/achtung-toenung",
+   "hell": "#F3EAD9",
+   "dunkel": "#2E2210",
+   "einsatz": "NEU. Grund der Eckmarke 20×20 und des Widerspruch-Chips. Bernstein darauf 6,0 / 7,1 : 1, Tinte 14,9 / 13,0 : 1."
+  },
+  {
+   "token": "schild/grund",
+   "hell": "#000000",
+   "dunkel": "#000000",
+   "einsatz": "NEU. Grund des Namensschilds: Die OLED-Pixel sind aus, im PTZ-Bild strahlt nichts über. Das Schild steht im expliziten Modus Dunkel; Kreide darauf 17,6 : 1, leise 7,2 : 1."
+  }
+ ],
+ "schrift": [
+  {
+   "stil": "Saal/Held",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 44,
+   "zeilenhoehe": 48,
+   "einsatz": "Heldzeile je Zustand der Sprechstelle: „Nicht gemeldet“, „Sie sind Nr. 2“, „Sie haben das Wort“, „Sie sprechen“, „Sitzung unterbrochen“. Farbe des Zustands oder text/stark, Laufweite −1 %. Versalhöhe 30,7 pt ≈ 5,9 mm auf dem iPad Air 11″ (0,192 mm/pt): 34′ bei 60 cm, flach liegend verkürzt noch ≥ 17′. Stufe Groß: 52/56."
+  },
+  {
+   "stil": "Saal/TOP",
+   "familie": "Source Serif 4",
+   "schnitt": "SemiBold (opsz 30)",
+   "groesse": 30,
+   "zeilenhoehe": 36,
+   "einsatz": "Laufender TOP im TOP-Kopf (bindend), höchstens 2 Zeilen, text-wrap: balance, Auslassung erst nach Zeile 2. Die TOP-Nummer hängt als Serif-Ziffer 30 in der Marginalspalte 56. Groß: 36/42."
+  },
+  {
+   "stil": "Saal/TOP kompakt",
+   "familie": "Source Serif 4",
+   "schnitt": "SemiBold",
+   "groesse": 24,
+   "zeilenhoehe": 30,
+   "einsatz": "TOP-Kopf der Leitung, einzeilig mit Auslassung. Der volle Titel steht im Blatt Tagesordnung. Groß: 28/34."
+  },
+  {
+   "stil": "Saal/TOP-Liste",
+   "familie": "Source Serif 4",
+   "schnitt": "Regular (laufender Punkt SemiBold)",
+   "groesse": 20,
+   "zeilenhoehe": 26,
+   "einsatz": "TOP-Titel in der Tagesordnungs-Zeitleiste. Die Ergebniszeile erledigter Punkte steht in Regular 17/24 („angenommen · 8 : 1 : 1“), weil sie festgestellt ist."
+  },
+  {
+   "stil": "Saal/Satz",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Regular",
+   "groesse": 20,
+   "zeilenhoehe": 28,
+   "einsatz": "Satz unter der Heldzeile, Text in Bögen, Leerzustand. Höchstens 62 Zeichen je Zeile und 2 Zeilen in der Heldkarte, text-wrap: pretty. Groß: 24/34."
+  },
+  {
+   "stil": "Saal/Knopf gross",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 22,
+   "zeilenhoehe": 28,
+   "einsatz": "Heldknopf 88 mit Ikone 28, große Handlung der Leitungsleiste, Primärknopf der Bestätigungsleiste. Groß: 26/32."
+  },
+  {
+   "stil": "Saal/Zeile",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Medium (Namen der Sprecher SemiBold)",
+   "groesse": 17,
+   "zeilenhoehe": 24,
+   "einsatz": "Namen in Redeliste und Stufenleiste, Zeile „Es spricht“, Knöpfe 56, Listentitel, Unterlagen, Unterzeile der Wahlknöpfe. Zahlen tnum. Groß: 20/28."
+  },
+  {
+   "stil": "Saal/Beschriftung",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Medium (Segmente SemiBold)",
+   "groesse": 15,
+   "zeilenhoehe": 20,
+   "einsatz": "Kleinste Satzgröße am Tisch: Meldezeit „seit 14:29“, Seitenzahl, Segmentbeschriftung, Pillen, Legende der Synoptik, Nummer im Mini-Chip, Rang in der Rangmarke, Namen unter der Stufenleiste. Groß: 18/24."
+  },
+  {
+   "stil": "Kennzeile",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 13,
+   "zeilenhoehe": 16,
+   "einsatz": "Versal, Laufweite +8 %, meist text/leise. Beispiele: „TOP 4 VON 9 · SEIT 14:12“, „ES SPRICHT / WORT ERTEILT / WARTEND“, Reiter „SIE“, Stufe der Vertraulichkeit, „STAND 14:32:07 · NICHT AKTUELL“. Die einzige Schrift unter 15 pt am Tisch und zugleich die Untergrenze auf dem iPhone. Ersetzt den Stil Schrift/Marke, der in Schrift/Kennzeile umbenannt wird. Groß: 15/20."
+  },
+  {
+   "stil": "Saal/Redezeit",
+   "familie": "IBM Plex Mono",
+   "schnitt": "Medium",
+   "groesse": 40,
+   "zeilenhoehe": 44,
+   "einsatz": "Laufende Redezeit mm:ss im On-Air-Kopf, Countdown vor Beginn, Laufzeit im Abstimmungsband. In der Redeliste als 17/24. Mono nur für laufende Werte."
+  },
+  {
+   "stil": "Saal/Uhr",
+   "familie": "IBM Plex Mono",
+   "schnitt": "Medium",
+   "groesse": 17,
+   "zeilenhoehe": 24,
+   "einsatz": "Uhr im Statusband in einem festen Slot von 72, Laufzeit „seit 0:42“ im Abstimmungsband. Zeitangaben in Sätzen („seit 14:29“) stehen in Plex Sans mit tnum."
+  },
+  {
+   "stil": "Saal/PIN",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Medium",
+   "groesse": 28,
+   "zeilenhoehe": 32,
+   "einsatz": "Ziffern im Ziffernblock (Tasten 120×64), tnum. Titel „PIN für Platz 3“ in 28/34 SemiBold, nicht in Serife, weil er nicht bindet."
+  },
+  {
+   "stil": "Saal/Beschluss",
+   "familie": "Source Serif 4",
+   "schnitt": "Regular (opsz 40)",
+   "groesse": 40,
+   "zeilenhoehe": 48,
+   "einsatz": "Beschlussvorschlag auf dem Stimmzettel mit 3-px-Randstrich in der Marginalspalte, balance, höchstens 26 em breit und 4 Zeilen, danach „Vorlage 4.1 öffnen“. Groß: 48/56, höchstens 3 Zeilen."
+  },
+  {
+   "stil": "Saal/Beschluss kompakt",
+   "familie": "Source Serif 4",
+   "schnitt": "Regular",
+   "groesse": 28,
+   "zeilenhoehe": 36,
+   "einsatz": "Beschluss auf dem Stimmzettel der Leitung, deren Schirm zusätzlich das Leitungsfeld trägt; außerdem Beschlusstext im Bogen „Abstimmung vorbereiten“. Höchstens 3 Zeilen."
+  },
+  {
+   "stil": "Saal/Band",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 20,
+   "zeilenhoehe": 24,
+   "einsatz": "Zustandsband 64 der Abstimmung auf Tinte: „Geheime Abstimmung läuft“, „Abstimmung beendet · 15:42“. Außerdem „Ihre Wahl: Nein“ in der Bestätigungsleiste."
+  },
+  {
+   "stil": "Saal/Wahl",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 40,
+   "zeilenhoehe": 44,
+   "einsatz": "Ja / Nein / Enthaltung unter dem Glyph 48. Die Unterzeile in 17/24 kommt aus der Mehrheitsregel der Konfiguration."
+  },
+  {
+   "stil": "Saal/Bestätigung",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 36,
+   "zeilenhoehe": 40,
+   "einsatz": "Überschrift der Stimmkarte: „Stimme eingegangen“, „Auf diesem Gerät gesichert“, „Stimme verfallen“; außerdem „Ausgezählt – die Leitung stellt fest“."
+  },
+  {
+   "stil": "Saal/Zahl vorläufig",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold, tnum",
+   "groesse": 48,
+   "zeilenhoehe": 52,
+   "einsatz": "Ja, Nein, Enthaltung nach dem Auszählen und vor der Feststellung. Grotesk, weil noch nichts bindet. Der Zähler der Leitung „7 von 10“ steht in 40/44 und läuft bei geheimer Wahl nie animiert hoch."
+  },
+  {
+   "stil": "Saal/Feststellung",
+   "familie": "Source Serif 4",
+   "schnitt": "SemiBold (opsz 60)",
+   "groesse": 64,
+   "zeilenhoehe": 68,
+   "einsatz": "„Angenommen.“ / „Abgelehnt.“ erst nach der Feststellung, auch bei Stimmengleichheit. Bindend, deshalb Serife; Laufweite −1 %."
+  },
+  {
+   "stil": "Saal/Ergebniszahl",
+   "familie": "Source Serif 4",
+   "schnitt": "SemiBold, lnum tnum",
+   "groesse": 48,
+   "zeilenhoehe": 52,
+   "einsatz": "Ja · Nein · Enthaltung nach der Feststellung in drei Spalten. Im Protokoll Serif 11 pt."
+  },
+  {
+   "stil": "Schild/Nachname",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Bold",
+   "groesse": 150,
+   "zeilenhoehe": 156,
+   "einsatz": "Namensschild, eingepasst von 150 auf mindestens 96, Laufweite −2 %, zentriert, gemessen erst nach document.fonts.ready. 150 pt ergeben 17,3 mm Versalhöhe auf dem iPhone 17 (0,1657 mm/pt), also 14,9′ bei 4 m. Passt der Name mit 96 nicht, trennt er am Bindestrich oder Leerzeichen in zwei Zeilen zu je 96. Auf dem iPad mini quer ×1,5 (225 → 144): 24,5 mm, 16,8′ bei 5 m."
+  },
+  {
+   "stil": "Schild/Vorname",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Medium",
+   "groesse": 44,
+   "zeilenhoehe": 48,
+   "einsatz": "Über dem Nachnamen in text/leise, mit Titel („Dr. Maria“). Bewusst nur für den Tisch lesbar (bis 2 m), der Saal liest den Nachnamen."
+  },
+  {
+   "stil": "Schild/Funktion",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Regular",
+   "groesse": 32,
+   "zeilenhoehe": 36,
+   "einsatz": "Kommt aus platz.name („Vorsitz“, „Abschlussprüfer“) in text/leise. Entfällt bei „Platz n“ und solange ein Zustand angezeigt wird."
+  },
+  {
+   "stil": "Schild/Zustand",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 40,
+   "zeilenhoehe": 44,
+   "einsatz": "„gemeldet · 2“, „hat das Wort“, „spricht“, jeweils mit Glyph 48."
+  },
+  {
+   "stil": "Schild/Redezeit",
+   "familie": "IBM Plex Mono",
+   "schnitt": "Medium",
+   "groesse": 48,
+   "zeilenhoehe": 52,
+   "einsatz": "Namensschild „spricht“, rechts in der Kopfzeile, tnum."
+  },
+  {
+   "stil": "Schild/Platz",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 28,
+   "zeilenhoehe": 32,
+   "einsatz": "Platznummer oben rechts in text/leise, für das Saalpersonal. Platz ohne Teilnahme: „Platz 12“ in 64/68."
+  },
+  {
+   "stil": "Hand/TOP",
+   "familie": "Source Serif 4",
+   "schnitt": "SemiBold",
+   "groesse": 28,
+   "zeilenhoehe": 34,
+   "einsatz": "Großtitel des Begleiters, balance; beim Scrollen fällt er in der Navigationsleiste auf 17/22 zusammen. Alle Begleitergrößen in rem, Wurzel font: -apple-system-body und danach font-family Plex, damit sie Dynamic Type folgen. Zusätzlich wird ein Schirm in einer AX-Größe geprüft."
+  },
+  {
+   "stil": "Hand/Status",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 28,
+   "zeilenhoehe": 34,
+   "einsatz": "Statuskarte des Begleiters: „Nicht gemeldet“, „Sie sind Nr. 2“, „Sie haben das Wort“; Anmeldung „Platz 3 erkannt“."
+  },
+  {
+   "stil": "Hand/Text",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Regular (Listentitel SemiBold 17/22)",
+   "groesse": 17,
+   "zeilenhoehe": 24,
+   "einsatz": "Grundtext auf dem iPhone, Listentitel von Unterlage und Redeliste."
+  },
+  {
+   "stil": "Hand/Meta",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Regular (Reiter Medium 13/16)",
+   "groesse": 13,
+   "zeilenhoehe": 18,
+   "einsatz": "„PDF · 38 Seiten · 1,1 MB“ mit geschütztem Leerzeichen vor der Einheit, Beschriftung der Segmente. Untergrenze auf dem iPhone."
+  },
+  {
+   "stil": "Untertitel",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Regular (neueste Zeile Medium)",
+   "groesse": 20,
+   "zeilenhoehe": 28,
+   "einsatz": "Untertitel im Begleiter und unter dem Programmbild der Zuschaltung. Wahl über „Aa“: 17, 20, 24, 28. Sprecherzeile 13/18 SemiBold: „Lars Krüger · Platz 5 · Abschlussprüfer“."
+  },
+  {
+   "stil": "Pult/Lage",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 24,
+   "zeilenhoehe": 32,
+   "einsatz": "Leitstand: Überschrift als Lagebeschreibung, z. B. „1 Fehler vor Beginn: Für Platz 9 ist keine Kameraposition gespeichert“. Der Seitentitel steht nur als Brotkrume 13."
+  },
+  {
+   "stil": "Pult/Kopf",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 17,
+   "zeilenhoehe": 24,
+   "einsatz": "Kartenköpfe im Leitstand, Titel der Prüfzeilen. Dialogtitel in 20/28."
+  },
+  {
+   "stil": "Pult/Text",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Regular (Knöpfe Medium)",
+   "groesse": 14,
+   "zeilenhoehe": 20,
+   "einsatz": "Tabellen, Listen und Zeilen 36/44 im Leitstand, Knopfbeschriftung 14 Medium."
+  },
+  {
+   "stil": "Pult/Lesetext",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Regular",
+   "groesse": 16,
+   "zeilenhoehe": 24,
+   "einsatz": "Seitenleiste, Steuerleiste und Geräteprüfung der Zuschaltung; Fließtext im Leitstand (Bögen, Erklärungen), höchstens 75 Zeichen je Zeile."
+  },
+  {
+   "stil": "Pult/Kennzeile",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 12,
+   "zeilenhoehe": 16,
+   "einsatz": "Versal, Laufweite +6 %: Spaltenköpfe, Navigationsgruppen VORHER / WÄHREND / NACHHER, Zustands-Pille LAUFEND, invertierte Plaketten KEIN SIGNAL / FEHLER / ÜBERSTEUERT. 12 kommt nur im Leitstand vor."
+  },
+  {
+   "stil": "Pult/Zahl",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold, tnum",
+   "groesse": 40,
+   "zeilenhoehe": 44,
+   "einsatz": "„7 von 10 Stimmzetteln“ im Abstimmungsfeld, Fehlerzahl im Vorabcheck in 32/38. Zähler laufen in 150 ms hoch, bei geheimer Wahl nie. Die alten Mono-Zählstile entfallen."
+  },
+  {
+   "stil": "Pult/Uhr",
+   "familie": "IBM Plex Mono",
+   "schnitt": "Medium",
+   "groesse": 20,
+   "zeilenhoehe": 24,
+   "einsatz": "Sitzungsuhr hh:mm:ss seit Beginn, Countdown „Beginn in 14:48“, Uhrzeit der Kopfleisten von Leitstand und Zuschaltung. Redezeit in der Redeliste des Leitstands in 24/28."
+  },
+  {
+   "stil": "Pult/Beleg",
+   "familie": "IBM Plex Mono",
+   "schnitt": "Regular",
+   "groesse": 13,
+   "zeilenhoehe": 20,
+   "einsatz": "Nur für Hashes, Fingerabdrücke in Viererblöcken, Kettennummern, Zeitcodes und „Technische Details“. Nie für Sätze, Namen, Dateinamen oder Platznummern."
+  },
+  {
+   "stil": "Pult/TOP",
+   "familie": "Source Serif 4",
+   "schnitt": "SemiBold",
+   "groesse": 22,
+   "zeilenhoehe": 28,
+   "einsatz": "TOP im Kopf und über den Reitern der Zuschaltung sowie im Abstimmungsfeld des Leitstands. In der Kopfleiste des Leitstands 17/22. Die Vorlage unter dem Programmbild steht in Regular 18/26."
+  },
+  {
+   "stil": "Bild/Bauchbinde",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 16,
+   "zeilenhoehe": 20,
+   "einsatz": "Name in Weiß auf dem 72-%-Sockel (9,3 : 1 über reinweißem Bild). Darunter 13/16 Regular in Weiß 85 % (7,2 : 1): „Platz 5 · Abschlussprüfer“. In der Kameravorschau der Sprechstelle einzeilig 13/16 Medium: „K1 · Platz 5“."
+  },
+  {
+   "stil": "Papier/TOP",
+   "familie": "Source Serif 4",
+   "schnitt": "SemiBold",
+   "groesse": 20,
+   "zeilenhoehe": 28,
+   "einsatz": "TOP im Protokollentwurf auf dem Bildschirm; im Druck 12/17 pt, die Nummer als Serif-Ziffer in der Marginalspalte 22 mm."
+  },
+  {
+   "stil": "Papier/Beschluss",
+   "familie": "Source Serif 4",
+   "schnitt": "Regular (Ergebnis SemiBold tnum)",
+   "groesse": 17,
+   "zeilenhoehe": 26,
+   "einsatz": "Beschluss und festgestelltes Ergebnis im Protokoll, mit Randstrich; im Druck 11/16 pt."
+  },
+  {
+   "stil": "Papier/Text",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Regular",
+   "groesse": 14,
+   "zeilenhoehe": 22,
+   "einsatz": "Protokollzeilen im Format des Codes („Lars Krüger spricht.“), im Druck 9,5/14 pt. Zeitmarke mm:ss seit Beginn in Plex Mono 12 bzw. 8 pt in der Marginalspalte."
+  },
+  {
+   "stil": "Web/Held",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 56,
+   "zeilenhoehe": 60,
+   "einsatz": "Webseite H1, Laufweite −2 %, balance. Auf dem Telefon 36/40."
+  },
+  {
+   "stil": "Web/H2",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 32,
+   "zeilenhoehe": 38,
+   "einsatz": "Abschnittstitel der Webseite."
+  },
+  {
+   "stil": "Web/Lauftext",
+   "familie": "IBM Plex Sans",
+   "schnitt": "Regular",
+   "groesse": 18,
+   "zeilenhoehe": 28,
+   "einsatz": "Fließtext der Webseite. Serife nur für zitierte Beschlüsse."
+  },
+  {
+   "stil": "Web/Kennzeile",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 12,
+   "zeilenhoehe": 16,
+   "einsatz": "Versal, Laufweite +12 %: Kennzeilen über Abschnitten und Plakette „Symbolbild“."
+  },
+  {
+   "stil": "Marke/Wortmarke",
+   "familie": "IBM Plex Sans",
+   "schnitt": "SemiBold",
+   "groesse": 20,
+   "zeilenhoehe": 24,
+   "einsatz": "„ConferenceCue“ als ein Wort, Laufweite −1 %, als Figma-Komponente mit Signet. 20 in Leitstand-Navigation und Webseitenkopf, 48 auf Startschirm und Titelblatt, 7 pt als Mitmarke im Druck. Nie in Serife, nie in Versalien."
+  }
+ ],
+ "raster": "Grundeinheit 4. Die Abstands-Tokens behalten Namen und Werte: abstand/2xs 2 · xs 4 · sm 8 · md 12 · lg 16 · xl 24 · 2xl 32 · 3xl 48 · 4xl 64. Neu ist abstand/5xl 96. Gebundene Auto-Layouts in der bestehenden Datei brechen deshalb nicht um.\n\nRADIUS. radius/keiner 0 für Programmbild, Signalkante und Bänder · radius/sm 6 für Plaketten, Stufe, Seitenminiaturen und Leitstand-Knöpfe · radius/md 12 für Knöpfe, Platz-Chips, Kacheln, Video, Segmentsteuerung und Leitstand-Karten · radius/lg 20 für Heldkarte, Blätter der Sprechstelle, Wahlknopf und Statuskarte · radius/xl 28 (neu) für Bögen und Dialoge auf iPad und iPhone · radius/rund 999 für Pillen. Regel: Innenradius = Außenradius − Innenabstand, mindestens sm. Weitere Radien gibt es nicht.\n\nKONTUREN UND RÄNDER. 1 px nur dekorativ (linie/normal), 1,5 px an Bedienelementen (linie/stark). Zustandsränder von 3 bis 4 px liegen immer innen (inset box-shadow, in Figma Strich innen) und sind in jedem Zustand reserviert, bei Bedarf transparent. Die Signalkante (6 px) ist oben im Statusband dauerhaft reserviert. Bänder haben Slots mit fester Breite, alle wechselnden Zahlen stehen in tnum. Kein Zustandswechsel verschiebt ein Pixel. tnum wird in den Textstilen von Hand gesetzt (Figma: Schriftdetails → Ziffern → tabellarisch). Über die Plugin-API ist das nach heutigem Kenntnisstand nur lesbar, vor dem Bau prüfen.\n\nTREFFERFLÄCHEN. Sprechstelle ≥ 56, bei allem, was die Leitung antippt, 64 (ein flach liegendes Gerät erscheint um den Faktor 0,5 bis 0,7 verkürzt). iPhone ≥ 44, Leitstand ≥ 32 mit der Maus und 44, sobald Touch erkannt wird.\nSATZ. Zeilenlänge Sprechstelle ≤ 62 Zeichen, Leitstand ≤ 75. Überschriften mit text-wrap: balance, Absätze mit pretty. Zahl und Einheit mit geschütztem Leerzeichen.\nMARGINALSPALTE. Nummern hängen links außen wie in einer Akte: TOP-Nummer 56 im TOP-Kopf der Sprechstelle, 40 in der Tagesordnung, Rang 32 in der Redeliste, Randstrich des Beschlusses 3 px, Zeitmarke 22 mm im Druck. In Figma als Layout-Grid-Stil „Raster/Marginal“.\n\nSCHRIFTSTUFE. Die Saalkonfiguration kennt schriftstufe standard | gross. Groß bedeutet ×1,2 für Sprechstelle und Abstimmung, die Größe gerundet auf ganze pt, die Zeilenhöhe auf gerade pt. Das Raster bleibt, Listen scrollen, und die Heldkarte fängt den Zuwachs im Abstand über dem Heldknopf auf (44 → 24). Beide Stufen werden als eigene Frames geprüft.\n\n16:9 EXAKT. 256×144 (Sprechstelle), 320×180 (Leitstand), 384×216 (Preset lernen, ersetzt 378×213), 448×252 (Eigenbild), 912×513 (Programmbild), 128×72 (Standbild im Vorabcheck), 1800×1012 bzw. 1920×1080 (Platzhalter). Kacheln folgen der Regel Höhe in % = Breite in %.\n\nRASTER JE GERÄT\n– iPad (Sprechstelle, Abstimmung): Referenz 1180×820 (iPad Air 11″, iPad A16), Gegenprobe 1210×834 (iPad Pro 11″). Die Spalten wachsen, Rand und Gasse bleiben. Betrieb als Home-Bildschirm-Web-App (display: standalone) unter Geführtem Zugriff. Sicherheitsbereich oben 24 und unten 20 über env(safe-area-inset-*). Rand 24, 12 Spalten zu 76, Gasse 20 (12×76 + 11×20 + 48 = 1180), aufgeteilt 8 + 4 = 748 | 364.\n  Signalkante y 24–30, Statusband y 24–80 (die Signalkante ist seine obere Zone), Inhalt y 104–776.\n  Mitglied: links TOP-Kopf 748×132 (y 104–236), Heldkarte 748×516 (y 260–776); rechts Segmentsteuerung 48 (y 104–152), Blatt 364×380 (y 168–548), Saal-Karte 364×212 (y 564–776).\n  Leitung: links TOP-Kopf kompakt 748×88 (y 104–192), Synoptik 748×456 (y 212–668), Leitungsleiste 748×88 (y 688–776), davon Handlung 640 + 20 + Mikrofonschalter 88; rechts die Redeliste dauerhaft als Blatt 364×672.\n  Abstimmung: Satzbreite 904, Rand 138. Band y 24–88, Beschlusszone y 112–392, Wahlknöpfe 3 × 280×240 mit Gasse 32 (y 448–688), Fußzone fest y 704–800. Die Bestätigungsleiste (112 + 20 Sicherheitsbereich) legt sich über die Fußzone. Für die Leitung gilt: Beschluss 28/36 (y 104–236), Wahlknöpfe 904×200 (y 252–452), danach die kompakte Stimmkarte 904×120, Leitungsfeld fest 904×232 (y 472–704), Fußzone 704–800.\n  Drehung per Geführtem Zugriff gesperrt, Notlayout hoch einspaltig.\n– iPhone quer (Namensschild): 874×402 (iPhone 17), seitlich 62, unten 21, Inhalt 750×381 bei x 62–812, alles zentriert. iPad mini quer 1133×744 mit Rand 40.\n– iPhone hoch (Begleiter): 402×874, oben 62, unten 34, seitlich 20, Satzbreite 362 (4 Spalten zu 80, Gasse 14). Läuft in Safari: Der Primärknopf sitzt 16 über der schwebenden Safari-Leiste. Der Abstand wird im Gerät gemessen, nicht geschätzt.\n– Browser (Zuschaltung): Entwurf für 1440×800, Mindestmaß 1280×720. Rand 32, 12 Spalten zu 100, Gasse 16 (1376). Programmbild 8 Spalten = 912×513, Seitenleiste 4 Spalten = 448, Kopfleiste 56, Steuerleiste 64, Untertitel 2 × 28.\n– Leitstand: installierte Web-App 1440×800, Mindestmaß 1280×720. Navigation 232 (einklappbar auf 64), Kopfleiste 56, Rand 24, 12 Spalten zu 82, Gasse 16 (1160; darunter flexibel). Abstimmungsfeld und Sperrband 1160 breit. Tabellenzeilen 36, Listenzeilen mit Aktion 44, Dokumentblatt 680.\n– Papier: A4, Satzspiegel 150 mm, Marginalspalte 22 mm links, Ränder oben 20, außen 20, unten 25, innen 20 mm. PIN-Zettel A7 (74×105 mm) mit 3 mm Beschnitt und Schnittmarken.\nLayout-Grid-Stile in Figma: Raster/iPad 12, Raster/iPhone quer, Raster/iPhone hoch, Raster/Zuschaltung 12, Raster/Leitstand 12, Raster/A4, Raster/Marginal.",
+ "flaechen": "Drei Ebenen und darüber der Bogen. Im Hellen trägt der Papierschatten die Tiefe, im Dunkeln die Helligkeit mit einer Lichtkante, nie eine Rahmenlinie.\n\ne0 Tisch = flaeche/grund, ohne Schatten. Statusband, TOP-Kopf und Kontextpanel stehen direkt darauf.\ne1 Blatt = flaeche/blatt + Effektstil Ebene/1.\ne2 Erhoben = flaeche/erhoben + Ebene/2, genau die eine aktive Sache je Schirm.\ne3 Bogen = flaeche/erhoben + Ebene/3 auf dem Schleier flaeche/abdunkeln.\nGedrückt = e0 plus vertieft, der Primärknopf nimmt marke/haus-druck. Unter e0 gibt es nichts.\n\nSCHATTEN IN FIGMA. Es gibt vier Effektstile: Ebene/1, Ebene/2, Ebene/3 und Ebene/Papier. Jeder Stil hat in beiden Modi dieselbe Struktur aus drei Effekten: Kante (Innenschatten), Nah (Schlagschatten) und Fern (Schlagschatten). Farbe, y-Versatz und Spreizung sind an Variablen der Sammlung Farbe gebunden (figma.variables.setBoundVariableForEffect; die Feldnamen vor dem Bau gegen die aktuelle Plugin-API prüfen). Ein Moduswechsel schaltet damit auch die Schatten um, und es gibt keine doppelten Stile.\nWerte (x y Unschärfe Spreizung Farbe):\nEbene/1\n– Kante: hell 0 0 0 1 rgba(23,24,26,.06), dunkel 0 1 0 0 rgba(255,255,255,.05)\n– Nah: hell 0 1 2 0 rgba(23,24,26,.06), dunkel 0 1 2 0 rgba(0,0,0,.40)\n– Fern: hell 0 4 12 0 rgba(23,24,26,.05), dunkel 0 4 12 0 rgba(0,0,0,0)\nEbene/2\n– Kante: hell 0 0 0 1 rgba(23,24,26,.05), dunkel 0 1 0 0 rgba(255,255,255,.06)\n– Nah: hell 0 2 4 0 rgba(23,24,26,.06), dunkel 0 2 4 0 rgba(0,0,0,.40)\n– Fern: hell 0 12 32 −8 rgba(23,24,26,.18), dunkel 0 12 32 −8 rgba(0,0,0,.55)\nEbene/3\n– Kante: hell 0 0 0 1 rgba(23,24,26,.04), dunkel 0 0 0 1 rgba(255,255,255,.06)\n– Nah: hell 0 4 12 0 rgba(23,24,26,.10), dunkel 0 4 12 0 rgba(0,0,0,.40)\n– Fern: hell 0 24 64 −12 rgba(23,24,26,.28), dunkel 0 24 64 −12 rgba(0,0,0,.70)\nEbene/Papier (nur auf dem Pult): 0 1 1 0 rgba(0,0,0,.30) und 0 16 40 −8 rgba(0,0,0,.60).\nVariablen dafür: ebene/kante-y (hell 0, dunkel 1), ebene/kante-spreizung (hell 1, dunkel 0) sowie die Farben ebene/1-kante bis ebene/3-fern. Rahmen mit Schatten brauchen clipsContent = true.\n\nPAPIER AUF DEM PULT. Der äußere Rahmen trägt flaeche/papier und Ebene/Papier, der innere Inhaltsrahmen steht im expliziten Modus Hell. Dokumente behalten so ihre hellen Tintenwerte.\nNAMENSSCHILD. Rahmen im expliziten Modus Dunkel mit Fläche schild/grund. Einen dritten Farbmodus gibt es nicht.\n\nFARBFLÄCHEN. Volle Buntflächen gibt es nur als Signalflächen: On-Air-Kopf, Platz-Chip „spricht“, Knoten des Sprechers, Mikrofonschalter „offen“, Plakette „spricht“ am Kamerabild, Namensschild „spricht“ und Band „hat das Wort“ am Namensschild. Tönungen (signal/*-toenung) färben nur die eine Karte, Zeile oder den einen Chip, der den Zustand trägt, immer mit einem Innenrand in der Signalfarbe. Tintenflächen sind das neutrale Zustandszeichen des Systems: Primärknopf, gewählter Wahlknopf, Zustandsband, Aufzeichnungs-Pille, Rangmarke, Reiter „SIE“, Stufe vertraulich/geheim, Plakette FEHLER. Alles andere ist Tinte auf Papier.\n\nMUSTER „SCHRAFFUR 45°“. Figma-Komponente mit 1-px-Linien, die an zustand/schraffur gebunden sind (Periode 6 px, clipsContent). In CSS ein repeating-linear-gradient mit harten Stopps: ein Muster, kein Verlauf. Einsatz nur im Leitstand (Störung, Fehlerstreifen, Übersteuerung) und als Enthaltungsanteil im Ergebnisbalken. Text steht nie darauf, sondern auf einer invertierten Plakette oder einem Blatt-Schild.\n\nSTAND-KENNZEICHNUNG BEI VERBINDUNGSVERLUST. Kein Schleier, keine Deckkraftminderung, denn beides drückt Text unter 4,5 : 1. Stattdessen:\n– die Plakette „STAND 14:32:07 · NICHT AKTUELL“ (Kennzeile, text/stark auf vertieft, 13,5 : 1)\n– Signalflächen werden zu 2-px-Konturen in text/leise mit ihrer Ikone\n– Laufwerte zeigen „—“\n– Leitungsaktionen verschwinden.\n\nKEIN DEKOR. Keine Verläufe (einzige Ausnahme ist die Bauchbinde auf Video), keine Texturen, kein Glaseffekt, kein Blur in Oberflächen, kein Glühen, keine farbigen Schatten.\n\nBEWEGUNG (neue Sammlung Bewegung, Zahlen in ms, Kurve als Zeichenkette)\n– bewegung/druck 90: Skalierung 0,97–0,98.\n– bewegung/zustand 200: Der Heldinhalt blendet über und steigt dabei 8 px, die Karte bleibt stehen.\n– bewegung/band 240: Verbindungsbanner, Abstimmungsband und Sperrband von oben.\n– bewegung/blatt 320: Bogen, Bestätigungsleiste und Seitenblatt.\n– bewegung/zeichnen 400: Häkchen.\n– bewegung/zaehler 150: nie bei geheimer Wahl.\n– bewegung/puls 1200: Wortring, 3 Durchläufe.\n– bewegung/schild 150: nur Überblendung, keine Ortsbewegung, damit das Kamerabild ruhig bleibt.\n– bewegung/reduziert 120.\n– bewegung/kurve cubic-bezier(.2,.8,.2,1).\nLaden: loader 900 linear, unbestimmte Linie 1200. Bei prefers-reduced-motion wird alles zur Überblendung in 120 ms, der Puls entfällt, der Hinweiston bleibt.\n\nSCHRIFTSTUFE (neue Sammlung, Modi Standard und Groß). Größen und Zeilenhöhen der Saal-Stile liegen als Zahlenvariablen vor und sind in den Textstilen gebunden. Der Rahmen eines Groß-Frames setzt den Modus Groß.",
+ "ikonen": "Grundlage ist Lucide (ISC-Lizenz), ausgeliefert als SVG-Sprite im Server-Paket: kein Icon-Font, kein CDN. Die Namen werden beim Bündeln gegen die tatsächlich ausgelieferte Lucide-Version geprüft. SF Symbols scheiden aus, weil ihre Lizenz sie im Web nicht erlaubt. Carbon wäre ein zweiter Stil und scheidet ebenfalls aus. Dazu kommen sieben eigene Zeichen im selben Raster.\n\nSTIL. Raster 24 px, Schutzzone 2 px, runde Enden und Ecken, Umrisszeichen, Farbe currentColor.\nSTRICH, optisch konstant (stroke-width = Zielwert × 24 / Größe): 16 px → 1,5 · 20 und 24 px → 1,75 · 28 und 32 px → 2 · 48 px → 3 · 64 px → 3,5.\nGefüllt ist genau ein Zeichen: mic-offen für „Mikrofon offen“. Sonst trägt die Fläche den Zustand, nicht die Füllung.\n\nGRÖSSEN\n– Sprechstelle: 16 in Chips, 20 in Zeilen und Segmenten, 28 im Heldknopf, 40 im On-Air-Kopf, 48 für Wahl und Bestätigung.\n– Namensschild: 48–64.\n– iPhone: 24 in den Segmenten, 20 in Zeilen.\n– Leitstand: 20 in der Navigation, 16 im Text.\n– Leerzustand: 32.\n\nFARBE. Eine Signalfarbe bekommt ein Zeichen nur, wenn es selbst das Signal ist: mic-offen rot (bzw. weiß auf Rot), mic-Umriss blau bei „hat das Wort“, armchair grün bei „frei“, video-off bernstein bei Widerspruch. Alle anderen Zeichen stehen in text/stark oder text/leise. Jede Ikone steht mit einem Wort. Ausnahmen sind Platz-Chips (dort gibt es eine Legende darunter und im Leitstand einen Tooltip), die Verbindungs-Ikone im Statusband und das Störungszeichen am Namensschild.\n\nEINDEUTIGKEIT. Gemeldet (hand), hat das Wort (mic-Umriss) und spricht (mic-offen) sind drei verschiedene Zeichen. Widerspruch (video-off, bernstein) und Kamerastörung (camera-off, graphit) sind getrennt. Das Signet ist nie eine Bedienikone.\n\nSATZ (Lucide-Name → Bedeutung)\n– Mikrofon und Wort: mic → Mikrofon an (Handlung) sowie Umriss bei „hat das Wort“ · mic-off → Mikrofon aus · hand → Wort melden / gemeldet · undo-2 → Meldung zurückziehen\n– Listen und Unterlagen: list-ordered → Redeliste · list-checks → Tagesordnung · files → Mappe · file-text → Unterlage / Vorlage · ellipsis → weitere Handlungen\n– Abstimmung: lock → nicht öffentlich, geheim, vertraulich, gesperrt · check → Ja / erledigt · circle-check → eingegangen / in Ordnung · x → Nein · minus → Enthaltung · vote → Abstimmung\n– Aufzeichnung: circle-dot → Aufzeichnung läuft · circle-pause → keine Aufzeichnung / unterbrochen\n– Verbindung und Warten: wifi-off → keine Verbindung · wifi → Verbindung (nur im Leitstand als Zustand) · refresh-cw → wird nachgereicht · loader-circle → wartet · clock → Meldezeit · calendar-clock → vertagt\n– Kamera und Platz: video-off → Widerspruch gegen die Aufzeichnung · camera-off → Kamera ohne Signal · cctv → Kamera (Leitstand) · user-x → nicht angemeldet / abwesend · armchair → Platz frei\n– Bedienung: captions → Untertitel · delete → Rücktaste · chevron-right → öffnet · triangle-alert → Hinweis / destruktive Bestätigung · octagon-x → Fehler / verfallen · info → Hintergrund im Popover\n– Leitstand-Navigation: layout-grid → Saal · users → Sitzung · key-round → PIN-Ausgabe · clipboard-check → Vorabcheck · activity → Betrieb · volume-2 → Ton · stamp → Siegel · share → Ausgabe (erst, wenn gebaut)\n– Werkzeuge: printer → drucken · copy → Fingerabdruck kopieren · grip-vertical → umordnen · log-out → Verlassen / Vom Platz trennen · headphones → Kopfhörerhinweis\n\nEIGENE ZEICHEN (gleiches Raster, gleicher Strich)\n– mic-offen: gefüllte Kapsel mit zwei Schallbögen\n– staffelstab: schräger Stab mit Ring, für aktive Sitzungsleitung und Übergabe\n– saal: Oval mit sechs kurzen Sitzmarken als Striche, für den Einstieg in den Saalplan. Ersetzt das bisherige Zeichen „platz“, das dem Signet zu ähnlich war.\n– totale: Kamera mit 90°-Kegel, für „Bild: Totale“\n– randstrich: Beschluss und Protokoll\n– vollmacht: Blatt mit Unterschriftszug, für „vertritt“\n– nfc-tag: Tag-Plakette mit Wellen, für die Begleiter-Anmeldung\n\nPFLICHT. Vor jeder weiteren Schirmarbeit entsteht die Figma-Seite „02 Ikonen“: alle Zeichen in 16, 20, 24 und 48, hell und dunkel, mit einem Satz Bedeutung je Zeichen.",
+ "bilder": "Kamerabilder sind die Bilder des Produkts: echte PTZ-Ausgaben, immer 16:9, nie gestreckt oder beschnitten, fehlende Fläche in flaeche/bild (#000).\n\nPLATZHALTER. Bis zur ersten Installation dienen als Platzhalter nur Bilder aus webseite/bilder, zugeschnitten auf 1800×1012:\n– platz.jpg als Nahbild eines Platzes\n– saal.jpg als Totale\n– halle.jpg als Bild der zweiten Kamera\nJeder Frame, der einen Platzhalter zeigt, trägt „Platzhalter“ im Namen. Personen mit Widerspruch erscheinen nie im Bild, auch nicht im Platzhalter.\n\nBAUCHBINDE (neu gerechnet). Die alte Rampe von 0 auf 64 % Schwarz über 72 px ergab über hellem Bild für den Namen nur 1,6 bis 2,2 : 1 und für die zweite Zeile 3,2 bis 5,0 : 1. Neu:\n– eine Rampe von 0 auf 72 % über 24 px\n– darunter ein Sockel, der konstant 72 % hält und so hoch ist wie der Textblock plus 8 oben und unten\n– Text steht nur auf dem Sockel: Name weiß 16/20 SemiBold (9,3 : 1 über reinweißem Bild), zweite Zeile 13/16 in Weiß 85 % (7,2 : 1), Innenabstand seitlich 16.\nText liegt nie direkt auf dem Bild.\n\nKENNZEICHEN AM BILD. Plaketten 24 hoch oben links:\n– „PGM“ als Papierplakette in Tinte, nie rot\n– „Totale · geheime Abstimmung“\n– „Im Bild · K1“\nSpricht die gezeigte Person, erscheint die Plakette signal/mikro-voll mit mic-offen 14 und „spricht“ in Weiß. Ein roter Rahmen um ein Kamerabild kommt nie vor, weil er als Kamera-Tally gelesen würde.\n\nSAALFOTOS. Tageslicht, warmes Nussbaumholz, aufgenommen auf Augen- oder Tischhöhe. Menschen sind unscharf, angeschnitten oder von hinten zu sehen, im Vordergrund steht nur die Technik, um die es geht. Farbe leicht entsättigt (−10 %), keine Duotöne, kein Teal-Orange, keine Farbfilter in Signalfarben.\nEinsatz: Webseite, Präsentationsmontagen und Pausenbild der öffentlichen Übertragung. Das Pausenbild ist saal.jpg mit Gaußscher Unschärfe 40 px und 72 % flaeche/grund dunkel (#0E0F11) darüber, darauf lock 40, der TOP in Serif 28/34 und „Nicht öffentlicher Teil · Übertragung pausiert seit 14:05“. Die Sprechstelle zeigt kein Foto; der Saalplan aus der Konfiguration ist das wahre Bild des Raums. Im Leitstand-Schirm Saal steht saal.jpg in 240×135 zur Orientierung.\n\nKI-BILDER. Die Schirminhalte in stimme.jpg (grüne Ja-Fläche) und platz.jpg (bernsteinfarbener Ring) widersprechen dem Farbsystem. Sie werden durch Montagen echter Schirme ersetzt:\n– in stimme.jpg der neutrale Stimmzettel mit gewähltem „Ja“ als Tintenfläche\n– in platz.jpg die Sprechstelle „spricht“ mit rotem On-Air-Kopf, passend zum roten Ring am Mikrofonfuß.\nDie Alt-Texte werden angepasst. Die Plakette „Symbolbild“ bleibt, bis Fotos der ersten Installation vorliegen, dann ersetzen diese alle Symbolbilder.\n\nSCHAUBILDER UND ANLEITUNGEN. Linien 1,5 px in currentColor, Flächen in text/stark 8 %. Genau eine Aussage je Bild, hervorgehoben über einen 3-px-Strich. Eine Signalfarbe nur, wenn genau dieses Signal gemeint ist. Figuren ohne Gesicht, kein 3D, keine Isometrie. So gezeichnet und nicht fotografiert werden: Tischdraufsichten (NFC-Stelle am Platz, „iPad an Platz 3“, Mini-Saalplan), das Mix-Minus-Routing, die Kette mit Siegel und der PIN-Zettel-Ablauf.\nSeitenminiaturen von Unterlagen zeigen die echte erste Seite. Eine Wasserzeichen-Zeile erscheint darauf erst, wenn das Wasserzeichen tatsächlich auf die Seiten gedruckt wird.",
+ "geraete": "Jeder Schirm wird dreifach gezeigt: als flacher Rahmen (Arbeitsstand), im Gerät und im Raum.\n\nGERÄTRAHMEN. Eigene, neutrale Figma-Komponenten ohne Herstellerlogo; Apple-Bezel-Dateien kommen nicht vor. Aufbau: Aluminiumkante 2 pt #9AA09C, schwarzer Glasrand, Display-Radius je Gerät. Die Statusleiste ist nachgezeichnet mit der Drehbuchzeit (14:32 bzw. 15:41), WLAN und Akku „80 %“ mit Ladebegrenzungszeichen – die Ladegrenze ist sichtbar Teil des Produkts. Komponenten:\n– Gerät/iPad Air 11 quer: 1180×820, Rand 20 pt, Außenradius 38, Displayradius 18, Statusleiste 24, Home-Indikator. Gegenprobe Gerät/iPad Pro 11 quer 1210×834.\n– Gerät/iPad mini quer: 1133×744.\n– Gerät/iPhone 17 hoch Safari: 402×874, Dynamic Island 126×37 bei y 11, Statusleiste 62, Home-Indikator 134×5 mit r 2,5 in 8 pt Abstand zur Unterkante, schwebende Safari-Leiste unten.\n– Gerät/iPhone 17 quer im Namensschild-Halter: 874×402, Acrylblock 30° geneigt, Frontansicht.\n– Gerät/MacBook Browser: neutrales Browserfenster (Leiste 52) für die Zuschaltung.\n– Gerät/Leitstand-Fenster: installiertes App-Fenster mit Titelleiste 28, ohne Adressfeld.\n\nFRAME-NAMEN. Gerät · Modus · Stand · Zustand, zum Beispiel „iPad Air 11 · hell · Stand A · spricht“. Schirme, die noch nicht gebaut sind (Begleiter, Zuschaltung, Untertitel, Ton-Live-Werte, Eskalationsleiter), tragen die Plakette „Zielbild“ – nur in Figma, nie im Produkt.\n\nTITELSZENE. Draufsicht auf den ovalen Tisch mit allen Geräten im Drehbuchstand A: zwölf Sprechstellen, genau eine davon mit rotem On-Air-Kopf, eine mit blauer Signalkante, die Namensschilder, die zwei PTZ-Kameras mit Blickkegel und der Leitstand am Regieplatz.\n\nMONTAGEN, perspektivisch eingesetzt und mit der Plakette „Montage“:\n– Sprechstelle „spricht“ im Ständer auf platz.jpg\n– Sprechstelle flach auf dem Tisch, 30° schräg von oben, um die Lesbarkeit im Liegen zu zeigen\n– Stimmzettel mit Finger auf stimme.jpg\n– Namensschilder in saal.jpg aus 3, 4 und 5 m im Sehwinkel 1:1 (Brennweite 50 mm KB, Nachname mit 17,3 mm Versalhöhe). Nur so lässt sich die Schriftgröße ehrlich beurteilen.\n– Leitstand auf dem Pult neben dem Programmmonitor\n– iPhone in der Hand, einmal mit Safari-Leiste und einmal mit der iOS-Mitteilung nach dem NFC-Tag.\n\nABNAHMEPRÜFUNGEN IM PROBEAUFBAU\n(a) Rotstich: Im K1-Nahbild von Platz 5 mit Sprechstelle „spricht“ darf die Gesichtsfarbe gegenüber „nicht gemeldet“ höchstens um ΔE00 3 abweichen, sonst wird der On-Air-Kopf verkleinert.\n(b) Farbsehschwäche: Protan-, Deutan- und Tritan-Simulation für jeden Schirm mit signal/frei oder signal/achtung.\n(c) Schriftstufe Groß auf Sprechstelle und Abstimmung.\n\nGERÄTEREGELN\n– iPad: Home-Bildschirm-Web-App unter Geführtem Zugriff mit Bewegung aus und Tastatur aus, Ladegrenze 80 %, Displayhelligkeit fest. Einen zuverlässigen Kiosk (Autonomous Single App Mode) gibt es erst mit der nativen App, das steht im Frame vermerkt. Blickschutzfilter an allen Stimmplätzen, weil der gewählte Wahlknopf als Tintenfläche fest an seinem Ort steht und aus 1–2 m ablesbar wäre. Empfohlen ist ein Ständer mit 25–30°; entworfen wird für den ungünstigen Fall, dass das Gerät flach liegt.\n– Namensschild: iPhone 17 quer bis 4 m Leseabstand. Säle mit größerem Abstand bekommen ein iPad mini quer mit denselben Stilen ×1,5. Der Abstand steht in der Saalkonfiguration (neues Feld namensschild_abstand_m) und wird nicht je Einzelfall gestaltet. Helligkeit fest 50 %, Auto-Helligkeit aus, Ladegrenze 80 %, Pixelverschiebung ±2 px alle 10 min.\n– Begleiter: privates iPhone, bewusst in Safari und nicht als Home-Bildschirm-App, weil die Anmeldung über die Tag-URL in Safari beginnt und eine Home-Bildschirm-App getrennten Speicher hätte.\n– Zuschaltung: MacBook Air 13″ in Safari bzw. Chrome. Leitstand: MacBook Air 15″ oder 24″-Monitor als installierte Web-App.",
+ "komponenten": [
+  {
+   "name": "Signalkante",
+   "gestaltung": "NEU, ersetzt den Mikrofonbalken. 6 px über die volle Breite direkt unter der Systemleiste (y 24–30), als obere Zone des Statusbands dauerhaft reserviert; im Ruhezustand transparent, damit nichts springt.\nFarben:\n– Rot (signal/mikro), solange das EIGENE Mikrofon offen ist.\n– Blau (signal/wort), solange dem eigenen Platz das Wort erteilt und das Mikrofon noch zu ist.\n– Rot hat Vorrang. Sonst bleibt die Kante leer, auch bei Abstimmung, Störung und Pause.\nÜberblendung 120 ms, kein Pulsieren. Kontrast auf hellem Grund: Rot 4,9 : 1, Blau 7,0 : 1; im Saalmodus gedimmt 6,3 bzw. 8,5 : 1.\nBei Verbindungsverlust bleibt die letzte Farbe nur als 2-px-Linie stehen, und das Banner nennt den letzten Stand. Ein offenes Mikrofon wird nie still als geschlossen gezeigt.\nDieselbe Kante sitzt am oberen Fensterrand der Zuschaltung. Nicht am Namensschild (dort trägt die ganze Fläche das Signal) und nicht im Leitstand."
+  },
+  {
+   "name": "Statusband (Sprechstelle)",
+   "gestaltung": "56 hoch (y 24–80), direkt auf grund, ohne Karte und ohne Linie. Die oberen 6 px sind die Signalkante, der Inhalt steht vertikal zentriert in y 30–80.\nLinks: Kundenwappen 32 aus den Gestaltungsdaten und „Aufsichtsrat · 3. ordentliche Sitzung“ in 15/20 Medium, mit Auslassung.\nRechts drei feste Slots 184 | 40 | 72: Aufzeichnungs-Pille, Verbindung (im Normalfall leer, bei Störung übernimmt das Banner) und Uhr in Saal/Uhr.\nBei der aktiven Leitung steht links vor dem Wappen die Pille „Sie leiten“ (Tinte, staffelstab 16).\nVarianten:\n– vor der Anmeldung: nur Uhr\n– vorbereitet: „Beginn 14:00“\n– laufend\n– nicht öffentlich\n– Abstimmung läuft: Pille „Abstimmung · Bild: Totale“ in Tinte\n– getrennt: Das Banner ersetzt den Inhalt, Live-Slots zeigen „—“.\nNie: dB, Mikrofonzahl, Preset, Kamerazustand, „verbunden“."
+  },
+  {
+   "name": "Aufzeichnungs-Pille",
+   "gestaltung": "32 hoch, radius rund, Ikone 16 und 15 Medium, fester Slot 184.\n– „Aufzeichnung“: Fläche text/stark, Schrift flaeche/erhoben (17,8 / 12,5 : 1), circle-dot.\n– „Keine Aufzeichnung · nicht öffentlich“: Umriss 1,5 linie/stark, circle-pause, lock.\n– getrennt: „Aufzeichnung —“.\nVor der Anmeldung und ohne laufende Sitzung fehlt die Pille. Nie rot, nie bernsteinfarben, nie blinkend. Dieselbe Pille dient im Leitstand für REC und Übertragung."
+  },
+  {
+   "name": "TOP-Kopf",
+   "gestaltung": "748×132, auf grund, ohne Karte.\n– Marginalspalte 56: die TOP-Nummer als Serif-Ziffer 30; bei nicht öffentlichem Punkt steht lock 20 darunter.\n– Daneben die Kennzeile „TOP 4 VON 9 · SEIT 14:12“, bei nicht öffentlichem Punkt „NICHT ÖFFENTLICH · KEINE AUFZEICHNUNG“ ohne Bernstein. Rechts staffelstab 16 und „Anke Bergmann“ in 15 text/leise.\n– Titel in Saal/TOP, höchstens 2 Zeilen.\n– Zeile „Es spricht“ in 17/24: mic-offen 20 in signal/mikro, „Lars Krüger · Platz 5 ·“ und die Redezeit 02:14 in Mono. Spricht niemand: „Niemand spricht“ in text/leise ohne Ikone.\n– Vor Beginn: „Beginn 14:00 · in 12:40“ mit Mono-Countdown.\nLeitung kompakt: 88 hoch mit Saal/TOP kompakt. Rechts Sekundär 44 „Tagesordnung“ (list-checks; öffnet das Seitenblatt 520 von rechts) und Sekundär 44 mit ellipsis „Weitere“ (Popover: Abstimmung vorbereiten, TOP abschließen, TOP vertagen – nur was darf enthält)."
+  },
+  {
+   "name": "Heldkarte „Mein Platz“",
+   "gestaltung": "748×516, flaeche/erhoben, Ebene/2, radius lg, Innenabstand 28. Der Zustandsrand von 4 px innen ist in jedem Zustand reserviert.\nFeste Zeilen in Kartenkoordinaten, damit kein Zustand ein Pixel verschiebt: Kopfzeile y 28–56 · Heldzeile 76–124 · Satz 132–188 (2 Zeilen) · Zustandsinhalt 212–356 · Heldknopf 400–488.\nKopfzeile: Kennzeile „PLATZ 3 · JONAS ÖZTÜRK“, rechts „stimmberechtigt“ bzw. „ohne Stimmrecht“ in 15 (aus der Rolle). Bei Widerspruch steht davor der Chip 28: achtung-toenung, video-off 16 und „nicht gefilmt · Widerspruch“ in 15.\nZUSTÄNDE\n– nicht gemeldet: „Nicht gemeldet“ in Tinte. Stufenleiste mit Ring „Sie wären Nr. 3“. Primär „Wort melden“ mit hand.\n– gemeldet: „Sie sind Nr. 2“ in Tinte. Stufenleiste mit eigenem Knoten. Satz „Vor Ihnen: Timo Hofer. Erteilt die Leitung Ihnen das Wort, schalten Sie hier Ihr Mikrofon ein.“ Sekundär „Meldung zurückziehen“ mit undo-2.\n– hat das Wort: Die ganze Karte in signal/wort-toenung, Zustandsrand und Heldzeile „Sie haben das Wort“ in signal/wort, Signalkante blau. Wortring im Zustandsinhalt, Satz „Ihr Mikrofon ist noch aus.“, Primär in Tinte „Mikrofon an“ mit mic, nie rot.\n– spricht: On-Air-Kopf y 0–200 in signal/mikro-flaeche. Hell Vollrot mit weißer Schrift, dunkel #3A1519 mit 2-px-Kante #FF5A6E. Darin: Kennzeile, mic-offen 40, „Sie sprechen“ und rechts die Redezeit in Mono 40. Darunter y 200–516 signal/mikro-toenung mit rotem Zustandsrand: Kameravorschau 256×144 oder ein ehrlicher Ersatzsatz, daneben die Pegelanzeige, dann der Heldknopf „Mikrofon aus“. Signalkante rot. Rot ist die größte Farbfläche des Schirms, blendet aber nicht über die ganze Karte.\n– gepuffert: Zustandsrand in zustand/stoerung, refresh-cw 28 und „Wird nachgereicht“. Satz „Ihre Meldung liegt auf diesem Gerät. Wechselt der Punkt vorher, verfällt sie – das steht dann hier.“ Sekundär „Meldung zurücknehmen“.\n– verfallen: octagon-x, „Meldung verfallen“, „Der Punkt hat gewechselt. Melden Sie sich neu.“ Primär „Wort melden“.\n– unterbrochen: Ebene/1, circle-pause 48, „Sitzung unterbrochen“, „seit 15:10“, keine Handlung.\n– geschlossen: „Sitzung geschlossen · 16:12“, „Das Gerät kann liegen bleiben.“\n– Leitung verwaist (nur wenn darf leitung_uebernehmen enthält): Primär mit staffelstab „Sitzungsleitung übernehmen“.\nWechsel mit bewegung/zustand. Ohne Verbindung: Stand-Plakette oben rechts, Signalflächen werden zu 2-px-Konturen in text/leise, die Redezeit zeigt „—“."
+  },
+  {
+   "name": "Heldknopf und Knopf",
+   "gestaltung": "Heldknopf: 88 hoch, volle Innenbreite 692, radius md, Ikone 28 links, Saal/Knopf gross.\nVarianten:\n– Primär: marke/haus mit text/auf-marke (17,8 / 14,9 : 1).\n– Sekundär: erhoben mit 1,5-px-Innenkontur in linie/stark.\n– Mikrofon aus (nur im Zustand spricht): Fläche erhoben, Schrift und mic-off in signal/mikro (5,9 / 4,9 : 1), 2-px-Innenkontur in signal/mikro. Offen und Zu unterscheiden sich damit in der Silhouette.\n– Text: nur Schrift, Trefferfläche ≥ 44.\nZustände:\n– Standard: Ebene/1.\n– Gedrückt: marke/haus-druck bzw. vertieft, Skalierung 0,98, 90 ms.\n– Fokus: zustand/fokus.\n– Wartet: loader-circle 24 statt der Ikone, „Wird gemeldet …“, feste Breite, sperrt den Doppeltipp. Nach 3 s steht darunter in 15/20 und zustand/stoerung: „Server antwortet nicht – Ihre Meldung liegt auf dem Gerät“.\n– Bestätigt: Der Haken zeichnet sich in 400 ms, bleibt 600 ms, dann folgt der nächste Zustand.\nEinen deaktivierten Zustand gibt es nicht: Was nicht in darf steht, wird nicht gerendert.\nGrößen normal: 56 auf dem iPad, 44 auf dem iPhone, 36 im Leitstand (radius sm, 14 Medium).\nDestruktiv (Abbrechen, Entziehen, Neu ausgeben, Übergeben): außerhalb eines Bogens nur als Text- oder Sekundärknopf mit triangle-alert, nie groß, nie rot. Im Bogen als Primär mit triangle-alert und dem Verb der Folge („Abbrechen und protokollieren“)."
+  },
+  {
+   "name": "Stufenleiste (Redeliste in der Heldkarte)",
+   "gestaltung": "Waagerechte Leiter im Zustandsinhalt: Knoten 24 im Abstand 72, Verbindungslinie 2 px in linie/normal.\n– Sprecher: signal/mikro-voll mit weißem mic-offen 14.\n– Wort erteilt: Ring 3 px in signal/wort mit mic-Umriss 12.\n– Wartend: Ring 1,5 in linie/stark mit Rang 15 tnum.\n– Eigener Knoten: 32, Tinte, „Sie“ 15 SemiBold in text/auf-marke.\nUnter jedem Knoten der Nachname in 15/20. Höchstens 5 Knoten, danach „+3“. Im Zustand „nicht gemeldet“ steht am Ende ein Ring in text/leise mit „Sie wären Nr. 3“."
+  },
+  {
+   "name": "Wortring",
+   "gestaltung": "Kreis 96 mit 4-px-Ring in signal/wort um mic 40 in signal/wort, im Zustandsinhalt von „hat das Wort“. Beim Eintritt pulsiert ein Nachbild dreimal (Skalierung 1 → 1,25, Deckkraft 0,6 → 0, je 1,2 s), dazu ein Hinweiston von 120 ms, der sich im Saal abschalten lässt. Danach steht der Ring ruhig. Bei prefers-reduced-motion entfällt der Puls, der Ton bleibt. Die native App ergänzt später Haptik."
+  },
+  {
+   "name": "Kameravorschau",
+   "gestaltung": "Immer 16:9 auf flaeche/bild, radius md. Maße: 256×144 (Sprechstelle), 320×180 (Leitstand), 384×216 (Preset lernen), 912×513 (Programmbild), 448×252 (Eigenbild), 128×72 (Standbild Vorabcheck).\nBauchbinde nach der Bildregel (Sockel 72 %). Plaketten oben links 24 hoch: „PGM“ als Papierplakette, „Totale · geheime Abstimmung“, „Im Bild · K1“. Mikrofon der gezeigten Person offen: Plakette signal/mikro-voll mit mic-offen und „spricht“, nie ein roter Rahmen.\nSprechstelle: Die Vorschau steht nur, wenn der Kamerazustand wirklich den eigenen Platz zeigt. Sonst steht dort ehrlich „Kamera bleibt stehen: es wird abgestimmt“ bzw. „Sie werden nicht gefilmt (Widerspruch)“. Eine Kamerastörung erscheint auf Teilnehmergeräten nie.\nLeitstand-Störung: Muster Schraffur, in der Mitte ein Blatt-Schild mit camera-off 32, der invertierten Plakette „KEIN SIGNAL“ und „seit 00:42“, dazu die 4-px-Kante in zustand/stoerung.\nPreset lernen: Drittelraster in Weiß 40 %, Linie auf Brusthöhe, Steuerkreuz 5 × 44, Zoom, Geschwindigkeit 1–3, danach Toast „Preset 9 in K2 gespeichert“. Während einer Abstimmung fehlen Steuerkreuz und Speichern."
+  },
+  {
+   "name": "Pegelanzeige",
+   "gestaltung": "12 Segmente, einfarbig: aktiv in text/stark, inaktiv in linie/normal. Kein Grün, Gelb oder Rot.\nSprechstelle: waagerecht, 12 × (8×24) mit Abstand 4, im getönten Teil der Heldkarte, nur der eigene Pegel und nur beim Sprechen. Übersteuerung: Das oberste Segment wird zum Umriss mit „!“.\nLeitstand: senkrecht 8×96 je Platz, Skalenmarken bei −18 und −6 dBFS, Zone −6 bis 0 dBFS als Schraffur, Spitzenwert 1 s als 2-px-Linie, Übersteuerung als invertierte Plakette „ÜBERSTEUERT“ für 2 s."
+  },
+  {
+   "name": "Platz-Chip und Synoptik",
+   "gestaltung": "Größen:\n– Mini 40×40 in der Mitglieder-Sprechstelle: flach, ohne Schatten und Druckzustand, nicht antippbar, Nummer 15.\n– Leitung und Anmeldung 72×72: Ebene/1, antippbar, Nummer 22.\n– Leitstand 64×56: bei Hover Ebene/1 und Tooltip, Nummer 17.\nRadius md, Nummer SemiBold tnum, Ikone 16, Zustandsrand 3 px innen reserviert.\nZUSTÄNDE (Ikone + Farbe; Namen stehen nur unter Abweichungen; eine einzeilige Legende in 15 unter jedem Plan)\n– am Platz: blatt, nur die Nummer.\n– gemeldet: hand 16. Bei Leitung und Leitstand zusätzlich die Rangmarke 24×24 (Tinte, Ziffer 15 in text/auf-marke).\n– hat das Wort: wort-toenung, Innenrand 3 px in signal/wort, mic-Umriss 16 in Blau.\n– spricht: signal/mikro-voll, Nummer und mic-offen in text/auf-signal (5,9 / 5,0 : 1).\n– nicht angemeldet (Synoptiken der laufenden Sitzung): vertieft, user-x, Nummer in text/leise.\n– frei (nur Anmelde-Saalplan und Leitstand, gleiche Daten wie „nicht angemeldet“): frei-toenung, Innenrand 1,5 in signal/frei, armchair, darunter „frei“; in der Anmeldung zusätzlich „erwartet: J. Öztürk“ in 15.\n– nicht besetzt (keine Teilnahme): vertieft, Nummer in text/leise, darunter ein Geviertstrich; Legende „nicht besetzt“.\n– abwesend (nach der Anmeldung gegangen): vertieft, user-x, „abwesend“.\nUNABHÄNGIG DAVON\n– Widerspruch (nur Leitung, Leitstand und eigener Platz): Eckmarke 20×20 unten rechts, achtung-toenung, video-off 14 in Bernstein.\n– führende Leitung: staffelstab 16 oben links; berechtigte Leitung: staffelstab als Umriss.\n– eigener Platz: Reiter „SIE“ 20 hoch über dem Chip (Tinte, Kennzeile in text/auf-marke), ohne Doppelrand und ohne Tönung.\n– angetippt: Innenrand 2 px in Tinte, dazu das Popover (Leitung) bzw. der Bogen (Anmeldung).\nTISCH. Die Tischform kommt aus der Saalkonfiguration (neues Feld tischform: oval | u | block, ohne Angabe block) und wird als vertiefte Fläche gezeichnet. Im Leitstand kommen Kameras mit Blickkegel 60° (text/stark 8 %) und eine Linie zum Ziel hinzu. Fehlen reihe/spalte, erscheint eine Kachelreihe statt eines geratenen Plans.\nOhne Verbindung werden alle Signalflächen zu 2-px-Konturen in text/leise, dazu die Plakette „STAND 14:32:07 · NICHT AKTUELL“."
+  },
+  {
+   "name": "Redeliste-Zeile",
+   "gestaltung": "Feste Höhe: 56, bei der Leitung 64, auf dem iPhone 52, im Leitstand 44. Zustandskante innen. Drei Blöcke mit Kennzeile:\n– ES SPRICHT: mikro-toenung, mic-offen 20 in Rot, Name SemiBold, „Platz 5“ in 15 leise, Redezeit in Mono rechts. Überzug „05:12 / 05:00“ als invertierte Tintenplakette, nie bernsteinfarben.\n– WORT ERTEILT: wort-toenung, mic-Umriss 20 in Blau, „seit 14:33“.\n– WARTEND: Rang 17 tnum hängt in der Marginalspalte 32, dahinter der Name, rechts „seit 14:29“ in 15 leise.\nDie eigene Zeile trägt die Plakette „SIE“ in Tinte. Eine gepufferte eigene Meldung zeigt refresh-cw 16 und „wird nachgereicht“ in text/leise, bei voller Deckkraft. Die Sitzungsleitung steht nicht in der Liste, sondern im Kopf „Leitung: Anke Bergmann“ mit staffelstab.\nLeitungsvariante (64): Sekundär 44 „Wort erteilen“ an jeder Wartenden (die nächste in der Reihe erteilt die Leitungsleiste). Textknopf „Entziehen“ mit triangle-alert an „Es spricht“ bzw. „Wort erteilt“. grip-vertical zum Umordnen.\nLeerzustand: hand 32 und „Keine weiteren Wortmeldungen“."
+  },
+  {
+   "name": "Tagesordnung (Zeitleiste)",
+   "gestaltung": "Senkrechte Linie 2 px in linie/normal, Knoten 16, TOP-Nummer als Serif-Ziffer 20 in der Marginalspalte 40, Mindesthöhe 72, feste Höhe je Zustand.\n– Erledigt: circle-check in text/leise, Titel in Serif und text/mittel, Ergebniszeile in Serif 17 „angenommen · 8 : 1 : 1“.\n– Vertagt: calendar-clock, „vertagt auf 12.11.“.\n– Laufend: gefüllter Knoten in Tinte mit Hof 24 vertieft, Titel in Serif SemiBold, „läuft seit 14:12“. Kein Rahmen, keine Hausfläche.\n– Offen: Ring 1,5 in linie/stark.\n– Nicht öffentlich: lock 16 hinter der Nummer und „nicht öffentlich · keine Aufzeichnung“.\nJe TOP rechts die Beginnzeit und ein Vorlagen-Chip (32 hoch, vertieft, file-text, „Vorlage 2026/14 · 12 S.“).\nLeitung im Seitenblatt: „Aufrufen“ an offenen und erledigten Punkten, nie an vertagten; am laufenden Punkt „Abschließen“ (Primär) und „Vertagen“ (Sekundär)."
+  },
+  {
+   "name": "Unterlage-Zeile",
+   "gestaltung": "76 hoch:\n– Seitenminiatur 44×60 (radius sm, Ebene/1, echte erste Seite)\n– Titel 17/24 SemiBold\n– Meta 15/20 leise „PDF · 38 Seiten · 1,1 MB · TOP 4“\n– rechts die Stufe, der Punkt „neu“ 8 in Tinte und chevron-right 20.\nZustände: gedrückt, lädt (Fortschrittslinie 2 px unten), „Fassung 2“ als Umrissplakette. Kein Dateiname in Mono. Kein Hinweis auf Unterlagen, die diese Rolle nicht sehen darf."
+  },
+  {
+   "name": "Stufe (Vertraulichkeit)",
+   "gestaltung": "Pille 28 hoch, radius sm, Kennzeile 13 versal. Die Dichte steigt mit der Stufe, ohne Signalfarbe:\n– öffentlich: keine Plakette\n– intern: Umriss 1,5 in linie/stark\n– vertraulich: Fläche text/stark mit lock 14\n– geheim: wie vertraulich plus 3-px-Tintenkante links an der Zeile.\nAnzeigenamen: öffentlich, intern, vertraulich, geheim."
+  },
+  {
+   "name": "Segmentsteuerung",
+   "gestaltung": "Höhen: 48 auf der Sprechstelle, 56 mit Ikone über Text bei vier Segmenten, 44 auf dem iPhone, 32 im Leitstand. Spur vertieft mit radius md, das gewählte Segment erhoben auf Ebene/1, gleitet in 200 ms. Ikone 20 und Beschriftung 15 SemiBold. Plakette „2 neu“ 20 hoch in Tinte an der Mappe, „Nr. 2“ an der Redeliste. Kein Unterstrich-Reiter."
+  },
+  {
+   "name": "Verbindungsbanner und Stand-Kennzeichnung",
+   "gestaltung": "BANNER. Auf der Sprechstelle ersetzt es den Inhalt des Statusbands (y 30–80, darüber bleibt die Signalkante), so verschiebt sich nichts. In Zuschaltung und Leitstand liegt es 48 hoch unter der Kopfleiste über dem Inhalt.\nAufbau: erhoben, Ebene/2, 4-px-Kante links in zustand/stoerung. wifi-off 24, „Keine Verbindung zum Saalserver“ in 17 SemiBold, „neuer Versuch in 3 s“ in 15, loader 20, rechts Sekundär „Jetzt versuchen“ 44. War das eigene Mikrofon zuletzt offen, steht zusätzlich: „Zuletzt: Ihr Mikrofon war offen.“ Einfahrt 240 ms von oben.\nSTAND-KENNZEICHNUNG für Live-Bereiche (Synoptik, Redeliste, „Es spricht“, Heldkarte):\n– kein Schleier, keine Deckkraftminderung\n– die Plakette „STAND 14:32:07 · NICHT AKTUELL“ oben rechts im Bereich\n– Signalflächen werden zu 2-px-Konturen in text/leise mit ihrer Ikone\n– Laufwerte zeigen „—“\n– Leitungsaktionen verschwinden, gepufferte Handlungen bleiben bedienbar.\nWiederverbindung: Toast „Verbunden · Meldung nachgereicht“ mit check, ohne Farbe."
+  },
+  {
+   "name": "PIN-Block",
+   "gestaltung": "Vier Felder 64×72 mit Abstand 16, radius md.\n– Leer: vertieft.\n– Gefüllt: erhoben mit einem Punkt 14 in Tinte.\n– Aktiv: Innenrand 2 px in Tinte und blinkende Schreibmarke 2×28.\nDie Felder sind nicht fokussierbar und es gibt kein input, damit keine Systemtastatur erscheint.\nZiffernblock 3×4, Tasten 120×64, Abstand 12, radius md, Ebene/1, Ziffern in Saal/PIN. Gedrückt: vertieft und 0,97 in 80 ms. Untere Reihe: leer · 0 · delete.\nGeprüft wird nach der vierten Ziffer. Falsche PIN: Die Felder schütteln 3 × 8 px in 300 ms, darunter „Falsche PIN – noch 2 Versuche“ in Tinte mit triangle-alert. Gesperrt: „Platz gesperrt. Die Schriftführung ist informiert.“ Die Drosselung liegt im Kern. Kein Rot. Alle Breiten ganzzahlig."
+  },
+  {
+   "name": "Wahlknopf",
+   "gestaltung": "280×240 (3 × 280 + 2 × 32 = 904), ohne Enthaltung 436×240. Erhoben, Ebene/1, Innenkontur 1,5 in linie/stark, radius lg. Glyph 48 (check, x, minus) über Saal/Wahl, darunter die Unterzeile aus der Mehrheitsregel der Konfiguration. Weder Ja noch Nein ist gefärbt, die Reihenfolge ist fest: Ja · Nein · Enthaltung.\nZustände:\n– Gedrückt: 0,97, vertieft, 90 ms.\n– Gewählt: Fläche text/stark, Schrift in flaeche/erhoben (17,8 / 12,5 : 1), circle-check 32 oben rechts, Ebene/2.\n– Nicht gewählt: volle Deckkraft, nur e0.\n– Fokus: Ring außen mit Abstand, ohne Größenänderung.\nBei Stimmverbot fehlen die Wahlknöpfe. An ihrer Stelle steht die Stimmkarte mit lock und „Bei diesem Punkt nicht stimmberechtigt“."
+  },
+  {
+   "name": "Bestätigungsleiste (Stimmabgabe)",
+   "gestaltung": "Gleitet nach der Auswahl in 320 ms von unten über die Fußzone: 112 hoch plus Sicherheitsbereich, erhoben, Ebene/3.\nLinks „Ihre Wahl: Nein“ in Saal/Band. Rechts der Textknopf „Auswahl ändern“ und Primär „Stimme abgeben“ (72×320, Tinte). Ein Tipp auf einen anderen Wahlknopf ändert die Auswahl ebenfalls. Erst der zweite Tipp gibt die Stimme ab.\nVor der Auswahl steht an dieser Stelle „Tippen Sie Ihre Wahl an. Danach bestätigen Sie.“ in 17 text/leise.\nNach der Abgabe steht die Wahl bei geheimer Abstimmung nicht mehr auf dem Schirm. Bei offener Abstimmung steht dort „Ihre Wahl: Ja · wird mit Ihrem Platz protokolliert“."
+  },
+  {
+   "name": "Stimmkarte",
+   "gestaltung": "Ersetzt die Wahlknöpfe (200 ms, 8 px Hub): 904×240, erhoben, Ebene/2, radius lg, ohne graue Kontur, nie gestrichelt.\n– Wird übertragen: loader 24.\n– Eingegangen: Kreis 120 in marke/haus mit Haken 64 in text/auf-marke, der sich in 400 ms zeichnet. „Stimme eingegangen“ und darunter „15:39:12 · lässt sich nicht ändern“. Bei geheimer Wahl zusätzlich: „Gezählt wird nur die Summe – eine Einzelstimme wird nicht gespeichert.“ Das deckt migrationen/007 (stimme_zaehler).\n– Auf dem Gerät gesichert: wifi-off 48 in zustand/stoerung, Kante links, unbestimmte Linie, „getrennt seit 0:42 · nächster Versuch in 3 s“. Dazu ehrlich: „Wird vorher ausgezählt, verfällt die Stimme – das steht dann hier. Lassen Sie diese Seite geöffnet.“\n– Verfallen: octagon-x 48 und „Die Abstimmung wurde geschlossen, bevor die Verbindung zurück war.“\nKeine Quittungsnummer, solange es kein Blind-Token gibt. Die kompakte Fassung der Leitung misst 904×120."
+  },
+  {
+   "name": "Ergebnisblock mit Randstrich",
+   "gestaltung": "Beschlussblock mit einem 3-px-Randstrich in Tinte in der Marginalspalte.\n– Ausgezählt, nicht festgestellt: Kennzeile „AUSGEZÄHLT – WIRD FESTGESTELLT“, Zahlen in Saal/Zahl vorläufig (Grotesk). Die Leitung sieht Primär „Ergebnis feststellen“.\n– Festgestellt: check bzw. x 48, „Angenommen.“ in Saal/Feststellung, darunter „festgestellt 15:42 · Anke Bergmann“ in 17. Zahlen in Saal/Ergebniszahl, drei Spalten Ja · Nein · Enthaltung.\nBalken 24 hoch: Ja in text/stark, Nein in linie/stark, Enthaltung getrennt als Muster Schraffur. Marke 2×32 an der Mehrheitsschwelle „Mehrheit ab 5“. Erläuterung aus der Regel: „8 Ja von 9 Ja- und Nein-Stimmen · Enthaltungen zählen nicht“.\nStimmengleichheit: „Abgelehnt. · Stimmengleichheit 4 : 4“. Abgebrochen: Sans, ohne Zahlen, mit Grund. Namentlich: Namen je Antwort in drei Spalten, alphabetisch. Nie grün oder rot."
+  },
+  {
+   "name": "Bogen (Bestätigung)",
+   "gestaltung": "iPad: 560 breit, radius xl, Ebene/3 auf dem Schleier. Titel 24/32 als Frage, die die Folge nennt, Text 20/28, Knöpfe 56 nebeneinander: links Abbrechen, rechts die genaue Handlung. iPhone: Blatt von unten mit Griff 36×5. Leitstand: 480 breit, radius lg, Knöpfe 36.\nUnumkehrbares nennt Folge und Protokolleintrag. Das Pflichtfeld „Grund (steht im Protokoll)“ gibt es bei Abbruch, PIN-Neuausgabe und Leitungsübergabe. Die destruktive Handlung ist Primär mit triangle-alert, nie rot. Nie natives confirm() oder alert(). Übergang 320 ms."
+  },
+  {
+   "name": "Leitungsleiste (Sprechstelle der Leitung)",
+   "gestaltung": "748×88 am Fuß der linken Spalte: große Handlung 640×88 (Primär, Saal/Knopf gross), 20 Abstand, eigener Mikrofonschalter 88×88.\nDie große Handlung folgt dem Verfahrenszustand. Es gibt genau eine zur Zeit, und nur, wenn darf sie enthält:\nSitzung eröffnen → TOP 1 aufrufen → Wort erteilen: Timo Hofer → Abstimmung starten (sobald vorbereitet) → Jetzt auszählen → Ergebnis feststellen → TOP 5 aufrufen → Sitzung schließen.\nIst keine Handlung fällig, steht dort ohne Knopf der Stand in 17 text/mittel: „Lars Krüger spricht · 02:14 · 2 warten“. Ohne Beschlussfähigkeit erscheint statt „Abstimmung starten“ ohne Knopf: „Nicht beschlussfähig: 5 von 11 anwesend, nötig 6“.\nMikrofonschalter: zu = Sekundär mit mic; offen = signal/mikro-voll mit mic-off in Weiß, dazu die rote Signalkante.\nIst der führende Platz verwaist, wird „Sitzungsleitung übernehmen“ an jeder berechtigten Sprechstelle die große Handlung."
+  },
+  {
+   "name": "Leitungsfeld (Abstimmungsschirm)",
+   "gestaltung": "904×232, fest bei y 472, damit es beim Wechsel vom Stimmzettel zur kompakten Stimmkarte stehen bleibt. Erhoben, Ebene/2.\nLinks: „7 von 10 Stimmzetteln“ in 40/44 tnum (bei geheimer Wahl ohne Hochzählen), Segmentbalken aus 10 Segmenten 16 hoch, Laufzeit in Mono.\nOffene Wahl: Chips 44 „Ausstehend: Platz 3 · Öztürk“. Geheime Wahl: nur „1 Platz getrennt: Platz 3 · seit 0:42“, ohne Namen und ohne Liste der Ausstehenden.\nRechts Primär „Jetzt auszählen“ 72 hoch. Links unten, mindestens 200 vom Primärknopf entfernt, der Textknopf „Abstimmung abbrechen“ mit triangle-alert (Bogen mit Pflichtgrund).\nFehlen Stimmen, fragt ein Bogen: „3 Stimmzettel fehlen, 1 Platz getrennt – trotzdem auszählen? Stimmen, die bis dahin nicht angekommen sind, verfallen.“ Nach dem Auszählen: Primär „Ergebnis feststellen“, danach „TOP 5 aufrufen“."
+  },
+  {
+   "name": "Leitstand-Kopfleiste, Navigation und Sperrband",
+   "gestaltung": "KOPFLEISTE 56, erhoben, auf allen Schirmen gleich.\n– Links die Sitzungszustands-Pille 28: LAUFEND als Papierfläche mit Tinte und circle-dot; BEREIT, UNTERBROCHEN (circle-pause) und GESCHLOSSEN als Umriss.\n– Mitte der TOP in Pult/TOP 17/22, bei nicht öffentlichem Punkt mit lock.\n– Rechts feste Slots: Sitzungsuhr in Mono 20, Uhrzeit, REC-Pille, Übertragungs-Pille, „iPads 11/12“, Server nur bei Störung, Nutzer-Chip „Rita Falk · Schriftführung“ mit Abmelden.\nNAVIGATION 232: oben Wortmarke mit Signet, darunter der Sitzungswähler dreizeilig („Aufsichtsrat“ / „3. ordentliche Sitzung“ / „Vorstandszimmer · 25.09. · 14:00“). Gruppen VORHER (Saal, Sitzung, PIN-Ausgabe, Vorabcheck), WÄHREND (Betrieb, Ton), NACHHER (Protokoll, Siegel). Einträge 40 hoch mit Ikone 20 und Wort 14. Aktiv: Kante 3 px in Kreide, erhoben, SemiBold. Zähler als invertierte Plakette („1“ am Vorabcheck), Haken an erledigten Schritten.\nSPERRBAND 48 während einer Abstimmung auf allen Schirmen: Papierfläche mit Tinte (explizit Hell), lock 20, „Abstimmung läuft – Eingriffe ruhen bis zum Auszählen · Kamerafahrten werden verworfen“, rechts „K1 · Totale“. Kamera- und Tonbefehle verschwinden dann auf allen Schirmen und werden nicht ausgegraut.\nTastatur: ⌘K als Befehlspalette, „?“ für die Kürzel, Pfeiltasten im Saalplan, Kontextmenü je Platz. Browserkürzel werden nie überschrieben."
+  },
+  {
+   "name": "Prüfzeile (Vorabcheck)",
+   "gestaltung": "48 hoch, gruppiert: Fehler → Hinweise → eingeklappte Zeile „31 Punkte in Ordnung ›“.\n– Fehler: 4-px-Kante in zustand/stoerung, daneben ein textfreier Schraffurstreifen 20, octagon-x 20, invertierte Plakette „FEHLER“ 22 hoch, Titel in Bedienersprache in Pult/Kopf. Rechts die Aktion Sekundär 36 „Preset lernen →“, die den Saal mit Platz 9 geöffnet zeigt.\n– Hinweis: triangle-alert, Plakette als Umriss, ohne Schraffur.\n– In Ordnung: check 16 in text/leise, ohne Plakette.\nTechnische Belege einklappbar unter „Technische Details“ (Pult/Beleg). Oben eine Zusammenfassung 64: „Der Saal ist noch nicht bereit“ (Pult/Lage), Fehlerzahl 32, „Beginn in 14:48“ in Mono. Während der Prüfung ein Fortschritt 4 px in Kreide und „Plätze 7/12 · Kameras 1/2“. Keine Signalfarbe. Die Texte kommen 1:1 aus Punkt{bereich, titel, text}."
+  },
+  {
+   "name": "Störung im Leitstand (Regie-Sprache)",
+   "gestaltung": "Immer dreifach: 4-px-Kante in zustand/stoerung, das Muster Schraffur auf der textfreien Fläche und eine invertierte Plakette (Kreide mit text/auf-marke, Pult/Kennzeile: KEIN SIGNAL, FEHLER, STÖRUNG, ÜBERSTEUERT) mit Ikone (camera-off, octagon-x, wifi-off, triangle-alert).\nText steht nie auf der Schraffur, sondern auf der Plakette oder einem Blatt-Schild. Beispiele: Kamerakachel ohne Signal, Platz-Chip mit Gerätestörung („iPad 7F3A · getrennt seit 0:42“ im Tooltip), Fehlerzeile im Vorabcheck, Übersteuerungszone im Pegel.\nAuf Teilnehmergeräten gibt es diese Sprache nicht: Dort meldet nur das Verbindungsbanner den eigenen Netzabriss."
+  },
+  {
+   "name": "Eskalationsleiter",
+   "gestaltung": "Panel im Leitstand-Schirm Betrieb, rechte Spalte, 376 breit. Eingeklappt ist es eine Zeile 44: „Eskalation · Stufe 0“.\nSechs Stufen senkrecht als Knotenleiter wie die Tagesordnung (Knoten 16, Linie 2 px in linie/normal). Die aktive Stufe hat einen gefüllten Tintenknoten und liegt auf erhoben.\n– Stufen 1–3 laufen automatisch und zeigen Zeit und Wirkung in text/mittel.\n– Stufen 4–6 tragen lock 16 und brauchen „Bestätigen“ (Primär 36) mit dem Pflichtfeld „Grund (steht im Protokoll)“.\n– Während einer Abstimmung steht dort die Sperrzeile „wartet bis zum Auszählen“ mit lock, ohne Knöpfe.\nKeine Signalfarbe. Bezeichnungen und Wirkungen der Stufen kommen aus dem Kern. Solange er sie nicht führt, trägt das Panel die Plakette „Zielbild“ und zeigt nummerierte Stufen ohne erfundene Maßnahmen."
+  },
+  {
+   "name": "Ton-Bausteine (Leitstand-Schirm Ton)",
+   "gestaltung": "– NOM-Leiste: 8 Segmente „2 von 8 offen“. Die Grenze kommt aus MaxOffeneMikrofone(einmessung_reserve_db) in intern/ton, dazu die Zeile „Reserve 9,0 dB → höchstens 8“.\n– Automixer: Absenkungsbalken 24 hoch mit „−3,0 dB“ (Daempfung bei 2 offenen).\n– Filterhaushalt: „3 / 8“ in Segmenten. Feste Filter aus dem Ring-out als gefüllte Segmente, kurzlebige als Kontur mit Restzeit. Grenze 6–8.\n– Mix-Minus-Matrix: Raster Ausgänge × Quellen (Saal, Z1). Die ausgesparte eigene Quelle ist ein leeres Feld mit Diagonale in currentColor, dazu das Schaubild 240×64 „Saal → Z1 ohne Z1“.\n– Latenzbudgets: Balken je Weg mit Grenzmarke 10 ms (Saalbeschallung) und 60 ms (Dolmetschkanal), der Wert in Mono (BudgetGeprueft).\n– Hochpass je Kanal: „110 Hz“ mit dem gültigen Bereich 100–120 Hz (HochpassGueltig).\n– Pegel je Platz senkrecht nach der Pegelanzeige.\nDie Regelwerte sind heute schon echt. Live-Pegel, offene Mikrofone und Automixer brauchen die Signalverarbeitung und tragen bis dahin die Plakette „Zielbild“. Während einer Abstimmung gibt es keine Eingriffe (Sperrband)."
+  },
+  {
+   "name": "Ereigniszeile (Kette)",
+   "gestaltung": "36 hoch: Nummer in Mono 13 und text/leise, Uhrzeit in Mono 13 und text/mittel, Ikone 16 je Art (hand, mic, vote, cctv, staffelstab), Text 14. Ein neuer Eintrag trägt für 2 s eine 3-px-Tintenkante links, die dann ausblendet. Filter: Alle, Abstimmung, Technik, Wort.\nWährend einer geheimen Abstimmung erscheint nur die Sammelzeile „Stimmzettel: 7 eingegangen“ ohne Zeit; die Einzelereignisse folgen erst nach dem Auszählen. Ausgeblendete Einträge stehen als „… 3 Einträge“ da, nie als stille Lücke."
+  },
+  {
+   "name": "Siegel-Auslöser",
+   "gestaltung": "Die Vorbedingungen stehen als Checkliste mit Zeilen 40 da („Sitzung geschlossen 16:12“ mit check, „Entwurf geprüft“ als Ring). Der Knopf erscheint erst, wenn alle erfüllt sind; vorher steht an seiner Stelle, was fehlt.\n„Kette abschließen und siegeln“ öffnet einen Bogen mit „Einträge 1–231“ und dem Fingerabdruck f00e b3d2 833f 9380 in Pult/Beleg. Die Bestätigung darin ist ein Halteknopf: 2 s halten, mit Fortschrittsring 2 px in Tinte um stamp. Wer vorher loslässt, bricht ohne Folge ab. Erfolg: stamp 64, Zeitpunkt, copy, „Prüfdatei speichern“. Der Prüfbericht zeigt nur die Felder von siegel.Bericht."
+  },
+  {
+   "name": "Namensschild-Anzeige",
+   "gestaltung": "schild/grund #000 im expliziten Modus Dunkel, 874×402, seitlich 62. Keine Bedienung, keine Marke, keine Technik.\n– Ruhe: Vorname 44 in text/leise, Nachname 150 → 96 Bold in Kreide, Funktion 32 in text/leise, als Block zentriert; Platznummer 28 oben rechts.\n– Gemeldet: Band 96 unten in #25272B (erhoben) mit hand 48 und „gemeldet · 2“ in 40 (12,5 : 1); die Funktion entfällt.\n– Hat das Wort: Rahmen 12 pt innen in signal/wort (#86AEEB, 9,3 : 1 auf Schwarz) und Band 96 in signal/wort-voll #2A62B0 mit mic 48 und „hat das Wort“ in Weiß (6,05 : 1).\n– Spricht: die ganze Fläche signal/mikro-voll, Kopfzeile mit mic-offen 48, „spricht“ 40 und Redezeit Mono 48 rechts, darunter der Nachname in Weiß (5,0 : 1).\n– Nicht angemeldet: Name in text/leise, kein Signal.\n– Nicht besetzt: nur „Platz 12“ in 64 und text/leise bei 30 % Helligkeit. Nie Grün.\n– Verbindung weg: Nach 10 s fällt jeder Zustand in die Ruhe zurück, und wifi-off 24 in text/leise ersetzt die Platznummer, ohne Text. Es bleibt kein veraltetes Rot zum Saal.\nÜbergänge nur als Überblendung in 150 ms. Nie angezeigt: Abstimmung, Stimme, Widerspruch, Aufzeichnung, Fehler."
+  },
+  {
+   "name": "Gerätrahmen",
+   "gestaltung": "Eigene Komponenten ohne Herstellerlogo (siehe Geräte): Gerät/iPad Air 11 quer, Gerät/iPad Pro 11 quer, Gerät/iPad mini quer, Gerät/iPhone 17 quer im Halter, Gerät/iPhone 17 hoch Safari, Gerät/MacBook Browser, Gerät/Leitstand-Fenster. Aluminiumkante 2 pt #9AA09C, schwarzer Glasrand. Statusleiste mit Drehbuchzeit, WLAN und „80 %“ mit Ladebegrenzungszeichen. Der Bildschirminhalt ist eine Instanz-Eigenschaft, der Schlagschatten 0 40 80 rgba(0,0,0,.25) ist an den Modus gebunden."
+  },
+  {
+   "name": "Leerzustand und Toast",
+   "gestaltung": "Leerzustand: Ikone 32 in text/leise, ein Satz 17/24 in text/mittel, höchstens eine Handlung. Beispiele: „Keine weiteren Wortmeldungen“, „Zu diesem Punkt gibt es keine Unterlagen“. Nie ein Verweis auf Unsichtbares, nie eine Regelerklärung als Füllung.\nToast: erhoben, Ebene/3, radius rund, 48 hoch, oben mittig unter dem Statusband, Ikone 20 und ein Satz in 15 Medium (z. B. „Wortmeldung eingegangen · Sie sind Nr. 2“). Er steht 2,4 s, ohne Farbe."
+  },
+  {
+   "name": "Plaketten Zielbild, Symbolbild, Montage, Platzhalter",
+   "gestaltung": "24 hoch, radius sm, Kennzeile, Umriss 1,5 in linie/stark auf blatt. „Zielbild“ gibt es nur in Figma an nicht gebauten Schirmen und Panels, nie im Produkt. „Symbolbild“ steht auf der Webseite an jedem gestellten Foto. „Montage“ markiert perspektivisch eingesetzte Schirme. „Platzhalter“ trägt jedes Kamerabild aus webseite/bilder."
+  }
+ ],
+ "marke": "Die Marke folgt dem Saal, nicht umgekehrt. Sie ist farblos, damit Farbe im Saal etwas bedeutet. Dieser Satz ist zugleich das Verkaufsargument: „Rot heißt bei uns genau eine Sache: Ihr Mikrofon ist offen.“\n\nWORTMARKE. „ConferenceCue“ in IBM Plex Sans SemiBold, ein Wort, Laufweite −1 %, als Figma-Komponente in drei Fassungen: Tinte #17181A, Kreide #ECEBE7, einfarbig. Nie in Serife, nie in Versalien, nie mit einem Punkt davor.\n\nSIGNET „Platzkachel“. Ein Quadrat mit Radius 22 % in marke/haus. Darin liegt eine waagerechte Papierkante (#FCFBF8, 56 % breit, 10 % hoch, auf 34 % der Höhe) als Tisch- und Blattkante. Auf dem Pult ist das Quadrat Kreide und die Kante #0E0F11. Nie ein Kreis, nie farbig, nie Rot, weil ein Punkt überall ein Zustandszeichen ist. Das Signet ist nie eine Bedienikone; das frühere Ikonenzeichen „platz“ ist deshalb durch „saal“ ersetzt. Mindestgröße 16 px, Schutzraum eine Kantenhöhe.\nApp-Icon (Home-Bildschirm von Begleiter und Leitstand) und Favicon: das Signet vollflächig, Tinte mit Papierkante.\n\nWO DIE MARKE STEHT. Im Saal steht keine Herstellermarke. Sprechstelle, Abstimmung, Namensschild und Zuschaltung tragen nur das Kundenwappen aus den Gestaltungsdaten (SVG, auf Saalgeräten einfarbig in text/stark, höchstens 32 px; farbig nur auf Papier, im Leerlauf und im Protokollkopf). ConferenceCue erscheint auf dem Leitstand, der Begleiter-Anmeldung, dem Einstieg der Zuschaltung, dem Startschirm beim Hochfahren und als Mitmarke „erstellt mit ConferenceCue“ in 7 pt im Fuß von PIN-Zettel und Protokoll.\n\nSCHRIFTEN. Ausgeliefert werden Plex Sans 400/500/600/700, Plex Mono 400/500 und Source Serif 4 variabel (opsz, wght, aufrecht) als woff2, mit den Untermengen latin und latin-ext für Namen wie Öztürk, Yılmaz oder Dvořák. Die Dateien liegen im Server-Bundle und in webseite/schrift/ (OFL). font-display: block auf Saalgeräten, swap auf der Webseite. Die Systemschrift ist nur Rückfall. Der Vorabcheck prüft je Gerät mit document.fonts.check, ob die Schnitte geladen sind.\n\nBRÜCKE ZUR WEBSEITE („dunkles Pult, helles Blatt“)\n– webseite/stil.css übernimmt die Dunkelwerte: --grund #0E0F11 statt #08080A, --karte #1A1B1E, --tiefer #08090A, --rand #2E3034, --schrift #ECEBE7, --leise #95979C (5,9 : 1 auf der Karte).\n– --akzent (#c8102e, Kommentar „Tally-Rot: die Farbe der offenen Kamera“) und --gruen (#3fbc6d) entfallen. Neuer Akzent ist Kreide #ECEBE7 (16,1 : 1) für Wortmarke, aktive Navigation (2-px-Unterstrich), Fokusring, Listenstriche und das Siegel im Kettenschaubild. Der Tally-Punkt vor der Wortmarke wird durch das Signet ersetzt.\n– Rot erscheint nur dort, wo ein offenes Mikrofon gezeigt wird, etwa beim Ereignis „mikro_an · Platz 7“ und im Heldbild.\n– Neuer Abschnitt „Farbe bedeutet etwas“: die vier Signale als einzige Buntflächen der Seite, jeweils mit Ikone und Wort.\n– Texte: „Tally-Rot: die Farbe der offenen Kamera“ und der entsprechende Satz auf einsatz.html werden zu „Rot heißt: Das Mikrofon ist offen. Ob die Kamera folgt, zeigt der Platz getrennt – wer der Aufzeichnung widersprochen hat, bleibt ungefilmt.“ Auf system.html wird „Die Oberfläche graut nur aus“ zu „Die Oberfläche zeigt nur, was erlaubt ist.“\n– stand.html zeigt Stufen mit Ikone und Wort statt Grün. Das Ton-Regelwerk und der Offline-Puffer der Stimme und der Wortmeldung wandern nach „Gebaut und geprüft“.\n– Fehler in .kopf: Die Kurzschreibweise padding: 4.5rem 0 3.5rem hebt den seitlichen Rand von .bahn auf. Korrektur: padding-top: 4.5rem; padding-bottom: 3.5rem.\n– Die Webseite zeigt echte Schirme als helle Blätter im Gerät auf dem dunklen Pult. Serife nur für zitierte Beschlüsse.\n\nEINE QUELLE. Aus den Figma-Variablen wird eine gemeinsame Token-Datei erzeugt, tokens.css und tokens.json, mit denselben Namen (signal/mikro → --signal-mikro, bewegung/zustand → --bewegung-zustand). web/, webseite/ und die Druckvorlagen binden sie ein. Keine Datei führt mehr eigene Farbwerte.\n\nCODE ZIEHT NACH (web/index.html)\n– .tally als roter Punkt (Z. 52) entfällt.\n– button:disabled mit opacity .4 (Z. 91–92) und das Setzen von b.disabled (Z. 456) weichen dem Nicht-Rendern.\n– prefers-color-scheme (Z. 24) weicht dem Feld modus der Saalkonfiguration; der Begleiter behält die Systemeinstellung.\n– Rote und grüne Wahl- und Ergebnisfarben, der grüne Quorum-Balken sowie blaue Auswahl- und Fokusringe entfallen.\n– Der Kommentar in intern/kern/rolle.go („dann kann er Knöpfe ausgrauen“) wird zu „dann zeigt er nur erlaubte Knöpfe“.\n– Neue Felder der Saalkonfiguration: modus, schriftstufe, tischform, namensschild_abstand_m.\n\nTONALITÄT, von der Webseite übernommen: sachlich, kurz, ehrlich, mit Ehrlichkeitsmarken wie „Symbolbild“ und der Stand-Seite. Keine Superlative, keine Ankündigungen.",
+ "je_oberflaeche": [
+  {
+   "oberflaeche": "Übergreifend · Drehbuch, Modus, Begriffe",
+   "modus": "Der Modus der Saalgeräte kommt aus der Saalkonfiguration (neues Feld modus: hell | gedimmt, gemeinsam für alle Saalgeräte eines Saals), nie aus dem Betriebssystem. Die einzige Ausnahme ist der private Begleiter. Figma kennt genau zwei Farbmodi, Hell und Dunkel.",
+   "aufbau": "EIN DREHBUCH FÜR ALLE SCHIRME. Aufsichtsrat der Musterwerk AG, 3. ordentliche Sitzung, Donnerstag 25.09.2026, 14:00, Vorstandszimmer: ovaler Tisch, 12 Plätze, zwei PTZ-Kameras (K1 Mitte, K2 Stirnseite). Die Daten stammen möglichst aus einem Lauf des Vorführbetriebs, die Ereignisnummern sind lückenlos.\n\nPLÄTZE\n– 1 Anke Bergmann, Sitzungsleitung · führt, Funktion „Vorsitz“\n– 2 Dr. Maria Keller, Sitzungsleitung · berechtigt\n– 3 Jonas Öztürk, Delegierter (Nutzer der Sprechstellen-Schirme)\n– 4 Petra Lang, Delegierte\n– 5 Lars Krüger, Gast, Abschlussprüfer, ohne Stimmrecht\n– 6 Miriam Schulte, Delegierte\n– 7 Timo Hofer, Delegierter\n– 8 Elif Demir, Delegierte\n– 9 Sabine Roth, Delegierte, Widerspruch gegen die Aufzeichnung\n– 10 Frank Maier, Delegierter\n– 11 Paul Weber, Delegierter, eingeladen, nicht angemeldet: in Anmeldung und Leitstand „frei“, in der Sitzung „nicht angemeldet“\n– 12 ohne Teilnahme („nicht besetzt“)\n– Z1 Karin Wolf, Delegierte, zugeschaltet\n– Leitstand: Rita Falk, Schriftführung\nStimmberechtigt sind 11, anwesend 10, das Quorum ist 6.\n\nTAGESORDNUNG. TOP 1 und 2 von 14:00 bis 14:05. TOP 3 „Personalangelegenheit“ nicht öffentlich von 14:05 bis 14:12. TOP 4 „Feststellung des Jahresabschlusses 2025“ ab 14:12 (Vorlage 2026/14, 12 S.).\n\nSTÄNDE\n– A, 14:32:10: Lars Krüger spricht seit 02:14. Wartend sind 1 Timo Hofer (seit 14:29) und 2 Jonas Öztürk (seit 14:31). Die Aufzeichnung läuft.\n– A′, 14:33: Timo Hofer hat das Wort, das Mikrofon ist noch zu.\n– B, 15:39 bis 15:41: geheime Abstimmung zu TOP 4. Kamera auf der Totalen, Mikrofone zu. Um 15:41 sind 7 von 10 Stimmzetteln eingegangen, Platz 3 ist seit 0:42 getrennt.\n– C, 15:42: Ja 8 · Nein 1 · Enthaltung 1, angenommen, festgestellt von Anke Bergmann. Kette Nr. 1–231, Fingerabdruck f00e b3d2 833f 9380.\n\nBEGRIFFE. Anzeigenamen sind Sitzungsleitung (führt / berechtigt), Delegierte/r (im Code delegierter), Schriftführung und Gast. Nie „Mitglied“ als Rollenwort und nie Rohwerte aus dem Code.\n\nFIGMA-SEITEN in dieser Reihenfolge: 00 Titelszene · 01 Fundament (Variablen, Stile, Kontrasttafel) · 02 Ikonen (Pflicht vor allem Weiteren) · 03 Bausteine · 04 Sprechstelle · 05 Abstimmung · 06 Namensschild · 07 Begleiter (Zielbild) · 08 Zuschaltung (Zielbild) · 09 Leitstand · 10 Papier · 11 Webseite · 12 Montagen."
+  },
+  {
+   "oberflaeche": "Sprechstelle · Delegierte am Platz (iPad quer)",
+   "modus": "Hell als Standard. Gedimmt (Dunkel) nur über die Saalkonfiguration für abgedunkelte Säle, gemeinsam für alle Plätze, nie nach der Systemeinstellung des iPads.",
+   "aufbau": "1180×820. Signalkante und Statusband y 24–80, Inhalt y 104–776.\n\nLINKE SPALTE (x 24–772)\n– TOP-Kopf 748×132 (y 104–236), Stand A: „TOP 4 VON 9 · SEIT 14:12“, „Feststellung des Jahresabschlusses 2025“, „Es spricht: Lars Krüger · Platz 5 · 02:14“.\n– Heldkarte 748×516 (y 260–776) mit allen Zuständen der Komponente. Jeder Zustand ist ein eigener Frame: nicht gemeldet · gemeldet (mit der Folge wartet → Toast) · gepuffert · hat das Wort · spricht · spricht mit Widerspruch (Chip und Ersatzsatz statt Vorschau) · verfallen · unterbrochen · geschlossen · Leitung verwaist.\n\nRECHTE SPALTE (x 792–1156)\n– Segmentsteuerung 48 „Redeliste · Tagesordnung · Mappe“ (y 104–152).\n– Darunter ein Blatt 364×380 auf Ebene/1 (y 168–548). Standard ist die Redeliste mit den drei Blöcken, die eigene Zeile trägt „SIE“.\n– Saal-Karte 364×212 (y 564–776) mit Mini-Synoptik: Chips 40, Tischform oval. Markiert sind nur Abweichungen: spricht, Wort, hand, nicht angemeldet, Reiter „SIE“. Darunter die einzeilige Legende in 15.\n\nNicht öffentlicher TOP: lock am TOP-Kopf, Pille „Keine Aufzeichnung · nicht öffentlich“; die Heldkarte bleibt unverändert.\nVerbindung weg: Banner im Statusband, Stand-Kennzeichnung auf TOP-Kopf, Redeliste und Saal-Karte; die Heldkarte zeigt die gepufferte Handlung.\nAbstimmung: Der Abstimmungsschirm legt sich als Vollbild darüber.\nNotlayout hoch: einspaltig, Heldkarte oben, Saalplan als Liste.\n\nGEDIMMT: Flächen #0E0F11, #1A1B1E, #25272B. Der On-Air-Kopf ist #3A1519 mit Kante #FF5A6E und weißer Schrift, „Mikrofon aus“ eine erhobene Fläche mit roter Kontur, „Mikrofon an“ Kreide mit Tinte. Keine Technikwerte, der eigene Name ist nie das größte Element. Beide Schriftstufen werden geprüft."
+  },
+  {
+   "oberflaeche": "Sprechstelle · Sitzungsleitung (iPad quer, Platz mit aktivem Staffelstab)",
+   "modus": "Wie die Sprechstelle des Saals: hell, gedimmt über die Saalkonfiguration.",
+   "aufbau": "Gleiches Raster, andere Gewichtung: Die Synoptik ist der Held, die Redeliste steht dauerhaft daneben. Im Statusband steht links die Pille „Sie leiten“ (Tinte, staffelstab).\n\nLINKE SPALTE (748)\n– TOP-Kopf kompakt 88 (y 104–192) mit Saal/TOP kompakt, rechts Sekundär „Tagesordnung“ (Seitenblatt 520 mit Zeitleiste, Aufrufen / Abschließen / Vertagen) und „Weitere“ (Abstimmung vorbereiten, TOP abschließen, TOP vertagen – nur was darf enthält).\n– Synoptik 748×456 auf Ebene/2 (y 212–668), Plätze 72×72 mit allen Sitzungszuständen, Widerspruch-Eckmarke an Platz 9, Legende darunter. Ein Tipp auf einen Platz öffnet ein Popover (Ebene/3, 280) nur mit den Handlungen aus darf: „Wort erteilen“, „Mikrofon aus“, „Wort entziehen“ (Textknopf mit triangle-alert). An Plätzen mit Rolle Sitzungsleitung zusätzlich „Leitung übergeben“ über einen Bogen mit Pflichtgrund und Protokollhinweis.\n– Leitungsleiste 748×88 (y 688–776): große Handlung aus der Verfahrenskette, im Stand A „Wort erteilen: Timo Hofer“, daneben der eigene Mikrofonschalter 88.\n\nRECHTE SPALTE (364): Redeliste dauerhaft als Blatt 364×672. Kopf „Redeliste · 2 warten“ mit „Leitung: Anke Bergmann“, Zeilen 64 mit Leitungsaktionen.\n\n„Abstimmung vorbereiten“ öffnet einen Bogen 560: Beschluss in Saal/Beschluss kompakt, Art (offen, geheim, namentlich) als Segment, Mehrheitsregel. Danach wird „Abstimmung starten“ die große Handlung, sofern Beschlussfähigkeit besteht. Sonst steht dort ohne Knopf „Nicht beschlussfähig: 5 von 11 anwesend, nötig 6“.\n\nEine berechtigte Leitung ohne Staffelstab sieht den Aufbau der Delegierten plus die Umriss-Plakette „Leitung · berechtigt“. Ist der führende Platz verwaist, wird „Sitzungsleitung übernehmen“ die große Handlung."
+  },
+  {
+   "oberflaeche": "Sprechstelle · Anmeldung und Randzustände (iPad quer)",
+   "modus": "Wie die Sprechstelle des Saals (hell als Standard).",
+   "aufbau": "LEERLAUF. Kundenwappen 64 und ein vollflächiger Saalplan (Chips 72) mit „Tippen Sie auf Ihren Platz“ in 28/34. Hier ist der einzige Ort am Tisch, an dem Grün erscheint: Plätze mit Teilnahme ohne Anmeldung sind „frei“ (armchair, „erwartet: J. Öztürk“), Plätze ohne Teilnahme „nicht besetzt“ und nicht antippbar. Ein Tipp auf einen freien Platz öffnet den Bogen „Platz 3 · Jonas Öztürk erwartet“ mit Primär „Hier sitzen“.\n\nPIN-SCHIRM, zweispaltig:\n– Links 5 Spalten auf grund: Wappen 48, „Aufsichtsrat · 3. ordentliche Sitzung“ in 32/38 SemiBold (Grotesk, weil nicht bindend), „Donnerstag, 25.09.2026 · 14:00 · Vorstandszimmer“ in 20/28, Mini-Saalplan 364×220 mit Platz 3 markiert, Textknopf „Anderer Platz“.\n– Rechts 7 Spalten: Heldkarte mit dem PIN-Block in allen Zuständen (leer, 2 Ziffern, prüft, falsch, gesperrt).\nDas Statusband zeigt vor der Anmeldung nur die Uhr.\n\nVOR BEGINN: „Beginn um 14:00“, Countdown in Mono 40, „Ihr Platz ist bereit“ mit circle-check, ohne Knopf. Darunter die Tagesordnung als Zeitleiste.\nUNTERBROCHEN: Heldkarte auf Ebene/1, circle-pause 48, „Sitzung unterbrochen · seit 15:10“ (Zielbild, solange der Kern keine Aktion zum Unterbrechen führt).\nGESCHLOSSEN: „Sitzung geschlossen · 16:12“, „Das Gerät kann liegen bleiben.“ und die Tagesordnung mit den festgestellten Ergebnissen in Serif. Nach 10 min zurück in den Leerlauf.\nVERBINDUNG WEG: Banner und Stand-Kennzeichnung; die Heldkarte zeigt die gepufferte Handlung.\nBEGLEITER ZULASSEN (Zielbild): Bogen „Ein Begleiter möchte sich mit Platz 3 verbinden“ mit „Ablehnen“ und Primär „Zulassen“, erst wenn der Kern eine Begleitrolle kennt."
+  },
+  {
+   "oberflaeche": "Abstimmungsschirm (iPad quer, Vollbild)",
+   "modus": "Folgt der Sprechstelle des Saals (hell als Standard). Deckt alles andere ab.",
+   "aufbau": "Satzbreite 904, Rand 138.\n\nZUSTANDSBAND 64 in Tinte (text/auf-marke): lock 24 und „Geheime Abstimmung läuft“ in Saal/Band links. Rechts „Platz 3 · Jonas Öztürk · 1 Stimme“ in 15 und „seit 0:42“ in Mono 17. Die Pille „Bild: Totale“ zeigt den Zustandswechsel der Kameras bei geheimer Wahl.\n\nBESCHLUSSZONE (y 112–392): Kennzeile „BESCHLUSSVORSCHLAG · TOP 4 · EINFACHE MEHRHEIT“, der Beschluss in Saal/Beschluss mit Randstrich, Textknopf „Vorlage 4.1 öffnen“ (öffnet ein Blatt über dem Stimmzettel).\nWAHLKNÖPFE 3 × 280×240 (y 448–688).\nFUSSZONE 96 fest: „Beschlussfähig: 10 von 11 anwesend, nötig 6 (beim Start festgehalten)“ und ein Satz zur Art der Abstimmung.\n– Geheim: „Ihre Wahl wird nach der Abgabe nicht mehr angezeigt. Gezählt wird nur die Summe.“\n– Offen: „Ihre Stimme wird mit Ihrem Platz protokolliert.“\nDelegierte sehen nie einen Eingangszähler.\n\nABLAUF (je ein Frame): Stimmzettel → ausgewählt mit Bestätigungsleiste → wird übertragen → eingegangen → auf dem Gerät gesichert → verfallen → kein Stimmrecht → ausgezählt („Ausgezählt – die Leitung stellt fest“, Grotesk) → angenommen / abgelehnt / Stimmengleichheit (Ergebnisblock in Serif) → abgebrochen („Abstimmung abgebrochen · 15:41 · Grund: …“) → namentlich mit Liste.\n\nLEITUNG: oben der eigene Stimmzettel mit Beschluss 28/36 und Wahlknöpfen 904×200, nach der Abgabe die kompakte Stimmkarte 904×120; darunter fest das Leitungsfeld 904×232.\n\nNach der Feststellung wechselt das Band auf „Abstimmung beendet · 15:42“ (erhoben mit Tinte). Delegierte bekommen „Zurück zum Platz“, die Leitung „TOP 5 aufrufen“."
+  },
+  {
+   "oberflaeche": "Namensschild (iPhone 17 quer zum Saal; über 4 m iPad mini quer)",
+   "modus": "Immer dunkel im expliziten Modus Dunkel auf schild/grund #000. Helligkeit fest 50 %, Auto-Helligkeit aus, Pixelverschiebung ±2 px alle 10 min gegen Einbrennen. Kein dritter Farbmodus.",
+   "aufbau": "Keine Bedienung, keine Marke, keine Technik. 874×402, seitlich 62, Inhalt 750×381, Block vertikal zentriert.\n\nFRAMES im Drehbuch:\n– Ruhe: Platz 3 Öztürk.\n– Gemeldet: Platz 7 Hofer · Nr. 1.\n– Hat das Wort: Platz 7 in Stand A′, Rahmen #86AEEB und Band #2A62B0.\n– Spricht: Platz 5 Krüger, vollflächig signal/mikro-voll mit Redezeit 02:14.\n– Nicht angemeldet: Platz 11 „Paul Weber“ in text/leise.\n– Nicht besetzt: Platz 12, nur „Platz 12“.\n– Verbindung weg: nach 10 s Ruhe mit wifi-off statt der Nummer.\n– Langer Name: „Dr. Maria Keller-Hohenstein“ zweizeilig zu je 96.\nDazu das iPad mini mit denselben Zuständen ×1,5.\n\nÜbergänge nur als Überblendung in 150 ms. Nie angezeigt: Abstimmung, Stimme, Widerspruch, Aufzeichnung, Fehler, Grün. Die Freigabe der Schriftgröße erfolgt nur über die maßstäbliche Montage aus 3, 4 und 5 m."
+  },
+  {
+   "oberflaeche": "Begleiter (privates iPhone hoch, Safari) – Zielbild",
+   "modus": "Folgt der Systemeinstellung des Telefons, hell oder dunkel. Als einzige Oberfläche, weil es ein privates Gerät ist. Beide Fassungen sind entworfen.",
+   "aufbau": "402×874, Satzbreite 362. Die Schirme gehen erst live, wenn der Kern eine Begleitrolle kennt; bis dahin tragen sie die Plakette „Zielbild“.\n\nANMELDUNG\n(A) Hinweisschirm ohne Knopf. Eine Tischdraufsicht 362×240 im Schaubildstil zeigt die Tag-Stelle, dazu „Halten Sie die Oberkante Ihres iPhones an das Zeichen am Platz.“\n(B) Die iOS-Mitteilung öffnet Safari.\n(C) „Platz 3 erkannt“ mit Sitzung und Datum, dazu Primär „Als Begleiter verbinden“ (56, Tinte). Darunter eine Liste: 3 Zeilen mit check (Unterlagen, Wortmeldung, Untertitel) und 2 Zeilen mit x („Mikrofon – am iPad des Platzes“, „Stimmabgabe – am iPad des Platzes“).\n(D) Erst die Zustimmung im Bogen am iPad des Platzes verbindet. Ausweichweg ist ein QR-Code am Platz.\n\nHAUPTSCHIRM\n– Kopf: Kennzeile „PLATZ 3 · TOP 4 VON 9“, TOP in Hand/TOP, rechts ein Avatar 32 mit Initialen. Er öffnet das Blatt mit Name, Platz, Rolle, Sitzung und „Vom Platz trennen“.\n– Statuskarte 362×112 (Ebene/2): „Nicht gemeldet“, „Sie sind Nr. 2 · Vor Ihnen: Timo Hofer“ oder „Sie haben das Wort – schalten Sie am iPad ein“ (wort-toenung mit 4-px-Rand).\n– Segmente oben, sticky 44: „Unterlagen · Redeliste · Untertitel“. Keine Reiterleiste unten, weil dort die Safari-Leiste liegt.\n– Primärknopf „Wort melden“ bzw. „Meldung zurückziehen“ 56, 16 über der Safari-Leiste.\n– Unterlagen: TOP-Wähler als Chips 36 (TOP 3 mit lock und ohne Inhalt), Zeilen 76.\n– Untertitel: unten verankert, Plakette „LIVE“ als Umriss (kein Punkt), Wahl „Aa“, Pille „Zum Live-Ende ↓“.\n\nLäuft eine Abstimmung, steht auf allen Segmenten ein festes Band 56 in Tinte: lock und „Abstimmung läuft · am iPad Ihres Platzes“ mit einer Tischskizze 120×72. Die Unterlagen bleiben darunter bedienbar. Nie Mikrofon, nie Stimmzettel."
+  },
+  {
+   "oberflaeche": "Browser · Zuschaltung (Desktop) – Zielbild",
+   "modus": "Dunkel (Pult), fest. Das Bild steht im Mittelpunkt. Unterlagen und Beschlüsse erscheinen als Papierblätter.",
+   "aufbau": "Bis Medien und Zuschaltung im Kern gebaut sind, tragen alle Frames die Plakette „Zielbild“. Z1 ist eine Teilnahme mit eigenem Platz und kein Begleitgerät; die Regel für Privatgeräte gilt für den Begleiter im Saal.\n\nVOR DEM BEITRITT eine Karte 560 mit drei Schritten:\n(1) „Ton einschalten“ – liefert die Nutzergeste für die Wiedergabe.\n(2) Geräteprüfung: Mikrofon, Lautsprecher, Pegel, Kopfhörer-Empfehlung und einmal der Satz „Sie hören den Saal ohne Ihre eigene Stimme“.\n(3) Erklärung vor dem Berechtigungsdialog des Browsers, dazu der Zustand „Zugriff verweigert“ mit Anleitung je Browser.\n\nHAUPTSCHIRM 1440×800\n– Signalkante 6 px am oberen Fensterrand.\n– Kopf 56: Wappen, Sitzung in 13, TOP in Pult/TOP 17/22, Aufzeichnungs-Pille, Verbindungsstärke-Ikone (Popover mit Verzögerung und Verlust), Uhr in Mono.\n– Links 8 Spalten: Programmbild 912×513 mit Kacheln nach der Regel 1→1, 2→2, 3–4→2, 5–6→3, zentriert, über der Grenze die Totale; Bauchbinden auf dem Sockel, Plakette „spricht“ auf der Kachel des Sprechers. Darunter die Steuerleiste 64: Mikrofon (erst bei erteiltem Wort; zu = Kreide-Primär „Mikrofon an“, offen = signal/mikro-voll), Kamera und Lautsprecher mit Gerätemenü, Untertitel, Vollbild, rechts „Verlassen“ als Umriss mit log-out. Die Leertaste ist Sprechtaste, solange das Wort erteilt ist. Darunter zwei Untertitelzeilen 20/28 oder, außerhalb von Redebeiträgen, die Vorlage in Serif 18/26.\n– Rechts 4 Spalten (448): Eigenbild 448×252 nur, solange das Wort erteilt ist, mit Plakette „spricht“ bei offenem Mikrofon. Darunter Statuskarte, die eine Handlung und die Segmente „Redeliste · Tagesordnung · Unterlagen“.\n\nABSTIMMUNG: Mit Stimmrecht öffnet sich der Stimmzettel als Blatt im Aufbau des Abstimmungsschirms (dunkel).\nNICHT ÖFFENTLICHER TOP: Zugeschaltete mit Teilnahmerecht sehen und hören weiter. Es ändert sich nur das Band „Nicht öffentlich · wird nicht aufgezeichnet und nicht übertragen“ (Umriss, lock). Die öffentliche Übertragung pausiert mit dem Pausenbild, ohne Redeliste und ohne „Wort melden“, mit „… bis wieder ein öffentlicher Punkt aufgerufen wird“."
+  },
+  {
+   "oberflaeche": "Leitstand (Technik und Schriftführung, Desktop)",
+   "modus": "Immer dunkel (Pult), weil er neben den Vorschaumonitoren steht. Dokumente liegen als Papierblatt darauf (innerer Rahmen explizit Hell). Eine helle Bürofassung gibt es nicht.",
+   "aufbau": "Installierte Web-App 1440×800, Mindestmaß 1280×720. Kopfleiste, Navigation und Sperrband gelten global. Jede Seite beginnt mit der Brotkrume 13 und der Lage in 24.\n\nVORHER\n– Saal: Plan maßstäblich (≥ 560 hoch) mit Tischform, Kameras, Blickkegel und der Linie Kamera → Platz beim Hover. Saalfoto 240×135. Seitenblatt 420 je Platz (Name, Funktion, Kamera, Preset) mit Preset lernen: Live-Vorschau 384×216 und Steuerkreuz. Kameraliste mit Adresse:Port und VISCA/ONVIF.\n– Sitzung: Tabellenzeilen 48, markiert werden nur Ausnahmen („ohne Stimmrecht“, video-off „Widerspruch“ in Bernstein, „frei“ in Grün). Rollen: Sitzungsleitung · führt/berechtigt, Delegierte/r, Schriftführung, Gast. Spalte Gerät „iPad 7F3A · 78 % · verbunden“, Seitenblatt 420, die Hauptaktion nach Zustand.\n– PIN-Ausgabe: Statuschips gedruckt, angemeldet 13:58 und neu ausgegeben. „Neu ausgeben“ über das Zeilenmenü mit Bogen und Grund, Drucker-Chip, „Fehlende drucken (2)“, A7-Vorschau 296×420 als Papier mit Schnittmarken.\n– Vorabcheck: Zusammenfassung, Prüfzeilen, rechts eine Spalte 320 mit Mini-Saalplan (Fehlerplatz schraffiert) und je Kamerafahrt einem Standbild 128×72 mit „Bild am Platz prüfen“.\n\nWÄHREND\n– Betrieb: Bei laufender Abstimmung oben das Abstimmungsfeld 1160×140 (TOP in Serif 22, Plakette „geheim“, Zähler 40 ohne Animation, Segmentbalken, Laufzeit, „1 Platz getrennt: Platz 3“, „Auszählen: Sitzungsleitung, Platz 1“) und das Sperrband. Links 8 Spalten: Synoptik im Maßstab mit Kameras und Blickkegeln und Pegel je Platz, darunter K1/K2 in 320×180 (PGM-Plakette, Störung in Regie-Sprache). Rechts 4 Spalten (376): Redeliste (Sprecher mit Redezeit Mono 24, die nächsten 3), darunter das Panel Eskalationsleiter und die Kette (bei geheimer Wahl nur die Sammelzeile). Kontextmenü je Platz, ⌘K.\n– Ton: NOM-Leiste, Automixer, Filterhaushalt, Mix-Minus-Matrix, Latenzbudgets, Hochpass, Pegel je Platz. Regelwerte echt, Live-Werte als Zielbild.\n\nNACHHER\n– Protokoll: Papierblatt 680 mit mitlaufendem Inhaltsverzeichnis links.\n– Siegel: Vorbedingungen, Halteknopf 2 s, Bogen mit Einträgen 1–231 und Fingerabdruck, Erfolg mit stamp 64 und „Prüfdatei speichern“.\n– Ausgabe: erst im Produkt, wenn sie gebaut ist, in Figma als Zielbild."
+  },
+  {
+   "oberflaeche": "Papier · Protokoll, Siegelbericht, PIN-Zettel",
+   "modus": "Immer hell (Papier), druckfertig, auch auf dem dunklen Pult.",
+   "aufbau": "PROTOKOLL A4\n– Kopf mit Wappen (farbig), Gremium, Sitzung, Datum, Ort, Anwesenheit (alphabetisch) und Leitung.\n– Je TOP die Serif-Ziffer in der Marginalspalte 22 mm, Titel in Serif 12/17 pt.\n– Protokollzeilen in Plex Sans 9,5/14 pt im Format von protokoll.go, Zeitmarke in Mono 8 pt in der Marginalspalte.\n– Beschluss in Serif 11/16 pt mit 1-pt-Randstrich, festgestelltes Ergebnis in Serif tnum.\n– Abstand 40 zwischen den TOPs, 12 innerhalb.\n– Fuß: Kette Nr. 1–231, Fingerabdruck in Mono 7,5 pt in Viererblöcken, „Seite x von y“, Mitmarke 7 pt.\n\nPIN-ZETTEL A7: Schnittmarken, Wappen, „Platz 3 · Jonas Öztürk“ in 11 pt SemiBold (nicht Serif), PIN in vier Kästchen 9×11 mm (Mono 20 pt), drei Piktogramme (Platz antippen → Hier sitzen → PIN), „Bis zum Sitzungsende aufbewahren“.\n\nSIEGELBERICHT: eine Checkliste nur mit den Feldern von siegel.Bericht, Zeilen 40, Fingerabdruck in Mono."
+  },
+  {
+   "oberflaeche": "Webseite (Marketing)",
+   "modus": "Immer dunkel (Pult), dieselbe Rampe wie der Leitstand. Produktschirme erscheinen darauf als helles Papier im Gerät, weil sie es im Saal sind.",
+   "aufbau": "Kopf mit Signet und Wortmarke in Kreide, leise Navigation, aktiv mit 2-px-Unterstrich in Kreide.\n\nHELD: Web/Held 56/60 und platz.jpg mit eingesetzter Sprechstelle „spricht“ (Montage). Der rote On-Air-Kopf ist die einzige Farbe im ersten Bildschirm, das Rot ist hier Bedeutung und keine Dekoration.\n\nABSCHNITTE\n– „Farbe bedeutet etwas“: die vier Signale mit Ikone und Wort als einzige Buntflächen.\n– Einsatz: Saaltotale mit echten Schirmen.\n– System: Schaubilder in currentColor.\n– Sicherheit: Kettenschaubild mit dem Siegel in Kreide; der Satz zur geheimen Wahl lautet „Gezählt wird nur die Summe“, nicht „nirgends“.\n– Stand: Ikone und Wort statt Grün.\n\nBilder mit der Plakette „Symbolbild“. Schriften selbst gehostet. Textstile Web/*. Kein Rot außer an offenen Mikrofonen, kein Grün außer im Abschnitt „Farbe bedeutet etwas“."
+  }
+ ],
+ "verboten": [
+  "Signalfarben für irgendetwas außer ihrer einen Bedeutung: nicht für Pegelmeter, Kamera-Tally, PGM, REC, Fehler, Abbruch, Löschen, Quorum, Erfolg, „verbunden“, Ja/Nein, angenommen/abgelehnt, Fokus, Auswahl, Links oder als Webseiten-Akzent.",
+  "Eine Buntfarbe als Hausfarbe oder Akzent (Tintengrün, Petrol, Tally-Rot). marke/haus ist Tinte bzw. Kreide.",
+  "Rot, bevor das Mikrofon offen ist – der Knopf „Mikrofon an“ ist nie rot. Ein roter Rahmen um ein Kamerabild.",
+  "Bernstein für Netz, Störung, Pause, nicht öffentlich, Redezeitüberzug oder Vorabcheck. Grün für Quorum, Erfolg oder „läuft“. Grün in den Synoptiken einer laufenden Sitzung oder am Namensschild.",
+  "Ausgegraute, deaktivierte oder abgeblendete Bedienelemente (disabled, opacity). Was nicht erlaubt ist, ist nicht da; auch nicht gewählte Wahlknöpfe bleiben voll deckend.",
+  "Schleier oder Deckkraftminderung als Stand-Kennzeichnung. Leuchtende Signalflächen unter „Stand“. Veraltete Live-Daten ohne Stand-Plakette. „Spricht“ oder „hat das Wort“ am Namensschild länger als 10 s ohne Verbindung.",
+  "Text auf Schraffur. Schraffur außerhalb von Leitstand und Ergebnisbalken.",
+  "Zustand allein über Farbe, Randstärke oder Strichelung; gestrichelte Rahmen als Zustandszeichen.",
+  "Zwei gleich große Handlungen auf einem Schirm; eine destruktive Handlung in gleicher Größe neben der Hauptaktion.",
+  "Unumkehrbares mit einem Tipp oder ohne Bogen: Stimmabgabe, Abbruch, Siegel (zusätzlich 2 s halten), PIN-Neuausgabe, Leitungsübergabe. Natives confirm() oder alert().",
+  "Serife für Nichtbindendes (Wortmarke, Sitzungsname, PIN-Titel, Statusmeldungen, „nicht öffentlich“, vorläufige Zahlen). Grotesk oder Mono für bereits festgestellte Ergebnisse und Beschlüsse.",
+  "Mono für Sätze, Namen, Dateinamen, Platznummern, Zählwerte oder Zeitangaben im Satz. Mono ist nur für laufende Werte (Uhren, Redezeit, Countdown, Laufzeit), Hashes und Kettennummern da.",
+  "Schrift unter 15 pt am Tisch (außer der Kennzeile 13 versal), unter 13 auf dem iPhone, unter 12 im Leitstand. Versalien als Hervorhebung im Satz.",
+  "Abstandsrahmen („Luft“), Leere ohne gestalteten Leerzustand und Erklärprosa zur Systemarchitektur auf Bedienschirmen.",
+  "Nach außen wachsende Ränder, Slots mit variabler Breite und proportionale Ziffern in Laufwerten: kein Zustandswechsel darf ein Pixel verschieben. Nicht exakt 16:9 gerechnete Bildmaße.",
+  "Technikwerte auf Teilnehmergeräten: dB, Mikrofonzahl, Preset, „kein Bild“, Kamerastörung, Codec, „verbunden“.",
+  "Bei geheimer Wahl: Nahaufnahme während der Abstimmung, Eingangszähler auf Mitgliedergeräten, Namen der Ausstehenden bei der Leitung, animiert hochlaufende Zähler, Einzelereignisse mit Zeit im Leitstand, Anzeige der Wahl nach der Abgabe, eine Quittungsnummer vor dem Blind-Token, jede Reaktion des Namensschilds und das Wort „nirgends“, solange kein Blind-Token gebaut ist.",
+  "Sätze, die der Code nicht hält: Wasserzeichen auf jeder Seite, Schlüssel nach der Sitzung fort, Beteiligung „steht im Protokoll“, „Mikrofon geht bei Worterteilung auf“, „Kamera zeigt Ihren Platz“ ohne Prüfung des Kamerazustands, „angefahren in 1,4 s“, Warteschlange für verworfene Kamerafahrten, „Zurückziehen geht jederzeit“, Worterteilung in Meldereihenfolge, erfundene Stufen der Eskalationsleiter.",
+  "Hinweise auf Unsichtbares („hier nicht zu sehen“) oder auf künftige Funktionen in der Oberfläche. Zielbilder gibt es nur in Figma und nur mit Plakette.",
+  "Externe Abhängigkeiten: CDN, Google-Fonts-Link, Icon-Font, SF Symbols im Web, Analytics, externe Bilder; die Systemschrift als Gestaltungsschrift.",
+  "Browser-Speicher außer sessionStorage für Stimme und Wortmeldung.",
+  "Hell oder Dunkel der Saalgeräte nach dem Betriebssystem (Ausnahme ist der private Begleiter). Ein dritter Farbmodus. Schatten als getrennte Effektstile je Modus. Eine helle Bürofassung des Leitstands.",
+  "Kreis oder Punkt als Markenzeichen. Das Signet als Bedienikone. Eine Herstellermarke auf Sprechstelle, Abstimmung, Namensschild, Zuschaltung oder im Kamerabild. Mehrfarbige Kundenwappen auf Saalgeräten.",
+  "KI-Bilder mit erfundenen Oberflächen. Gestreckte oder beschnittene Kamerabilder. Text direkt auf dem Bild oder auf der Rampe der Bauchbinde statt auf dem Sockel. Apple-Bezel-Dateien und die Statusleisten-Zeit 9:41.",
+  "Verläufe außer der Bauchbinde, Texturen, Glas- und Blureffekte, Glühen, Dauerbewegung außer beim Laden, jedes Pulsieren außer dem Wortring und jede Ortsbewegung am Namensschild.",
+  "Pegel in Grün, Gelb und Rot.",
+  "Unterstrich-Reiter, eine Reiterleiste unten im Begleiter, Trefferflächen unter 44 pt und Tastenoptik für Elemente, die nicht reagieren (die Mini-Synoptik der Delegierten bleibt flach).",
+  "Rohwerte und Entwicklersprache in der Oberfläche („oeffentlich“, „schriftfuehrung“, „delegierter“, „erteilt“, „saal.json“, „0600“, „Ed25519“ außerhalb der technischen Details). Rollenwörter außer Sitzungsleitung, Delegierte/r, Schriftführung und Gast; „Mitglied“ als Rollenwort."
+ ]
+}

@@ -1,0 +1,3052 @@
+{
+ "seiten": [
+  {
+   "seite": "00 Titelszene & Drehbuch",
+   "format": "Tafeln 1920×1080, Grund Pult dunkel",
+   "geraet": "keins – Dokumentation",
+   "schirme": [
+    {
+     "name": "Titelszene",
+     "zweck": "Einstieg: das Produkt in einer Szene, Verzeichnis aller Seiten.",
+     "inhalt": "Montage auf saal.jpg (Plakette „Symbolbild“): Sprechstelle Stand A (Platz 3, gemeldet Nr. 2), Namensschild Platz 5 „spricht“, Leitstand Betrieb. Wortmarke „ConferenceCue“ in Kreide, Unterzeile „Sitzungssystem für Gremien · Entwürfe aller Oberflächen“. Kennzeile „DREHBUCH: AUFSICHTSRAT DER MUSTERWERK AG · 3. ORDENTLICHE SITZUNG · 25.09.2026“. Verzeichnis 00–13 mit den Seitennamen dieses Inventars. Fuß „Die Wahrheit bleibt web/ und intern/kern“.",
+     "bausteine": [
+      "Gerätrahmen",
+      "Wortmarke",
+      "Plakette",
+      "Montagerahmen"
+     ]
+    },
+    {
+     "name": "Legende der Kennzeichen",
+     "zweck": "Macht an jedem Frame sichtbar, was der Code hält und was Zielbild ist.",
+     "inhalt": "Kürzel in den Anmerkungen neben jedem Frame (nie im Schirm): [g] gebaut, Quelle genannt · [UI] Oberfläche weicht bewusst von web/ ab, Kern unverändert · [K: …] Kern fehlt, Frame trägt Plakette „Zielbild“ · [gp] geplant laut bedienung.md, Plakette „Zielbild“ · [Z] Zeitwert (seit, Redezeit, Laufzeit, Uhrzeit von Vorgängen), den der Zustand heute nicht liefert · [R] offene Rückfrage (Frame „Rückfragen“). Regeln: Anzeigenamen Sitzungsleitung · führt / berechtigt, Delegierte/r, Schriftführung, Gast; nie „Mitglied“, nie Rohwerte (leitung, delegierter, sitzung_laeuft_nicht, sitzung.json). Platz immer einstellig „Platz 3“; Uhrzeit HH:MM, Dauer m:ss in Mono. Modus der Saalgeräte aus der Saalkonfiguration (neues Feld modus: hell | gedimmt je Saal [K: Feld fehlt in saal.json]), nie aus dem Betriebssystem; nur der Begleiter folgt dem System. Figma: genau zwei Modi, Hell und Dunkel.",
+     "bausteine": [
+      "Anmerkung",
+      "Plakette"
+     ]
+    },
+    {
+     "name": "Drehbuch · Besetzung",
+     "zweck": "Legt Menschen, Plätze und Zahlen fest, die jeder Schirm zeigt.",
+     "inhalt": "1 Anke Bergmann · Sitzungsleitung · führt · Funktion Vorsitz · stimmberechtigt. 2 Mark Voss · Sitzungsleitung · berechtigt · Stellv. Vorsitz. 3 Jonas Öztürk · Delegierte/r (Nutzer der Sprechstellen- und Begleiter-Schirme). 4 Ida Peters. 5 Lars Krüger · Gast · Abschlussprüfer · ohne Stimmrecht. 6 Nadja Simon. 7 Timo Hofer. 8 Elif Yilmaz. 9 Bernd Ritter · Widerspruch gegen die Aufzeichnung. 10 Sara Lindner. 11 Paul Weber · eingeladen, nicht angemeldet (Kiosk und Leitstand „frei“, in der Sitzung „nicht angemeldet“). 12 Rita Falk · Schriftführung · ohne Stimmrecht. Z1 Karin Wolf · Delegierte/r · zugeschaltet (Zielbild). Stimmberechtigt 11 (1–4, 6–11, Z1), anwesend 10, Quorum 6. Organisation Musterwerk AG, Sitzung „Aufsichtsrat · 3. ordentliche Sitzung“, Donnerstag 25.09.2026, 14:00, Vorstandszimmer, ovaler Tisch (1 linke Stirn, 2 rechte Stirn, 3–7 oben, 8–12 unten). K1 „PTZ links“ 127.0.0.1:52381 Plätze 1–6 Preset 1–6; K2 „PTZ rechts“ :52382 Plätze 7–12 Preset 1–6. TOP 1 Begrüßung, Feststellung der Beschlussfähigkeit · 2 Genehmigung des Protokolls der letzten Sitzung · 3 Personalangelegenheit Geschäftsführung (nicht öffentlich) · 4 Feststellung des Jahresabschlusses 2025 (Vorlage 2026/14, 12 S.) · 5 Verschiedenes. Mappe: TOP 1 Anwesenheitsliste (öffentlich) · TOP 2 Protokollentwurf der letzten Sitzung (intern) · TOP 3 Personalvorlage Geschäftsführung (vertraulich) · TOP 3 Vergütungsvorschlag Geschäftsführung (geheim, Drehbuch-Ergänzung) · TOP 4 Jahresabschluss 2025 (intern) · TOP 4 Prüfbericht des Abschlussprüfers (vertraulich). In vorfuehrung/sitzung.json nachziehen: Titel (heute „Vorstandssitzung am 17. August“), Jahr 2026→2025 (am 25.09.2026 fachlich unmöglich), Platz 5 Rolle gast, Unterlage geheim. Z1 fehlt im Vorführlauf (dort 10 stimmberechtigt, 9 anwesend, Quorum 6).",
+     "bausteine": [
+      "Tabelle",
+      "Personenkennung",
+      "Rollenplakette",
+      "Stufe"
+     ]
+    },
+    {
+     "name": "Drehbuch · Zeitleiste und Stände",
+     "zweck": "Eine Zeitachse, lückenlose Kettennummern, damit Sprechstelle, Schild, Leitstand und Papier übereinstimmen.",
+     "inhalt": "13:45 Vorabcheck „Der Saal ist bereit“. 13:52–13:59 Anmeldungen Nr. 1–11. 14:00:00 eröffnet durch Anke Bergmann (Nr. 12, Nullpunkt). TOP 1 14:00–14:03. TOP 2 14:03–14:05, offene Abstimmung Ja 9 · Nein 0 · Enthaltung 1, angenommen. TOP 3 nicht öffentlich 14:05–14:12, Stream und Aufzeichnung pausieren; namentliche Abstimmung 14:09–14:10 Ja 7 · Nein 2 · Enthaltung 1, angenommen. TOP 4 ab 14:12. Stand A 14:32:10: Lars Krüger spricht seit 02:14 (Mikrofon durch die Leitung Nr. 86, K1 Preset 5 Nr. 87), wartend 1 Timo Hofer seit 14:29 (Nr. 85), 2 Jonas Öztürk seit 14:31 (Nr. 88), Aufzeichnung läuft, 1 von 3 Mikrofonen offen. Stand A′ 14:33:02: Krüger aus (Nr. 89), Timo Hofer hat das Wort, Mikrofon zu (Nr. 90). 14:38:05 Jonas Öztürk hat das Wort, spricht 14:38:12–14:41:20. 15:02 Bernd Ritter spricht, Kamera übersprungen. 15:10–15:18 Unterbrechung (Zielbild). 15:20:02 Platz 1 getrennt, 15:20:40 Mark Voss übernimmt, 15:24 Anke Bergmann am Ersatz-iPad, Übergabe zurück. Stand B 15:39:02 geheime Abstimmung TOP 4 (Nr. 196), Totale (Zielbild), Mikrofone zu; 15:40:16 Öztürk gibt ab, 15:40:18 WLAN weg, Stimme auf dem Gerät; 15:41:00 7 von 10, Platz 3 seit 0:42 getrennt; 15:41:05 Wiederanmeldung, 15:41:06 nachgereicht; 15:41:31 10 von 10; 15:41:40 ausgezählt (Nr. 208). Stand C 15:42:03 festgestellt von Anke Bergmann (Nr. 209): Ja 8 · Nein 1 · Enthaltung 1, angenommen. 15:42:40 TOP 5. 16:12 geschlossen (Nr. 231). 16:14 Abschluss Nr. 232 über 1–231, Fingerabdruck f00e b3d2 833f 9380. Beschlüsse: TOP 2 „Das Protokoll der 2. ordentlichen Sitzung vom 26.06.2026 wird genehmigt.“ · TOP 3 „Der Aufsichtsrat stimmt der Verlängerung des Anstellungsvertrags der Geschäftsführung um drei Jahre zu.“ · TOP 4 „Der Aufsichtsrat billigt den vom Vorstand aufgestellten Jahresabschluss 2025. Der Jahresabschluss ist damit festgestellt.“",
+     "bausteine": [
+      "Zeitleiste",
+      "Kettenzeile"
+     ]
+    },
+    {
+     "name": "Befunde aus dem Code",
+     "zweck": "Hält fest, wo Entwurf und Code auseinanderlaufen, damit kein Schirm lügt.",
+     "inhalt": "1 Abriss nach bestätigter Wortmeldung: web.go meldet den Platz ab, Kern.Abmelden zieht die Meldung zurück, das Gerät hat keinen Merker mehr – die Meldung ist still weg (Leitprinzip 3). 2 Zustand ohne Zeitpunkte (TOP seit, Redezeit, Laufzeit, geplanter Beginn, festgestellt um/von). 3 PIN ohne Fehlversuchsgrenze: 4 Ziffern durchprobierbar. 4 Kern kennt kein Privatgerät: mit PIN wird jedes Gerät zur vollen Sprechstelle, auch ein privates iPhone – mit Stimmrecht. 5 Abstimmung: Eingangszähler für alle sichtbar; Ja grün, Nein rot, „abgelehnt“ rot, vertraulich rot – alles neutral. 6 Geheime Wahl: Kamera bleibt auf dem letzten Sprecher statt Totale. 7 Schirm klappt nach Auszählen/Abbruch kommentarlos zu; Ergebnis namentlich nie gezeigt. 8 Grund des Wortendes (beendet/entzogen) nicht im Zustand. 9 „getrennt“ und „nicht angemeldet“ nicht unterscheidbar. 10 Funktion je Teilnahme fehlt (Abschlussprüfer). 11 Vorabcheck ohne Beschlussfähigkeit und Widerspruchsliste, obwohl bedienung.md sie nennt; Texte mit Rohwerten. 12 Aktion sitzung_unterbrechen fehlt. 13 Protokoll-Zeitmarke mm:ss läuft über 60 min („99:56“) → h:mm:ss; „1 Enthaltungen“. 14 dolmetscher.html nennt „Meilenstein 3“. 15 Unterlage öffnet neuen Tab (im Kiosk falsch), Wasserzeichen nicht eingebrannt. 16 weiß auf --an im Dunkeln ≈ 3:1.",
+     "bausteine": [
+      "Anmerkung"
+     ]
+    },
+    {
+     "name": "Nicht aufgenommen",
+     "zweck": "Begründet, welche Prüferwünsche bewusst fehlen.",
+     "inhalt": "Personenwahl/Kandidatenliste (Kern: nur Ja/Nein/Enthaltung) · Stimmverbot/Befangenheit (weder Kern noch bedienung.md) · Stimmbotschaft/zweite Stimme („delegierter“ heißt Delegierte/r; eine Stimme je Platz) · Zweitstimme des Vorsitzes (Kern: Ja > Nein; wäre allgemeines Satzungsmerkmal) · „Ändern bis Schluss“ (Stimme unumkehrbar, schon_abgestimmt) · Hinweis „Einmal-Token“ (blindes Token nicht gebaut) · Restzeit der Abstimmung, Redezeitgrenze 05:00 (keine Fristen im Kern) · Mikrofontest/Kamerabild am iPad (kein Ton-/Videopfad) · „Gerät wartet auf Zuordnung“ (Geräte sind nie gebunden, der Kiosk ist dieser Zustand) · Namensschild mit Widerspruch, Schloss, Testbild (Richtung: nie Abstimmung/Widerspruch/Technik) · grüne Bestätigungen (Grün = frei) · Bernstein für pausierte Aufzeichnung (Bernstein = Achtung; Pause ist korrekt → neutral, lock) · „Sitzung eröffnen“ im Leitstand (nur die Leitung am Platz) · Warteschlange zurückgestellter Kamerafahrten (Kern verwirft sie) · „Stimme im Puffer“ im Leitstand (Server sieht den Puffer nicht → „kann auf dem Gerät liegen“) · Pull-to-refresh · natives confirm() · Wahl der Mehrheitsregel · „Rückgängig“ nach Zurückziehen (Position nicht wiederherstellbar) · Badge „neu“ in der Mappe · #08080A und 1194×834 (Drehbuch: #000, 1180×820).",
+     "bausteine": [
+      "Anmerkung"
+     ]
+    },
+    {
+     "name": "Rückfragen",
+     "zweck": "Offene Entscheidungen, die vor dem Bau geklärt werden.",
+     "inhalt": "R1 Widerspruch: gilt er auch für Ton in Stream/Aufzeichnung, Transkript, Bauchbinde; darf die Totale die Person zeigen? R2 Inhalte der sechs Stufen der Eskalationsleiter. R3 Sitzungsmappe nach Schluss lesbar – wie lange, am Platz und am Begleiter? R4 Begleiter bei nicht öffentlichem TOP ohne Unterlagen (Drehbuch) oder „Stufe wie am Platz“ (bedienung.md)? R5 Signetform (Vorschlag Platzkachel). R6 Name des Saal-WLANs. R7 Begleiter im Home-Bildschirm-Modus ja/nein. R8 Protokoll bearbeiten: Anmerkung als Kettenereignis statt Textänderung? R9 Grund bei Abbruch und Übergabe als Pflichtfeld im Kern?",
+     "bausteine": [
+      "Anmerkung"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "01 Fundament",
+   "format": "Tafeln 1920×1080",
+   "geraet": "keins",
+   "schirme": [
+    {
+     "name": "Farbe · Variablen Hell und Dunkel",
+     "zweck": "Alle Farbvariablen mit Wert je Modus, Dunkel dient Saal gedimmt, Pult, Webseite.",
+     "inhalt": "Bestehend: flaeche/grund, flaeche/blatt, flaeche/vertieft, linie/normal, linie/stark, text/stark, text/leise, text/auf-marke, signal/mikro #C8102E, signal/wort #1D4E89, signal/frei #3F6B4A, signal/achtung #8A5A00, marke/haus #14453F. Neu: flaeche/erhoben; Dunkel-Rampe grund #0E0F11, blatt #1A1B1E, erhoben #25272B (Fehler behoben: vertieft ≠ grund); signal/mikro-voll (Fläche „spricht“), signal/mikro-kopf dunkel #3A1519 mit Kante #FF5A6E; signal/wort-toenung, signal/wort-rahmen dunkel #86AEEB, signal/wort-band dunkel #2A62B0; signal/achtung dunkel #D9A648; marke/haus dunkel #5FA79B; kreide / tinte (Knopffüllung und Schrift); schild/grund #000 (nur Namensschild, Modus Dunkel).",
+     "bausteine": [
+      "Farbfeld"
+     ]
+    },
+    {
+     "name": "Kontrasttafel",
+     "zweck": "Belegt jede Paarung Text/Fläche in beiden Modi.",
+     "inhalt": "Gemessen: weiß auf #C8102E 5,9:1 · weiß auf #3A1519 16,1:1 · #FF5A6E auf #0E0F11 6,3:1, auf #1A1B1E 5,7:1 · weiß auf #FF5A6E nur 3,0:1 → verboten, Tinte #0E0F11 auf #FF5A6E 6,3:1 · #86AEEB auf #0E0F11 8,5:1, auf #1A1B1E 7,6:1 · weiß auf #2A62B0 6,1:1 · weiß auf #1D4E89 8,4:1 · #8A5A00 auf weiß 5,9:1 · #D9A648 auf #0E0F11 8,7:1 · #5FA79B auf #0E0F11 6,8:1 · #14453F auf weiß 10,8:1 · #3F6B4A auf weiß 6,2:1 · weiß auf #000 21:1. Mindestwerte: Text 4,5:1, Saalzustände und Begleiter 7:1 wo möglich. Hell-Werte der Papierflächen aus den Figma-Variablen nachtragen.",
+     "bausteine": [
+      "Kontrastzeile"
+     ]
+    },
+    {
+     "name": "Schrift · Textstile",
+     "zweck": "Schriftzuordnung mit Aussage: Serif bindet, Plex Sans bedient, Plex Mono zählt.",
+     "inhalt": "Bestehende 13 Stile plus: Saal/Band SemiBold 20/24 · Saal/Beschluss 40/46 Serif · Saal/Beschluss kompakt 28/36 Serif · Saal/TOP 24/30 Serif · Saal/Urteil 56/60 · Hand/TOP 20/26 Serif · Pult/TOP 17/22 Serif · Web/Held 56/60 · Schild/Name 96–144 SemiBold · Schild/Funktion 44 · Schild/Zustand 40 · Zahl/Countdown Mono 40 · Zahl/Redezeit Mono 24 · Zahl/Band Mono 17 · Papier/Titel Serif 12/17 pt · Papier/Zeile Plex Sans 9,5/14 pt · Papier/Beschluss Serif 11/16 pt · Papier/Zeit Mono 8 pt · Papier/Kette Mono 7,5 pt. Alle Schriften lokal gebündelt, keine externe Quelle.",
+     "bausteine": [
+      "Textstil-Muster"
+     ]
+    },
+    {
+     "name": "Raster, Ebenen, Radius, Trefferfläche",
+     "zweck": "Maße, die alle Seiten teilen.",
+     "inhalt": "Sprechstelle 1180×820: Statusband y 24–80, Inhalt y 104–776, linke Spalte x 24–772 (748), rechte x 792–1156 (364), Abstand 20. Hochformat 820×1180 einspaltig. Begleiter 402×874, Satzbreite 362. Zuschaltung und Leitstand 1440×800, 12 Spalten, Rand 24, Abstand 16, Mindestmaß 1280×720. Namensschild 874×402, seitlich 62, Inhalt 750×381. Radius sm 4 · md 8 · lg 12 · rund 999. Ebene/1 Blatt, Ebene/2 Karte, Ebene/3 Popover/Bogen mit Schatten je Modus. Trefferfläche mindestens 44, große Handlung am Platz 88–120 hoch.",
+     "bausteine": [
+      "Raster"
+     ]
+    },
+    {
+     "name": "Bewegung",
+     "zweck": "Dauer und Kurve jeder Bewegung, damit ausgearbeitet auch Timing heißt.",
+     "inhalt": "Gedrückt 80 ms · Auswahl Wahlknopf 150 ms · Bestätigungsleiste 250 ms ease-out · Häkchen 400 ms Strichzeichnung · Toast 200 ms rein, 4 s stehen, 200 ms raus · Bogen 250 ms · PIN falsch Schütteln 300 ms · Offline-Schleife wifi-off 1,2 s · Namensschild nur Überblendung 150 ms · Zähler, Ergebnis und Redezeit ohne Animation. „Bewegung reduzieren“: alles wird Überblendung 150 ms, kein Schütteln.",
+     "bausteine": [
+      "Bewegungstabelle"
+     ]
+    },
+    {
+     "name": "Farbe bedeutet etwas",
+     "zweck": "Regel und Verbote der vier Signalfarben an Beispielen.",
+     "inhalt": "Rot = Mikrofon offen · Blau = hat das Wort · Grün = frei (nur Kiosk-Saalplan, Leitstand-Tabelle, Webseitenabschnitt) · Bernstein = Achtung, Widerspruch gegen die Aufzeichnung. Hausfarbe Tintengrün, nie Signal. Falsch/richtig-Paare: Ja-Knopf grün → neutral; „abgelehnt“ rot → Tinte; „vertraulich“ rot → Stufe-Baustein; Aufzeichnung pausiert Bernstein → neutral mit lock; Abbrechen rot → Tinte mit eindeutigem Verb. Jeder Zustand trägt Ikone und Wort.",
+     "bausteine": [
+      "Signalblock",
+      "Ikone"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "01b Marke, Mitmarke & Sprache",
+   "format": "Tafeln 1920×1080",
+   "geraet": "keins",
+   "schirme": [
+    {
+     "name": "Signet und Wortmarke",
+     "zweck": "Gültige Marke statt des wandernden roten Punkts.",
+     "inhalt": "Wortmarke „ConferenceCue“ Plex Sans SemiBold. Signet-Vorschlag Platzkachel: abgerundetes Rechteck radius/md in marke/haus [R5]. Varianten hell, dunkel, einfarbig, negativ; Schutzraum = Versalhöhe; Mindestgröße 16 px. Verbote: nie Rot, nie Serif, nie Kreis (Kreis ist Zustandszeichen: Aufzeichnung, verbunden, Tally).",
+     "bausteine": [
+      "Signet",
+      "Wortmarke"
+     ]
+    },
+    {
+     "name": "App-Icon, Favicon, Manifest",
+     "zweck": "Home-Bildschirm-Web-App mit Produktnamen statt data:,.",
+     "inhalt": "Icon 1024 Signet auf marke/haus, Papierton-Variante; apple-touch-icon 180, Favicon 32 und SVG; Manifest-Farben aus Variablen; Tab-Titel „Sprechstelle · ConferenceCue“. Keine Schrift, kein Rot; ein Icon für alle Rollen.",
+     "bausteine": [
+      "App-Icon"
+     ]
+    },
+    {
+     "name": "Mitmarke · Kundenwappen",
+     "zweck": "Wo das Kundenzeichen sitzt, geregelt über Gestaltungsdaten.",
+     "inhalt": "Plätze: Kiosk-Leerlauf (64), PIN-Schirm (48), Statusband (24), Kopf Zuschaltung, Protokollkopf (farbig), Stream-Tafeln. Beispiel „Musterwerk AG“ als Platzhalterwappen. Regel: im Saal tritt ConferenceCue zurück (höchstens klein im Fuß), Leitstand und Prüfstelle tragen die Marke. Einfarbig auf Papier und Dunkel.",
+     "bausteine": [
+      "Mitmarke"
+     ]
+    },
+    {
+     "name": "Sprache und Schreibweisen",
+     "zweck": "Ton und Begriffe, die alle Oberflächen teilen.",
+     "inhalt": "Kurz, ehrlich, Ergebnis zuerst. Begriffe: Sprechstelle, Sitzungsleitung, Wortmeldung, „Mikrofon offen“ (nie „aktiv“), „hat das Wort“, Zuschaltplatz Z1, Sitzungsmappe, Unterlage, Stufe öffentlich/intern/vertraulich/geheim. Rollen: Sitzungsleitung · führt/berechtigt, Delegierte/r, Schriftführung, Gast. Zahlen: „Platz 3“, „TOP 4 von 5“, „Ja 8 · Nein 1 · Enthaltung 1“. Fehlermeldungen sagen, was gilt und was zu tun ist; nie Code.",
+     "bausteine": [
+      "Beispieltafel"
+     ]
+    },
+    {
+     "name": "Bildsprache",
+     "zweck": "Regeln für Fotos, Mockups und Schaubilder.",
+     "inhalt": "Echte Räume, echte Schirme, keine erfundenen Oberflächen; KI-Bilder tragen „Symbolbild“. Mockups: iPad quer mit Sprechstelle/Stimmzettel, iPhone quer mit Namensschild, Monitor mit Leitstand. Schaubilder in currentColor, eine Aussage in marke/haus, Rot nur für „Mikrofon offen“. Leitbild: Papierblatt auf dem dunklen Pult.",
+     "bausteine": [
+      "Gerätrahmen",
+      "Schaubild"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "02 Ikonen",
+   "format": "Tafeln 1920×1080",
+   "geraet": "keins",
+   "schirme": [
+    {
+     "name": "Ikonentafel",
+     "zweck": "Pflichtsatz vor allen Schirmen, damit Zustände nicht an Farbe und Kleintext hängen.",
+     "inhalt": "Lucide (ISC, lokal gebündelt, Namen in der verwendeten Version prüfen): mic, mic-off, hand, video, video-off, lock, check, x, minus, clock, wifi, wifi-off, refresh-cw, file-text, armchair, circle-check, circle-pause, circle-alert, triangle-alert, info, battery, battery-low, log-out, stamp, printer, qr-code, nfc, smartphone, tablet, monitor, camera, volume-2, headphones, captions, search, zoom-in, zoom-out, ellipsis, command, keyboard, list-ordered, upload, download, grip-vertical, languages, fingerprint, calendar-clock, signal. Eigenzeichnungen: staffelstab, platzkachel (Signet), tisch-zeichen (NFC am Platz).",
+     "bausteine": [
+      "Ikone"
+     ]
+    },
+    {
+     "name": "Größen und Strich",
+     "zweck": "Einheitliches Raster.",
+     "inhalt": "24-px-Raster, Strich 1,5 bei 24; Stufen 16/20/24/32/48/64 mit angepasstem Strich (2 bei 16/20). Ikone immer mit Wort bei Zuständen.",
+     "bausteine": [
+      "Ikone"
+     ]
+    },
+    {
+     "name": "Zuordnung Zustand → Ikone",
+     "zweck": "Eine Ikone je Bedeutung.",
+     "inhalt": "gemeldet hand · hat das Wort mic mit Blau · spricht mic Rot · Mikrofon aus mic-off · nicht angemeldet armchair leise · frei armchair Grün (nur Kiosk) · nicht öffentlich lock · Widerspruch video-off Bernstein · getrennt wifi-off · gesichert auf dem Gerät tablet mit check · Leitung staffelstab · unterbrochen circle-pause · geschlossen/abgeschlossen circle-check · Achtung triangle-alert · Siegel stamp · Vertagt calendar-clock.",
+     "bausteine": [
+      "Ikone"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "03 Bausteine · Zustandsblätter",
+   "format": "Tafeln 1920×1080, je Komponente Hell und Dunkel nebeneinander",
+   "geraet": "keins",
+   "schirme": [
+    {
+     "name": "Knopf",
+     "zweck": "Alle Interaktionszustände, auch ohne Hover.",
+     "inhalt": "Größen groß 88–120, normal 56, klein 44, Textknopf. Arten stark (Tinte), Kreide-Primär, Umriss, Text, Mikrofon an (Kreide/Tinte), Mikrofon aus (erhobene Fläche, rote Kontur). Zustände Ruhe · gedrückt · Fokus · wartet auf den Kern (Aktivitätsanzeige) · bestätigt · Fehler. Kein deaktivierter Zustand im Saal: nicht erlaubt heißt nicht da.",
+     "bausteine": [
+      "Knopf"
+     ]
+    },
+    {
+     "name": "Platz-Chips",
+     "zweck": "Ein Platzbaustein in vier Größen mit allen Zuständen.",
+     "inhalt": "Kiosk 72, Mini 40, Leitung 72, Leitstand maßstäblich. Zustände: am Platz (neutral), spricht (Rot), hat das Wort (Blau), gemeldet (hand + Nr.), nicht angemeldet, frei (Grün, nur Kiosk/Leitstand), nicht besetzt (nicht antippbar), getrennt, führt (staffelstab), Widerspruch-Eckmarke (video-off, nur Leitung/Leitstand/eigener Platz), eigener Platz (Reiter „SIE“), angetippt (Umrandung), Zuschaltplatz Z1.",
+     "bausteine": [
+      "Platz"
+     ]
+    },
+    {
+     "name": "Wahlknopf und Stimmkarte",
+     "zweck": "Stimmabgabe als Bauteilkette.",
+     "inhalt": "Wahlknopf Ja (check, „dafür“), Nein (x, „dagegen“), Enthaltung (minus, „zählt nicht mit“): Ruhe, gedrückt, gewählt (Tinte gefüllt, check), abgewählt 40 %, gesendet. Stimmkarte: wird übertragen, gesichert auf dem Gerät (gestrichelt, verbunden/getrennt), eingegangen, offen „Ihre Stimme (Ja) ist abgegeben“, verfallen, verworfen, bereits gezählt, nicht abgestimmt, kein Stimmrecht.",
+     "bausteine": [
+      "Wahlknopf",
+      "Stimmkarte"
+     ]
+    },
+    {
+     "name": "Hinweisbänder, Toasts, Bögen",
+     "zweck": "Rückmeldungen und Bestätigungen mit fester Gestalt.",
+     "inhalt": "Band 40 über volle Breite: „Verbindung getrennt seit 0:42 – Eingaben bleiben auf dem Gerät“ · „Nicht öffentlich – Stream und Aufzeichnung pausiert“ · „Automatische Technikeingriffe gesperrt: Abstimmung läuft“ · „Die Sitzungsleitung ist gerade nicht verbunden“. Toast 4 s mit Ikone. Bogen: Titel, Folgen-Text, Protokollhinweis „Der Vorgang steht im Protokoll“, sichere Wahl links, Verb-Knopf rechts in Tinte; Varianten Pflichtgrund, Halteknopf 2 s.",
+     "bausteine": [
+      "Hinweisband",
+      "Toast",
+      "Bogen"
+     ]
+    },
+    {
+     "name": "Meldungen des Kerns",
+     "zweck": "Jeder Fehlercode mit Anzeigetext, ohne Signalfarbe.",
+     "inhalt": "grenze_erreicht „Gerade sind 3 von 3 Mikrofonen offen – Ihr Mikrofon kann öffnen, sobald eines schließt.“ · platz_unbekannt „Platz 99 gibt es nicht.“ · platz_belegt „Platz 3 ist bereits belegt – an einem anderen Gerät angemeldet.“ · nicht_berechtigt „Für Platz 3 ist niemand eingetragen.“ / „Nur die Sitzungsleitung schaltet fremde Plätze.“ / „Die Sitzungsleitung liegt gerade bei einem anderen Platz.“ / „Platz 3 ist nicht zur Sitzungsleitung berechtigt.“ · pin_falsch „PIN stimmt nicht.“ · kein_wort „Das Wort wurde noch nicht erteilt.“ · sitzung_laeuft_nicht „Es läuft keine Sitzung.“ · keine_abstimmung „Es läuft keine Abstimmung.“ · abstimmung_laeuft „Es wird abgestimmt – der Tagesordnungspunkt bleibt bis zum Auszählen stehen.“ · nicht_beschlussfaehig „Nicht beschlussfähig: 5 von 11 Stimmberechtigten anwesend, nötig sind 6.“ · schon_abgestimmt „Für Ihren Platz ist bereits eine Stimme gezählt – doppelt gezählt wird nie.“ · stimme_verfallen „Ihre Stimme wurde NICHT gezählt – die Abstimmung war geschlossen, bevor die Verbindung zurückkam.“ · kein_top „Erst einen Tagesordnungspunkt aufrufen, dann abstimmen.“ · top_unbekannt „Tagesordnungspunkt 9 gibt es nicht.“ · top_geschlossen „Tagesordnungspunkt 5 ist vertagt und wird nicht mehr aufgerufen.“ · unterlage_unbekannt „Diese Unterlage gibt es nicht.“ · unterlage_veraendert „Die Datei wurde ausgetauscht und wird nicht ausgeliefert – bitte die Technik rufen.“ · freigabe_abgelaufen „Die Freigabe ist abgelaufen – bitte erneut öffnen.“ · speicher_fehler „Der Vorgang konnte nicht protokolliert werden – es hat sich nichts geändert.“ Erfolg: „„Anwesenheitsliste“ geöffnet“ neutral mit check. [g] fehler.go, Texte [UI].",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Leerzustände und Laden",
+     "zweck": "Jede Liste auch leer und ladend.",
+     "inhalt": "Redeliste „Noch keine Wortmeldungen zu TOP 4“ (hand) · Mappe „Zu TOP 5 liegen keine Unterlagen vor“ (file-text) · „Unterlagen werden geladen“ Skeleton · keine Abstimmung „Keine Abstimmung“ · Sitzung nicht begonnen „Beginn um 14:00“ [K: geplanter Beginn].",
+     "bausteine": [
+      "Leerzustand",
+      "Skeleton"
+     ]
+    },
+    {
+     "name": "Personenkennung, Redezeit, Uhr",
+     "zweck": "Wer, wie lange, wann – als wiederkehrende Teile.",
+     "inhalt": "Initialen-Kreis 32/40 („JÖ“), Name, Anzeigerolle, Funktion („Vorsitz“, „Abschlussprüfer“ [K: Funktion je Teilnahme]), Kennung „ohne Stimmrecht“, Widerspruch. Redezeit Mono „02:14“ klein (Liste) und 24 (Leitstand) [Z]; Uhr Mono; Countdown Mono 40.",
+     "bausteine": [
+      "Personenkennung",
+      "Redezeit",
+      "Uhr"
+     ]
+    },
+    {
+     "name": "Ergebnis und Beschlussfähigkeit",
+     "zweck": "Rechtsrahmen der Abstimmung als Gestalt.",
+     "inhalt": "Beschlussfähigkeitsbalken mit Quorumsmarke „Beschlussfähig: 10 von 11 anwesend, nötig 6 (beim Start festgehalten)“; Eingangszähler nur Leitung „7 von 10 Stimmzetteln“; Ergebnisblock Serif: Urteil „Angenommen“/„Abgelehnt“ in Tinte, „Ja 8 · Nein 1 · Enthaltung 1“ tnum, neutrale Balken, „festgestellt 15:42“; namentliche Tabelle.",
+     "bausteine": [
+      "Beschlussfähigkeitsbalken",
+      "Ergebnisblock",
+      "Namentlich-Tabelle"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "04a Sprechstelle · Anmeldung",
+   "format": "1180×820 quer, Modus Hell",
+   "geraet": "iPad Air 11″ im Kiosk (Home-Bildschirm-Web-App)",
+   "schirme": [
+    {
+     "name": "Start · Server wird gesucht",
+     "zweck": "Gerät bereit, noch keine Verbindung – ruhig, ohne Signalfarbe.",
+     "inhalt": "Wappen Musterwerk AG 64, „Vorstandszimmer“, Aktivitätsanzeige „Verbindung wird aufgebaut …“ [g], Uhr „13:50“. ConferenceCue klein im Fuß.",
+     "bausteine": [
+      "Mitmarke",
+      "Uhr"
+     ]
+    },
+    {
+     "name": "Leerlauf · Kiosk-Saalplan",
+     "zweck": "Einziger Ort am Tisch mit Grün: wer sitzt wo.",
+     "inhalt": "13:55. Statusband nur Uhr. Wappen 64, „Tippen Sie auf Ihren Platz“ 28/34. Ovaler Saalplan Chips 72: 1, 2, 5, 12 „am Platz“; 3 „frei · erwartet: J. Öztürk“ (Grün, armchair); ebenso 4 I. Peters, 6 N. Simon, 7 T. Hofer, 8 E. Yilmaz, 9 B. Ritter, 10 S. Lindner, 11 P. Weber. Plätze ohne Teilnahme „nicht besetzt“, nicht antippbar (in dieser Sitzung keiner). [g] Kachel „frei“; [UI] Grün und „erwartet“.",
+     "bausteine": [
+      "Saalplan Kiosk",
+      "Platz",
+      "Mitmarke"
+     ]
+    },
+    {
+     "name": "Leerlauf · Platz angetippt",
+     "zweck": "Bestätigt den Platz vor der PIN.",
+     "inhalt": "Chip 3 angetippt (Umrandung). Bogen „Platz 3 · Jonas Öztürk erwartet“, Primär „Hier sitzen“, Textknopf „Abbrechen“. [g] Platzleiste „Hier sitzen“, [UI] Bogen.",
+     "bausteine": [
+      "Bogen",
+      "Platz"
+     ]
+    },
+    {
+     "name": "PIN · leer",
+     "zweck": "Anmeldung am Platz, zweispaltig.",
+     "inhalt": "Links (5 Spalten, grund): Wappen 48, „Aufsichtsrat · 3. ordentliche Sitzung“ 32/38, „Donnerstag, 25.09.2026 · 14:00 · Vorstandszimmer“ 20/28 [K: Datum/Beginn], Mini-Saalplan 364×220 mit Platz 3 markiert, Textknopf „Anderer Platz“. Rechts (7 Spalten): Heldkarte „PIN für Platz 3“, „Die PIN steht auf Ihrem Zettel.“, vier leere Kreise, Ziffernblock 1–9, 0, löschen. Nach der vierten Ziffer wird automatisch gesendet [UI].",
+     "bausteine": [
+      "PIN-Block",
+      "Heldkarte",
+      "Mini-Synoptik"
+     ]
+    },
+    {
+     "name": "PIN · zwei Ziffern",
+     "zweck": "Eingabefortschritt.",
+     "inhalt": "Zwei gefüllte Kreise, sonst wie leer.",
+     "bausteine": [
+      "PIN-Block"
+     ]
+    },
+    {
+     "name": "PIN · prüft",
+     "zweck": "Wartet auf den Kern.",
+     "inhalt": "Vier gefüllte Kreise, statt Ziffernblock Aktivitätsanzeige „Wird geprüft …“.",
+     "bausteine": [
+      "PIN-Block"
+     ]
+    },
+    {
+     "name": "PIN · falsch",
+     "zweck": "Bekannter Fehlerzustand.",
+     "inhalt": "Kreise schütteln 300 ms und leeren. „PIN stimmt nicht.“ [g] „noch 2 Versuche“ [K: Fehlversuchsgrenze]. Ziffernblock bleibt.",
+     "bausteine": [
+      "PIN-Block",
+      "Meldung"
+     ]
+    },
+    {
+     "name": "PIN · gesperrt",
+     "zweck": "Schutz gegen Durchprobieren.",
+     "inhalt": "lock 48, „Platz 3 ist gesperrt“, „Zu viele falsche Eingaben. Bitte wenden Sie sich an die Schriftführung oder die Technik.“ Kein Ziffernblock, Textknopf „Anderer Platz“. [K: Fehlversuchsgrenze, Befund 3].",
+     "bausteine": [
+      "Heldkarte",
+      "Ikone"
+     ]
+    },
+    {
+     "name": "Anmeldung · abgewiesen",
+     "zweck": "Belegt und nicht eingetragen.",
+     "inhalt": "Variante A: „Platz 3 ist bereits belegt – an einem anderen Gerät angemeldet.“ Variante B: „Für Platz 3 ist niemand eingetragen.“ Knöpfe „Anderer Platz“, „Abbrechen“. [g] platz_belegt, nicht_berechtigt.",
+     "bausteine": [
+      "Meldung",
+      "Knopf"
+     ]
+    },
+    {
+     "name": "Willkommen",
+     "zweck": "Übergang in den Platz, 600 ms, dann Überblendung.",
+     "inhalt": "circle-check, „Angemeldet“, „Platz 3“ groß, „Jonas Öztürk · Delegierte/r“ kleiner (Name nie größtes Element). [UI].",
+     "bausteine": [
+      "Heldkarte"
+     ]
+    },
+    {
+     "name": "Vor Beginn · Sitzung vorbereitet",
+     "zweck": "Angemeldet, keine Handlung, nur die Lage.",
+     "inhalt": "13:55:08. Statusband „Aufsichtsrat · 3. ordentliche Sitzung — vorbereitet“, Pille „Keine Aufzeichnung“. Heldkarte: „Beginn um 14:00“, Countdown Mono 40 „04:52“ [K: geplanter Beginn], circle-check „Ihr Platz ist bereit“ [K: Vorabcheck je Platz], „Die Sitzung ist vorbereitet. Sie beginnt, wenn die Leitung eröffnet.“ [g+UI], kein Knopf. Darunter Tagesordnung als Zeitleiste 1–5, TOP 3 mit lock. Rechts Segment mit Mappe lesbar.",
+     "bausteine": [
+      "Heldkarte",
+      "Countdown",
+      "Tagesordnung-Zeitleiste",
+      "Segmentsteuerung"
+     ]
+    },
+    {
+     "name": "Begleiter zulassen",
+     "zweck": "Zustimmung am Platz, bevor ein Privatgerät verbunden wird.",
+     "inhalt": "Über Stand A: Bogen „Ein Begleiter möchte sich mit Platz 3 verbinden“, „iPhone über das Zeichen am Platz“, „Der Begleiter darf Unterlagen lesen, sich zu Wort melden und Untertitel mitlesen. Nie Mikrofon, nie Stimmabgabe.“ „Ablehnen“ / Primär „Zulassen“. [gp, K: Begleitrolle].",
+     "bausteine": [
+      "Bogen",
+      "Plakette"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "04b Sprechstelle · Teilnehmende · Wortmeldung",
+   "format": "1180×820 quer, Hell",
+   "geraet": "iPad Air 11″ Kiosk",
+   "schirme": [
+    {
+     "name": "Nicht gemeldet",
+     "zweck": "Grundzustand: bin ich dran, worüber wird geredet.",
+     "inhalt": "14:30:40. Statusband: Wappen 24 „Musterwerk AG · Aufsichtsrat“, Pille „Aufzeichnung läuft“ (video), wifi „verbunden“, Uhr „14:30“. TOP-Kopf: „TOP 4 VON 5 · SEIT 14:12“ [Z], Serif „Feststellung des Jahresabschlusses 2025“, „Es spricht: Lars Krüger · Platz 5 · 00:44“ [Z]. Heldkarte: Kennzeile „PLATZ 3 · JONAS ÖZTÜRK · DELEGIERTE/R“, „Nicht gemeldet“, große Handlung „Wort melden“ (hand), „Das Mikrofon geht auf, sobald die Leitung das Wort erteilt.“ [g]. Rechts Segment „Redeliste · Tagesordnung · Mappe“, Redeliste: Es spricht Lars Krüger; Wartet 1 Timo Hofer. Saal-Karte: 5 spricht, 7 hand, 11 nicht angemeldet, Reiter „SIE“ an 3; Legende „spricht · hat das Wort · gemeldet · nicht angemeldet“.",
+     "bausteine": [
+      "Statusband",
+      "TOP-Kopf",
+      "Heldkarte",
+      "Segmentsteuerung",
+      "Redeliste-Block",
+      "Mini-Synoptik"
+     ]
+    },
+    {
+     "name": "Wort melden · wird übertragen",
+     "zweck": "Rückmeldung zwischen Tippen und Bestätigung.",
+     "inhalt": "14:31:07. Heldkarte gestrichelt: „Ihre Wortmeldung liegt auf dem Gerät“, „Sie wird gerade übertragen.“ [g]. Danach Toast „Wortmeldung angekommen · Nr. 2“ [UI].",
+     "bausteine": [
+      "Heldkarte",
+      "Toast"
+     ]
+    },
+    {
+     "name": "Gemeldet · Stand A",
+     "zweck": "Position in der Liste, eine Handlung.",
+     "inhalt": "14:32:10. Heldkarte „Gemeldet · Nr. 2“, „Vor Ihnen: Timo Hofer“, große Umriss-Handlung „Meldung zurückziehen“, „Sie stehen auf der Redeliste.“ [g]. Redeliste: Es spricht Lars Krüger · Platz 5 · 02:14; Wartet 1 Timo Hofer · seit 14:29, 2 Jonas Öztürk · SIE · seit 14:31 [Z]. Saal-Karte 5 spricht, 3 und 7 hand.",
+     "bausteine": [
+      "Heldkarte",
+      "Redeliste-Block",
+      "Mini-Synoptik"
+     ]
+    },
+    {
+     "name": "Gemeldet · Stand A′",
+     "zweck": "Vorgänger hat das Wort.",
+     "inhalt": "14:33:02. „Es spricht: niemand · Timo Hofer hat das Wort“. Heldkarte „Gemeldet · Nr. 2“, „Vor Ihnen: Timo Hofer (hat das Wort)“. Saal-Karte 7 blau „Wort“.",
+     "bausteine": [
+      "Heldkarte",
+      "Mini-Synoptik"
+     ]
+    },
+    {
+     "name": "Hat das Wort",
+     "zweck": "Aufforderung, das Mikrofon zu öffnen.",
+     "inhalt": "14:38:05. Signalkante blau. Heldkarte wort-toenung, 4-px-Rand blau: „Sie haben das Wort“, „Schalten Sie Ihr Mikrofon ein, wenn Sie beginnen.“, große Handlung „Mikrofon an“ (mic, Tinte), „Sie haben das Wort.“ [g].",
+     "bausteine": [
+      "Signalkante",
+      "Heldkarte",
+      "Knopf"
+     ]
+    },
+    {
+     "name": "Spricht",
+     "zweck": "Mikrofon offen, unübersehbar.",
+     "inhalt": "14:39:38. Signalkante rot. On-Air-Kopf rot „Mikrofon offen · 01:26“ [Z]. Bildzeile video „Im Bild: PTZ links · Preset 3“ [g Zustand.kamera]; stumme Kamera: „Kamera antwortet nicht – Ihr Ton läuft“. Handlung „Mikrofon aus“ (mic-off, rote Kontur), „Ihr Mikrofon ist offen.“ [g]. Saal-Karte 3 rot.",
+     "bausteine": [
+      "Signalkante",
+      "Heldkarte",
+      "Knopf"
+     ]
+    },
+    {
+     "name": "Beitrag beendet",
+     "zweck": "Rückkehr in den Grundzustand mit Bestätigung.",
+     "inhalt": "14:41:20. Heldkarte „Nicht gemeldet“ + „Wort melden“. Toast check „Ihr Beitrag ist beendet · 3:08“ [Z, UI].",
+     "bausteine": [
+      "Heldkarte",
+      "Toast"
+     ]
+    },
+    {
+     "name": "Wort entzogen",
+     "zweck": "Eingriff der Leitung neutral mitteilen.",
+     "inhalt": "Heldkarte „Nicht gemeldet“, Meldung (info, neutral): „Die Leitung hat Ihnen das Wort entzogen. Ihr Mikrofon ist aus.“, darunter „Wort melden“. [K: Grund des Wortendes im Zustand, Befund 8].",
+     "bausteine": [
+      "Heldkarte",
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Meldung zurückgezogen",
+     "zweck": "Bestätigung mit ehrlicher Wiederholung.",
+     "inhalt": "Toast „Meldung zurückgezogen“ mit Textknopf „Erneut melden“ und Zusatz „Sie kommen ans Ende der Liste.“ 5 s. [UI].",
+     "bausteine": [
+      "Toast",
+      "Heldkarte"
+     ]
+    },
+    {
+     "name": "Redeliste · leer",
+     "zweck": "Leerzustand der Liste.",
+     "inhalt": "14:12:30. Blatt Redeliste: hand 32, „Noch keine Wortmeldungen zu TOP 4“. [g „keine Wortmeldung“, UI Text].",
+     "bausteine": [
+      "Redeliste-Block",
+      "Leerzustand"
+     ]
+    },
+    {
+     "name": "Redeliste · lang",
+     "zweck": "Überlauf mit festgehaltenen Zeilen.",
+     "inhalt": "15:05. Kopf festgehalten „Es spricht: Mark Voss · 01:10“. Wartet 1 Ida Peters, 2 Nadja Simon, 3 Timo Hofer, 4 Elif Yilmaz, 5 Bernd Ritter, 6 Sara Lindner, 7 Jonas Öztürk · SIE, 8 Karin Wolf · Z1, 9 Anke Bergmann. Eigene Zeile „SIE · Nr. 7“ unten festgehalten, Scroll-Schatten oben und unten.",
+     "bausteine": [
+      "Redeliste-Block"
+     ]
+    },
+    {
+     "name": "Reiter Tagesordnung",
+     "zweck": "Welcher Punkt läuft, was kommt.",
+     "inhalt": "Zeitleiste: 1 abgeschlossen 14:00–14:03 · 2 abgeschlossen, Beschluss angenommen · 3 lock nicht öffentlich, abgeschlossen · 4 laufend seit 14:12 · 5 offen. Titel Serif. [g Zustände, Z Zeiten].",
+     "bausteine": [
+      "Tagesordnung-Zeitleiste"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "04c Sprechstelle · Teilnehmende · Lagen & Störungen",
+   "format": "1180×820 quer, Hell",
+   "geraet": "iPad Air 11″ Kiosk",
+   "schirme": [
+    {
+     "name": "Nicht öffentlicher TOP",
+     "zweck": "Rechtlich relevante Pause sichtbar, Bedienung unverändert.",
+     "inhalt": "14:07:30. Pille „Keine Aufzeichnung · nicht öffentlich“ (lock, neutral). TOP-Kopf lock „TOP 3 VON 5 · SEIT 14:05“, Serif „Personalangelegenheit Geschäftsführung“, „Es spricht: Anke Bergmann · Platz 1 · 01:40“. Heldkarte unverändert „Nicht gemeldet“. [g aufzeichnung=false].",
+     "bausteine": [
+      "Statusband",
+      "Pille",
+      "TOP-Kopf",
+      "Heldkarte"
+     ]
+    },
+    {
+     "name": "Verbindung weg · Meldung gepuffert",
+     "zweck": "Ausfall kostet Komfort, nicht die Handlung.",
+     "inhalt": "14:33:20. Band wifi-off „Verbindung getrennt seit 0:12 – Eingaben bleiben auf dem Gerät“. Plakette „Stand 14:33:08“ auf TOP-Kopf, Redeliste, Saal-Karte. Heldkarte gestrichelt „Ihre Wortmeldung liegt auf dem Gerät“, „Verbindung getrennt – sie wird nachgereicht, sobald die Verbindung zurück ist.“ [g].",
+     "bausteine": [
+      "Hinweisband",
+      "Heldkarte",
+      "Plakette"
+     ]
+    },
+    {
+     "name": "Verbindung weg · schon gemeldet",
+     "zweck": "Ehrlich zeigen, was mit einer bestätigten Meldung geschieht.",
+     "inhalt": "Zielgestalt: „Gemeldet · Nr. 2 (Stand 14:32:28)“, „Ihre Wortmeldung wird nach der Wiederverbindung erneut gesetzt – Sie stehen dann am Ende der Liste.“ [K: heute zieht der Server die Meldung beim Abriss zurück und das Gerät merkt sie nicht, Befund 1].",
+     "bausteine": [
+      "Heldkarte",
+      "Hinweisband"
+     ]
+    },
+    {
+     "name": "Verbindung zurück · nachgereicht",
+     "zweck": "Bestätigung ohne Grün.",
+     "inhalt": "Toast check (neutral) „Verbindung wieder da · Ihre Wortmeldung steht auf der Redeliste · Nr. 3“. [UI].",
+     "bausteine": [
+      "Toast"
+     ]
+    },
+    {
+     "name": "Wiederanmeldung",
+     "zweck": "Selbsttätige Rückkehr an den Platz.",
+     "inhalt": "Statusband „verbunden“. Heldkarte „Platz 3 wird wieder angemeldet …“. Nach 5 Fehlversuchen: „Bitte neu anmelden“ mit PIN-Block. [g 5 Versuche, 1,2 s bei platz_belegt].",
+     "bausteine": [
+      "Heldkarte",
+      "PIN-Block"
+     ]
+    },
+    {
+     "name": "Wortmeldung verfallen",
+     "zweck": "TOP hat gewechselt, Meldung nicht stillschweigend übertragen.",
+     "inhalt": "15:43. Meldung „Ihre gemerkte Wortmeldung ist verfallen – der Tagesordnungspunkt hat inzwischen gewechselt. Melden Sie sich bitte erneut.“ [g], darunter „Wort melden“ zu TOP 5.",
+     "bausteine": [
+      "Heldkarte",
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Wortmeldung verworfen",
+     "zweck": "Platzwechsel am Gerät.",
+     "inhalt": "Sicht Ida Peters an Jonas' Gerät: „Eine gemerkte Wortmeldung von Platz 3 wurde verworfen: an diesem Gerät ist jetzt Platz 4 angemeldet.“ [g].",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Mikrofon-Grenze erreicht",
+     "zweck": "Abweisung ohne graue Fläche.",
+     "inhalt": "15:10. Heldkarte „Sie haben das Wort“, Knopf „Mikrofon an“ bleibt, Meldung „Gerade sind 3 von 3 Mikrofonen offen – Ihr Mikrofon kann öffnen, sobald eines schließt.“ Keine dB-Werte. [g grenze_erreicht; 3 aus der Vorführung, im Saal aus der Einmessung].",
+     "bausteine": [
+      "Heldkarte",
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Leitung verwaist",
+     "zweck": "Delegierte wissen, warum nichts erteilt wird.",
+     "inhalt": "15:20:20. Band „Die Sitzungsleitung ist gerade nicht verbunden. Ihre Meldung bleibt stehen.“ Saal-Karte Platz 1 „getrennt“. [UI aus leitung_platz und belegt].",
+     "bausteine": [
+      "Hinweisband",
+      "Mini-Synoptik"
+     ]
+    },
+    {
+     "name": "Sitzung unterbrochen",
+     "zweck": "Pause ohne Handlung.",
+     "inhalt": "Heldkarte Ebene/1, circle-pause 48, „Sitzung unterbrochen · seit 15:10“, „Wortmeldungen sind während der Unterbrechung nicht möglich.“ Pille „Keine Aufzeichnung“. [K: sitzung_unterbrechen].",
+     "bausteine": [
+      "Heldkarte",
+      "Pille"
+     ]
+    },
+    {
+     "name": "Abstimmung läuft · Schirm verlassen",
+     "zweck": "Rückweg zum Stimmzettel.",
+     "inhalt": "Band „Abstimmung läuft · Ihre Stimme steht noch aus“ mit Knopf „Zum Stimmzettel“. Tagesordnung ohne Aufruf, Bildzeile „Kamera steht – es wird abgestimmt“. [g „In den Saal“].",
+     "bausteine": [
+      "Hinweisband",
+      "Knopf"
+     ]
+    },
+    {
+     "name": "Sitzung geschlossen",
+     "zweck": "Ende mit Ergebnissen.",
+     "inhalt": "16:12. Heldkarte circle-check „Sitzung geschlossen · 16:12“, „Das Gerät kann liegen bleiben.“ Tagesordnung mit Endzuständen; Beschlüsse Serif: TOP 2 angenommen 9 · 0 · 1, TOP 3 angenommen 7 · 2 · 1, TOP 4 angenommen 8 · 1 · 1 [K: nur die letzte Abstimmung im Zustand]. Mappe [R3]. Nach 10 min zurück in den Leerlauf [UI].",
+     "bausteine": [
+      "Heldkarte",
+      "Tagesordnung-Zeitleiste",
+      "Ergebnisblock"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "04d Sprechstelle · Rollen & Formate",
+   "format": "1180×820 quer; 820×1180 hoch; 744×1133 schmal",
+   "geraet": "iPad Air 11″, iPad mini",
+   "schirme": [
+    {
+     "name": "Widerspruch · am Platz",
+     "zweck": "Bestätigt der Person, dass ihr Widerspruch greift.",
+     "inhalt": "Bernd Ritter, Platz 9, Stand A. Kennzeile „PLATZ 9 · BERND RITTER · DELEGIERTE/R“, Chip video-off Bernstein „Keine Aufnahme“, „Sie haben der Aufzeichnung widersprochen. Die Kamera fährt Ihren Platz nicht an. Das steht im Protokoll.“ Ton/Transkript [R1]. „Wort melden“.",
+     "bausteine": [
+      "Heldkarte",
+      "Chip"
+     ]
+    },
+    {
+     "name": "Widerspruch · spricht",
+     "zweck": "Ersatzsatz statt Bildzeile.",
+     "inhalt": "15:02:40. On-Air-Kopf „Mikrofon offen · 00:52“, Chip „Keine Aufnahme“, „Ihr Mikrofon ist offen. Die Kamera zeigt Sie nicht – Sie haben der Aufzeichnung widersprochen.“ Bernstein nur hier. [g kamera_uebersprungen].",
+     "bausteine": [
+      "Heldkarte",
+      "Chip"
+     ]
+    },
+    {
+     "name": "Sitzungsleitung · berechtigt",
+     "zweck": "Leitung ohne Staffelstab wie Delegierte.",
+     "inhalt": "Mark Voss, Stand A. Umriss-Plakette „Leitung · berechtigt“, Kennzeile „PLATZ 2 · MARK VOSS · SITZUNGSLEITUNG (BERECHTIGT)“, „Wort melden“, Hinweis „Die Sitzung führt Platz 1 · Anke Bergmann.“ [g]. Mappe mit 6 Unterlagen inkl. geheim.",
+     "bausteine": [
+      "Heldkarte",
+      "Rollenplakette"
+     ]
+    },
+    {
+     "name": "Schriftführung",
+     "zweck": "Keine Handlung, kein Hinweis auf Fehlendes.",
+     "inhalt": "Rita Falk, Platz 12. „Nichts zu tun – die Sitzung läuft.“ [g]. Mappe 3 Unterlagen (öffentlich, intern), Textknopf „Protokollentwurf öffnen“.",
+     "bausteine": [
+      "Heldkarte",
+      "Unterlage-Zeile"
+     ]
+    },
+    {
+     "name": "Gast · spricht",
+     "zweck": "Gast hat kein eigenes Schaltrecht.",
+     "inhalt": "Lars Krüger, Platz 5, Stand A. On-Air-Kopf „Mikrofon offen · 02:14“, „Ihr Mikrofon schaltet die Sitzungsleitung.“ Kein Knopf [g darf ohne mikro_aus]. Ruhezustand: „Sie nehmen als Gast teil. Ihr Mikrofon schaltet die Sitzungsleitung.“ Mappe nur „TOP 1 · Anwesenheitsliste“.",
+     "bausteine": [
+      "Heldkarte"
+     ]
+    },
+    {
+     "name": "Kachelreihe ohne Sitzordnung",
+     "zweck": "Ehrlicher Rückfall statt geratener Plan.",
+     "inhalt": "Saal-Karte als Raster 1–12 ohne Tisch, gleiche Chip-Zustände. [g].",
+     "bausteine": [
+      "Mini-Synoptik"
+     ]
+    },
+    {
+     "name": "Notlayout hoch",
+     "zweck": "iPad hochkant.",
+     "inhalt": "820×1180 einspaltig: Statusband, TOP-Kopf, Heldkarte oben, Segment mit Blatt, Saalplan als Liste nur mit Abweichungen („5 · Lars Krüger · spricht“, „7 · Timo Hofer · gemeldet“, „11 · Paul Weber · nicht angemeldet“). [UI].",
+     "bausteine": [
+      "Heldkarte",
+      "Redeliste-Block"
+     ]
+    },
+    {
+     "name": "Schmale Ansicht · Ersatzgerät",
+     "zweck": "Umbruch unter 62rem.",
+     "inhalt": "744×1133: Statusband gekürzt (TOP, Aufzeichnung, Verbindung), Heldkarte, Saalplan als Reihe, Redeliste, Tagesordnung, Mappe untereinander. Nicht für private iPhones (Befund 4). [g].",
+     "bausteine": [
+      "Heldkarte"
+     ]
+    },
+    {
+     "name": "Home-Bildschirm-App vs. Safari",
+     "zweck": "Zeigt, warum nur die Web-App trägt.",
+     "inhalt": "Zwei Gerätrahmen Stand A: links Web-App mit iPadOS-Statusleiste 24 und Home-Indikator; rechts Safari mit Adressleiste, Heldkarte angeschnitten, Anmerkung „Kiosk nur als Web-App/Geführter Zugriff“.",
+     "bausteine": [
+      "Gerätrahmen"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "04e Sprechstelle · Sitzungsleitung · Führen",
+   "format": "1180×820 quer, Hell",
+   "geraet": "iPad Air 11″ an Platz 1",
+   "schirme": [
+    {
+     "name": "Sitzung vorbereitet · eröffnen",
+     "zweck": "Einzige Handlung vor der Sitzung.",
+     "inhalt": "13:59:30. Statusband „— vorbereitet“, Pille „Sie leiten“ (staffelstab). TOP-Kopf kompakt „Kein Punkt aufgerufen · 5 Punkte“. Synoptik: 11 am Platz, 11 Paul Weber nicht angemeldet, Z1 zugeschaltet (Zielbild). Leitungsleiste: „Sitzung eröffnen“, „Vorher ist nichts erlaubt.“ [g]. Hinweis „Vorabcheck 13:45: Der Saal ist bereit“ [K]. Redeliste „keine Wortmeldung“.",
+     "bausteine": [
+      "Statusband",
+      "TOP-Kopf",
+      "Synoptik Leitung",
+      "Leitungsleiste"
+     ]
+    },
+    {
+     "name": "Stand A · Übersicht",
+     "zweck": "Synoptik als Held, Redeliste daneben.",
+     "inhalt": "14:32:10. TOP-Kopf kompakt „TOP 4 von 5 · Feststellung des Jahresabschlusses 2025“, rechts „Tagesordnung“ und „Weitere“. Synoptik 748×456, Plätze 72: 1 Anke Bergmann SIE führt · 2 Mark Voss · 3 Jonas Öztürk gemeldet 2 · 4 Ida Peters · 5 Lars Krüger spricht · 6 Nadja Simon · 7 Timo Hofer gemeldet 1 · 8 Elif Yilmaz · 9 Bernd Ritter mit Widerspruch-Eckmarke · 10 Sara Lindner · 11 Paul Weber nicht angemeldet · 12 Rita Falk. Leitungsleiste: „Wort erteilen: Timo Hofer“ + eigener Mikrofonschalter 88. Rechts Blatt 364×672 „Redeliste · 2 warten“, „Leitung: Anke Bergmann“, „1 von 3 Mikrofonen offen“.",
+     "bausteine": [
+      "Synoptik Leitung",
+      "Leitungsleiste",
+      "Mikrofonschalter",
+      "Redeliste-Block"
+     ]
+    },
+    {
+     "name": "Platz-Popover · gemeldet",
+     "zweck": "Nur was darf enthält.",
+     "inhalt": "Popover 280 an Platz 7: „Platz 7 · Timo Hofer · gemeldet · Nr. 1“, „Wort erteilen“ (stark), „Mikrofon an“, Textknopf triangle-alert „Wort entziehen“. [g].",
+     "bausteine": [
+      "Popover"
+     ]
+    },
+    {
+     "name": "Platz-Popover · Varianten",
+     "zweck": "Vier Lagen in einem Frame.",
+     "inhalt": "Platz 5 spricht: „Mikrofon aus“. Platz 9: „Mikrofon an“ + „Kein Bild – Widerspruch gegen die Aufzeichnung: die Kamera fährt nicht.“ Platz 11: „nicht angemeldet“, kein Knopf. Platz 2: „Mikrofon an“, „Leitung übergeben …“. [g].",
+     "bausteine": [
+      "Popover"
+     ]
+    },
+    {
+     "name": "Stand A′ · Wort erteilt",
+     "zweck": "Nächste Handlung aus der Verfahrenskette.",
+     "inhalt": "14:33:02. Platz 7 blau. Leitungsleiste „Timo Hofer hat das Wort · Mikrofon noch zu“, große Handlung „Mikrofon an: Timo Hofer“. Redeliste: 1 Timo Hofer hat das Wort, 2 Jonas Öztürk. [UI Reihenfolge der Kette].",
+     "bausteine": [
+      "Leitungsleiste",
+      "Synoptik Leitung"
+     ]
+    },
+    {
+     "name": "Redeliste führen",
+     "zweck": "Zeilenaktionen der Leitung.",
+     "inhalt": "Zeilen 64: „Lars Krüger · Platz 5 · Gast · 02:14“ [Mikrofon aus]; „1 Timo Hofer · Platz 7 · seit 14:29“ [Wort erteilen] [⋯ Wort entziehen]; „2 Jonas Öztürk · Platz 3 · seit 14:31“ [Wort erteilen]. [g].",
+     "bausteine": [
+      "Redeliste-Zeile"
+     ]
+    },
+    {
+     "name": "Wort entziehen · Bestätigung",
+     "zweck": "Folgenreicher Eingriff.",
+     "inhalt": "Bogen „Timo Hofer das Wort entziehen?“, „Das Mikrofon an Platz 7 schließt sofort. Im Protokoll: „Timo Hofer wird das Wort entzogen.““ [Abbrechen] [Wort entziehen] in Tinte.",
+     "bausteine": [
+      "Bogen"
+     ]
+    },
+    {
+     "name": "Mikrofon-Grenze · Leitung",
+     "zweck": "Grenze mit Lösungsweg.",
+     "inhalt": "Meldung „3 von 3 Mikrofonen offen – erst eines schließen.“ Liste offener Plätze mit „Mikrofon aus“ je Zeile. [g].",
+     "bausteine": [
+      "Meldung",
+      "Popover"
+     ]
+    },
+    {
+     "name": "Tagesordnung · Seitenblatt",
+     "zweck": "Aufrufen, abschließen, vertagen.",
+     "inhalt": "Blatt 520: 1 abgeschlossen [aufrufen] · 2 abgeschlossen [aufrufen] · 3 lock abgeschlossen [aufrufen] · 4 laufend seit 14:12 · 5 offen [aufrufen]; unten „Punkt abschließen“ (stark), „Vertagen“. Vertagen-Bogen: „TOP 5 vertagen? Ein vertagter Punkt wird in dieser Sitzung nicht mehr aufgerufen.“ Menü „Weitere“: Abstimmung vorbereiten, TOP abschließen, TOP vertagen. [g].",
+     "bausteine": [
+      "Seitenblatt",
+      "TOP-Zeile",
+      "Bogen"
+     ]
+    },
+    {
+     "name": "TOP 3 aufgerufen",
+     "zweck": "Automatische Pause bestätigen.",
+     "inhalt": "14:05. Toast lock „TOP 3 ist nicht öffentlich – Stream und Aufzeichnung pausieren.“ Pille wechselt. [g].",
+     "bausteine": [
+      "Toast",
+      "Pille"
+     ]
+    },
+    {
+     "name": "Tagesordnung während Abstimmung",
+     "zweck": "Sperre erklärt, keine grauen Knöpfe.",
+     "inhalt": "Blatt ohne „aufrufen“: „Es wird abgestimmt – der Tagesordnungspunkt bleibt bis zum Auszählen stehen.“ [g].",
+     "bausteine": [
+      "Seitenblatt"
+     ]
+    },
+    {
+     "name": "Leitung spricht selbst",
+     "zweck": "Eigenes Mikrofon ohne Wort.",
+     "inhalt": "14:06. Signalkante rot, Mikrofonschalter 88 „Mikrofon aus“, Platz 1 rot; Leitungsleiste bleibt bei der Verfahrenshandlung. [g aktive Leitung braucht kein Wort].",
+     "bausteine": [
+      "Mikrofonschalter",
+      "Signalkante"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "04f Sprechstelle · Sitzungsleitung · Abstimmung, Staffelstab, Sitzung",
+   "format": "1180×820 quer, Hell",
+   "geraet": "iPad Air 11″ an Platz 1 bzw. 2",
+   "schirme": [
+    {
+     "name": "Abstimmung vorbereiten",
+     "zweck": "Bogen mit allem, was beim Start festgehalten wird.",
+     "inhalt": "15:38. Bogen 560 „Abstimmung vorbereiten · TOP 4“: Beschlusstext (Serif 28/36) „Der Aufsichtsrat billigt …“; Art-Segment offen · namentlich · geheim mit Sätzen „Die Stimme ist dem Platz zugeordnet und steht im Protokoll.“ / „Das Ergebnis nennt jede Person mit ihrer Stimme.“ / „Gezählt wird nur die Summe. Wer wie gestimmt hat, wird nirgends festgehalten.“; „Mehrheit: einfache Mehrheit – mehr Ja als Nein, Enthaltungen zählen nicht.“; Vorschau „10 von 11 anwesend · Quorum 6 · wird beim Start festgehalten“ [K]. „Verwerfen“ / „Fertig“. [UI Entwurf auf dem Gerät].",
+     "bausteine": [
+      "Bogen",
+      "Segmentsteuerung"
+     ]
+    },
+    {
+     "name": "Bereit zum Start",
+     "zweck": "Start als große Handlung.",
+     "inhalt": "Leitungsleiste „Abstimmung starten“, darüber „geheim · einfache Mehrheit“ und Beschluss in Serif. [g].",
+     "bausteine": [
+      "Leitungsleiste"
+     ]
+    },
+    {
+     "name": "Nicht beschlussfähig",
+     "zweck": "Start abgewiesen, ohne Umgehung.",
+     "inhalt": "Variante 14:01. Statt Knopf: „Nicht beschlussfähig: 5 von 11 anwesend, nötig 6“; „Es fehlen: 3 Jonas Öztürk · 6 Nadja Simon · 8 Elif Yilmaz · 10 Sara Lindner · 11 Paul Weber · Z1 Karin Wolf“ [K: Liste, Rollen im Zustand]. Kein „trotzdem starten“, Beschlusstext bleibt. [g Kerntext].",
+     "bausteine": [
+      "Leitungsleiste",
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Kein TOP aufgerufen",
+     "zweck": "Beschluss braucht einen Punkt.",
+     "inhalt": "Menü „Weitere“ ohne „Abstimmung vorbereiten“, Hinweis „Erst einen Tagesordnungspunkt aufrufen, dann abstimmen.“ + „Tagesordnung öffnen“. [g kein_top].",
+     "bausteine": [
+      "Popover",
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Führender Platz verwaist",
+     "zweck": "Übernahme nur ausdrücklich.",
+     "inhalt": "15:20:40, Mark Voss. Saal-Karte Platz 1 getrennt. Große Handlung „Sitzungsleitung übernehmen“, „Der führende Platz ist verwaist. Das System übernimmt nie von selbst – der Wechsel steht im Protokoll.“ [g].",
+     "bausteine": [
+      "Heldkarte",
+      "Mini-Synoptik"
+     ]
+    },
+    {
+     "name": "Übernahme · Bestätigung",
+     "zweck": "Kein versehentlicher Wechsel.",
+     "inhalt": "Bogen „Sitzungsleitung übernehmen?“, „Platz 1 · Anke Bergmann ist seit 0:38 nicht verbunden. Im Protokoll: „Mark Voss übernimmt die Sitzungsleitung, da Platz 1 verwaist ist.““ [Abbrechen] [Übernehmen].",
+     "bausteine": [
+      "Bogen"
+     ]
+    },
+    {
+     "name": "Leitung übergeben · Auswahl",
+     "zweck": "Nur berechtigte, besetzte Plätze.",
+     "inhalt": "15:24, Mark Voss. Bogen: „1 · Anke Bergmann · Vorsitz · am Platz“; Grund (Pflicht) „Vorsitzende wieder am Platz“ [K: Grund]; „Sie verlieren die Leitungsrechte sofort. Im Protokoll: „Die Sitzungsleitung geht von Mark Voss auf Anke Bergmann über.““ [Abbrechen] [Übergeben].",
+     "bausteine": [
+      "Bogen"
+     ]
+    },
+    {
+     "name": "Nach der Übergabe",
+     "zweck": "Beide Seiten nebeneinander.",
+     "inhalt": "Links Mark Voss: Plakette „Leitung · berechtigt“, „Wort melden“, „Die Sitzung führt Platz 1 · Anke Bergmann.“ Rechts Anke Bergmann: Pille „Sie leiten“, Toast „Sie leiten die Sitzung – übergeben von Mark Voss“. [g].",
+     "bausteine": [
+      "Rollenplakette",
+      "Toast"
+     ]
+    },
+    {
+     "name": "Sitzung unterbrechen",
+     "zweck": "Pause mit Bestätigung.",
+     "inhalt": "15:10. Bogen „Sitzung unterbrechen?“, „Mikrofone schließen, Stream und Aufzeichnung pausieren. Fortsetzen kann nur die Sitzungsleitung.“ [K: sitzung_unterbrechen].",
+     "bausteine": [
+      "Bogen"
+     ]
+    },
+    {
+     "name": "Unterbrochen · Leitung",
+     "zweck": "Einzige Handlung: fortsetzen.",
+     "inhalt": "„Die Sitzung ist unterbrochen · seit 15:10“, große Handlung „Sitzung fortsetzen“ [g Eröffnen aus unterbrochen], alle anderen Rechte weg.",
+     "bausteine": [
+      "Leitungsleiste"
+     ]
+    },
+    {
+     "name": "Sitzung schließen · Bestätigung",
+     "zweck": "Folgen vor dem Endpunkt.",
+     "inhalt": "16:12. Bogen „Sitzung schließen?“: „1 Mikrofon wird geschlossen · 1 Wortmeldung wird entzogen · TOP 5 wird abgeschlossen · Die Sitzung kann danach nicht wieder eröffnet werden.“ Variante „Abstimmung „…“ wird abgebrochen“. [Abbrechen] [Sitzung schließen]. [g].",
+     "bausteine": [
+      "Bogen"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "04g Sprechstelle · Sitzungsmappe",
+   "format": "1180×820 quer, Hell",
+   "geraet": "iPad Air 11″",
+   "schirme": [
+    {
+     "name": "Mappe · Delegierte",
+     "zweck": "Nur Sichtbares, nicht ausgegraut.",
+     "inhalt": "Blatt Mappe, Zeilen mit Miniatur 64×90: „TOP 1 · Anwesenheitsliste · öffentlich · 184 kB“, „TOP 2 · Protokollentwurf der letzten Sitzung · intern · 96 kB“, „TOP 3 · Personalvorlage Geschäftsführung · vertraulich · 212 kB“, „TOP 4 · Jahresabschluss 2025 · intern · 12 S. · 1,2 MB“, „TOP 4 · Prüfbericht des Abschlussprüfers · vertraulich · 2,4 MB“ [Größen Drehbuch, Seiten K]. Stufe-Baustein, kein Rot. Fuß „Jeder Abruf steht mit Person, Platz und Zeit im Protokoll.“ [g].",
+     "bausteine": [
+      "Unterlage-Zeile",
+      "Stufe"
+     ]
+    },
+    {
+     "name": "Mappe · Leitung",
+     "zweck": "Auch geheim.",
+     "inhalt": "Wie Delegierte plus „TOP 3 · Vergütungsvorschlag Geschäftsführung · geheim“.",
+     "bausteine": [
+      "Unterlage-Zeile",
+      "Stufe"
+     ]
+    },
+    {
+     "name": "Mappe · Schriftführung und Gast",
+     "zweck": "Stufenregel sichtbar ohne Hinweis auf Fehlendes.",
+     "inhalt": "Rita Falk: TOP 1, TOP 2, TOP 4 Jahresabschluss. Lars Krüger: nur TOP 1. [g DarfSehen].",
+     "bausteine": [
+      "Unterlage-Zeile"
+     ]
+    },
+    {
+     "name": "Leser · öffnet",
+     "zweck": "Freigabe holen.",
+     "inhalt": "Vollbild-Leser, Skeleton, „Freigabe wird geholt …“. [g Freigabe 30 s].",
+     "bausteine": [
+      "Dokumentleser",
+      "Skeleton"
+     ]
+    },
+    {
+     "name": "Leser · vertraulich",
+     "zweck": "Lesen mit Wasserzeichen im Kiosk statt neuem Tab.",
+     "inhalt": "Kopf „TOP 4 · Prüfbericht des Abschlussprüfers“, Stufe „VERTRAULICH“, Wasserzeichen quer „Jonas Öztürk · Platz 3 · Aufsichtsrat · 3. ordentliche Sitzung · 25.09.2026 14:35“, Seite „14 / 38“, Zoom, Seitennavigation; Fuß „Dieser Abruf steht im Protokoll.“; „Schließen“; kein Teilen, kein Download. [g Text; K: Einbrennen].",
+     "bausteine": [
+      "Dokumentleser",
+      "Stufe"
+     ]
+    },
+    {
+     "name": "Leser · Fehler",
+     "zweck": "Drei Fehler im Leser.",
+     "inhalt": "„Die Freigabe ist abgelaufen – bitte erneut öffnen.“ [erneut öffnen] · „Die Datei wurde ausgetauscht und wird nicht ausgeliefert – bitte die Technik rufen.“ · „Diese Unterlage gibt es nicht.“ [g].",
+     "bausteine": [
+      "Meldung",
+      "Dokumentleser"
+     ]
+    },
+    {
+     "name": "Mappe · TOP ohne Unterlagen",
+     "zweck": "Leerzustand je Punkt.",
+     "inhalt": "Filter TOP 5: „Zu TOP 5 liegen keine Unterlagen vor.“",
+     "bausteine": [
+      "Leerzustand"
+     ]
+    },
+    {
+     "name": "Vorlage über dem Stimmzettel",
+     "zweck": "Lesen während der Abstimmung.",
+     "inhalt": "Blatt Ebene/3 über dem Stimmzettel: „Jahresabschluss 2025 · intern · Seite 1 von 12“, Wasserzeichen, „Zurück zum Stimmzettel“.",
+     "bausteine": [
+      "Dokumentleser",
+      "Blatt"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "04h Sprechstelle · Gedimmt & große Schrift",
+   "format": "1180×820 quer, Modus Dunkel (Saal gedimmt)",
+   "geraet": "iPad Air 11″",
+   "schirme": [
+    {
+     "name": "Nicht gemeldet · gedimmt",
+     "zweck": "Flächen #0E0F11/#1A1B1E/#25272B.",
+     "inhalt": "Wie 04b Nicht gemeldet; „Wort melden“ Kreide mit Tinte.",
+     "bausteine": [
+      "Heldkarte"
+     ]
+    },
+    {
+     "name": "Gemeldet · gedimmt",
+     "zweck": "Stand A im abgedunkelten Saal.",
+     "inhalt": "Wie 04b Stand A.",
+     "bausteine": [
+      "Heldkarte",
+      "Redeliste-Block"
+     ]
+    },
+    {
+     "name": "Hat das Wort · gedimmt",
+     "zweck": "Blau auf Dunkel.",
+     "inhalt": "Rand #86AEEB, „Mikrofon an“ Kreide mit Tinte.",
+     "bausteine": [
+      "Heldkarte"
+     ]
+    },
+    {
+     "name": "Spricht · gedimmt",
+     "zweck": "On-Air im Dunkeln.",
+     "inhalt": "Kopf #3A1519, Kante #FF5A6E, weiße Schrift „Mikrofon offen · 01:26“; „Mikrofon aus“ erhobene Fläche mit roter Kontur.",
+     "bausteine": [
+      "Heldkarte"
+     ]
+    },
+    {
+     "name": "Verbindung weg · gedimmt",
+     "zweck": "Band im Dunkeln.",
+     "inhalt": "Wie 04c gepuffert.",
+     "bausteine": [
+      "Hinweisband"
+     ]
+    },
+    {
+     "name": "PIN · gedimmt",
+     "zweck": "Anmeldung im Dunkeln.",
+     "inhalt": "Wie 04a PIN leer und falsch.",
+     "bausteine": [
+      "PIN-Block"
+     ]
+    },
+    {
+     "name": "Leitung Stand A · gedimmt",
+     "zweck": "Leitungsaufbau dunkel.",
+     "inhalt": "Wie 04e Stand A.",
+     "bausteine": [
+      "Synoptik Leitung"
+     ]
+    },
+    {
+     "name": "Kiosk · gedimmt",
+     "zweck": "Grün auf Dunkel.",
+     "inhalt": "Wie 04a Leerlauf.",
+     "bausteine": [
+      "Saalplan Kiosk"
+     ]
+    },
+    {
+     "name": "Große Schriftstufe · hell",
+     "zweck": "Beleg, dass das Layout bei ×1,25 hält.",
+     "inhalt": "Nicht gemeldet, spricht, Redeliste in großer Stufe; Kennzeile bricht um, Heldkarte behält Handlung sichtbar.",
+     "bausteine": [
+      "Heldkarte"
+     ]
+    },
+    {
+     "name": "Große Schriftstufe · gedimmt",
+     "zweck": "Zweite Stufe im Dunkeln.",
+     "inhalt": "Gemeldet und hat das Wort in großer Stufe.",
+     "bausteine": [
+      "Heldkarte"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "05a Abstimmung · Stimmabgabe geheim",
+   "format": "1180×820 quer Vollbild, Hell; Satzbreite 904, Rand 138",
+   "geraet": "iPad Air 11″ an Platz 3",
+   "schirme": [
+    {
+     "name": "Stimmzettel",
+     "zweck": "Wer abstimmt, soll nichts anderes tun können.",
+     "inhalt": "15:39:20. Zustandsband 64 Tinte: lock „Geheime Abstimmung läuft“; rechts „Platz 3 · Jonas Öztürk · 1 Stimme“, „seit 0:18“ [Z], Pille „Bild: Totale“ [K: Kern hält nur an]. Beschlusszone: „BESCHLUSSVORSCHLAG · TOP 4 · EINFACHE MEHRHEIT“, Serif 40/46 mit Randstrich „Der Aufsichtsrat billigt den vom Vorstand aufgestellten Jahresabschluss 2025. Der Jahresabschluss ist damit festgestellt.“, Textknopf „Vorlage 2026/14 öffnen“. Wahlknöpfe 3 × 280×240 Ja/Nein/Enthaltung. Fußzone 96: „Beschlussfähig: 10 von 11 anwesend, nötig 6 (beim Start festgehalten)“, „Ihre Wahl wird nach der Abgabe nicht mehr angezeigt. Gezählt wird nur die Summe.“, Textknopf „In den Saal“. Kein Eingangszähler [UI].",
+     "bausteine": [
+      "Zustandsband",
+      "Beschlusszone",
+      "Wahlknopf",
+      "Fußzone"
+     ]
+    },
+    {
+     "name": "Ausgewählt",
+     "zweck": "Zwischenschritt vor der unumkehrbaren Abgabe.",
+     "inhalt": "15:40:14. Ja gefüllt Tinte mit check, Nein/Enthaltung 40 %. Bestätigungsleiste 96: Primär 72 „Ja – Stimme abgeben“, „Auswahl ändern“, „Die Abgabe lässt sich nicht zurücknehmen.“ [UI].",
+     "bausteine": [
+      "Wahlknopf",
+      "Bestätigungsleiste"
+     ]
+    },
+    {
+     "name": "Wird übertragen",
+     "zweck": "Übergang sichtbar.",
+     "inhalt": "15:40:16. Stimmkarte gestrichelt, Ring 48: „Ihre Stimme ist auf dem Gerät gesichert“, „Sie wird gerade übertragen und gleich bestätigt.“ [g]. Nach 2 s ohne Antwort nächster Frame.",
+     "bausteine": [
+      "Stimmkarte"
+     ]
+    },
+    {
+     "name": "Auf dem Gerät gesichert",
+     "zweck": "Ausfall kostet keine Stimme.",
+     "inhalt": "15:41:00. Band „Verbindung getrennt seit 0:42“. Stimmkarte gestrichelt, wifi-off (Schleife 1,2 s): „Ihre Stimme ist auf dem Gerät gesichert“, „Verbindung getrennt – sie wird nachgereicht, sobald die Verbindung zurück ist. Sie können das Gerät so liegen lassen.“ [g]. Neutral, kein Bernstein.",
+     "bausteine": [
+      "Stimmkarte",
+      "Hinweisband"
+     ]
+    },
+    {
+     "name": "Eingegangen",
+     "zweck": "Bestätigung ohne Wahl.",
+     "inhalt": "15:41:06. Toast „Verbindung wieder da – Ihre Stimme ist eingegangen.“ Stimmkarte circle-check 64 (Strich 400 ms): „Ihre Stimme ist eingegangen.“, „Sie lässt sich nicht ändern. Wie Sie gestimmt haben, zeigt dieses Gerät nicht mehr.“ Fuß „Das Ergebnis erscheint nach dem Auszählen.“",
+     "bausteine": [
+      "Stimmkarte",
+      "Toast"
+     ]
+    },
+    {
+     "name": "Ausgezählt",
+     "zweck": "Zahlen vor der Feststellung, Grotesk.",
+     "inhalt": "15:41:40. Band „Abstimmung ausgezählt“. „Ausgezählt – die Leitung stellt fest“, Mono „Ja 8 · Nein 1 · Enthaltung 1“, „Verbindlich wird es mit der Feststellung.“ [g Ergebnis ab ausgezaehlt; UI Schirm bleibt offen].",
+     "bausteine": [
+      "Ergebnisblock"
+     ]
+    },
+    {
+     "name": "Angenommen",
+     "zweck": "Stand C, verbindlich in Serif.",
+     "inhalt": "15:42:03. Band erhoben „Abstimmung beendet · 15:42“. Beschluss Serif, Urteil 56 „Angenommen“, „Ja 8 · Nein 1 · Enthaltung 1“, neutrale Balken, „festgestellt von Anke Bergmann · 15:42 · einfache Mehrheit“ [K: wer/wann]. Knopf „Zurück zum Platz“.",
+     "bausteine": [
+      "Ergebnisblock",
+      "Zustandsband"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "05b Abstimmung · Arten & Sonderfälle",
+   "format": "1180×820 quer Vollbild, Hell",
+   "geraet": "iPad Air 11″",
+   "schirme": [
+    {
+     "name": "Offen · Stimmzettel",
+     "zweck": "Zuordnung sichtbar angekündigt.",
+     "inhalt": "14:03:30, TOP 2. Band „Offene Abstimmung läuft“, „Platz 3 · Jonas Öztürk · 1 Stimme“. „Das Protokoll der 2. ordentlichen Sitzung vom 26.06.2026 wird genehmigt.“ Fuß „Ihre Stimme wird mit Ihrem Platz protokolliert.“ [g].",
+     "bausteine": [
+      "Zustandsband",
+      "Beschlusszone",
+      "Wahlknopf"
+     ]
+    },
+    {
+     "name": "Offen · abgegeben",
+     "zweck": "Eigene Wahl bleibt sichtbar.",
+     "inhalt": "„Ihre Stimme (Ja) ist abgegeben.“, „Sie lässt sich nicht ändern und steht mit Ihrem Platz im Protokoll.“ [g/UI].",
+     "bausteine": [
+      "Stimmkarte"
+     ]
+    },
+    {
+     "name": "Namentlich · Stimmzettel",
+     "zweck": "Nicht öffentlich und namentlich.",
+     "inhalt": "14:09. Band „Namentliche Abstimmung läuft“ + Pille lock „nicht öffentlich“. „Der Aufsichtsrat stimmt der Verlängerung des Anstellungsvertrags der Geschäftsführung um drei Jahre zu.“ Fuß „Ihre Stimme wird mit Ihrem Platz protokolliert. Das Ergebnis nennt jede Person mit ihrer Stimme.“",
+     "bausteine": [
+      "Zustandsband",
+      "Wahlknopf"
+     ]
+    },
+    {
+     "name": "Namentlich · Ergebnis",
+     "zweck": "Liste je Person.",
+     "inhalt": "14:10:40. „Angenommen · Ja 7 · Nein 2 · Enthaltung 1“. Tabelle: 1 Anke Bergmann Ja · 2 Mark Voss Ja · 3 Jonas Öztürk Ja · 4 Ida Peters Nein · 6 Nadja Simon Ja · 7 Timo Hofer Enthaltung · 8 Elif Yilmaz Ja · 9 Bernd Ritter Nein · 10 Sara Lindner Ja · Z1 Karin Wolf Ja · 11 Paul Weber nicht angemeldet. [g Ergebnis.Namentlich; UI heute nicht gezeigt].",
+     "bausteine": [
+      "Namentlich-Tabelle",
+      "Ergebnisblock"
+     ]
+    },
+    {
+     "name": "Kein Stimmrecht",
+     "zweck": "Vollbild ohne Wahlknöpfe.",
+     "inhalt": "Rita Falk, Stand B: „Platz 12 · Rita Falk · kein Stimmrecht“, Beschluss, „Sie haben in diesem Gremium kein Stimmrecht.“ [g], Beschlussfähigkeit, kein Zähler, „In den Saal“. Gleich für Lars Krüger.",
+     "bausteine": [
+      "Zustandsband",
+      "Beschlusszone",
+      "Fußzone"
+     ]
+    },
+    {
+     "name": "Nicht abgestimmt",
+     "zweck": "Auszählen ohne eigene Stimme.",
+     "inhalt": "Variante: „Die Abstimmung wurde um 15:41 ausgezählt. Sie haben nicht abgestimmt.“ Danach Ergebnis.",
+     "bausteine": [
+      "Stimmkarte"
+     ]
+    },
+    {
+     "name": "Stimme verfallen",
+     "zweck": "Mit Ansage statt still.",
+     "inhalt": "Zweig des Ausfalls: triangle-alert neutral, „Ihre Stimme wurde NICHT gezählt.“, „Sie war auf dem Gerät gesichert, aber die Abstimmung wurde um 15:41 ausgezählt, bevor die Verbindung zurückkam.“, Beschluss klein, „Verstanden“. [g, UI bleibender Schirm].",
+     "bausteine": [
+      "Stimmkarte"
+     ]
+    },
+    {
+     "name": "Stimme verworfen",
+     "zweck": "Fremde Stimme nie zählen.",
+     "inhalt": "Ida Peters: „Eine gepufferte Stimme von Platz 3 wurde verworfen: an diesem Gerät ist jetzt Platz 4 angemeldet. Sie wurde NICHT gezählt.“ [g].",
+     "bausteine": [
+      "Stimmkarte"
+     ]
+    },
+    {
+     "name": "Bereits gezählt",
+     "zweck": "Entwarnung nach Neustart.",
+     "inhalt": "circle-check „Für Ihren Platz ist bereits eine Stimme gezählt – doppelt gezählt wird nie.“ [g].",
+     "bausteine": [
+      "Stimmkarte"
+     ]
+    },
+    {
+     "name": "Abgelehnt",
+     "zweck": "Ergebnis ohne Rot.",
+     "inhalt": "Variante: Urteil „Abgelehnt“ Tinte, „Ja 4 · Nein 5 · Enthaltung 1“, „Einfache Mehrheit: mehr Ja als Nein – nicht erreicht.“",
+     "bausteine": [
+      "Ergebnisblock"
+     ]
+    },
+    {
+     "name": "Stimmengleichheit",
+     "zweck": "Rechtsfolge erklären.",
+     "inhalt": "Variante: „Abgelehnt · Stimmengleichheit“, „Ja 5 · Nein 5 · Enthaltung 0“, „Bei Stimmengleichheit ist ein Antrag abgelehnt – einfache Mehrheit heißt mehr Ja als Nein.“ [g Ja > Nein].",
+     "bausteine": [
+      "Ergebnisblock"
+     ]
+    },
+    {
+     "name": "Abgebrochen",
+     "zweck": "Kein kommentarloses Zuklappen.",
+     "inhalt": "„Abstimmung abgebrochen · 15:41“, „Es gibt kein Ergebnis. Abgegebene Stimmen zählen nicht.“ Grund [K]; Variante „Grund: Sitzung geschlossen“ [g]. „Zurück zum Platz“.",
+     "bausteine": [
+      "Stimmkarte"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "05c Abstimmung · Leitung & Gedimmt",
+   "format": "1180×820 quer Vollbild, Hell und Dunkel",
+   "geraet": "iPad Air 11″ an Platz 1",
+   "schirme": [
+    {
+     "name": "Leitung · eigener Stimmzettel",
+     "zweck": "Selbst abstimmen und führen.",
+     "inhalt": "15:39:10. Band + „Platz 1 · Anke Bergmann · 1 Stimme · Sie leiten“. Beschluss 28/36, Wahlknöpfe 904×200. Leitungsfeld 904×232: Mono 40 „3 von 10 Stimmzetteln eingegangen“, Segmentbalken, „Quorum 6 · festgehalten 15:39“, große Handlung „Jetzt auszählen“, Textknopf „Abstimmung abbrechen“.",
+     "bausteine": [
+      "Wahlknopf",
+      "Leitungsfeld"
+     ]
+    },
+    {
+     "name": "Leitung · nach eigener Abgabe",
+     "zweck": "Stand B aus Leitungssicht.",
+     "inhalt": "15:41:00. Stimmkarte 904×120 „Ihre Stimme ist eingegangen.“ Leitungsfeld „7 von 10“, „1 Platz getrennt: Platz 3 · seit 0:42 – eine Stimme kann auf dem Gerät liegen.“ [K: getrennt].",
+     "bausteine": [
+      "Stimmkarte",
+      "Leitungsfeld"
+     ]
+    },
+    {
+     "name": "Auszählen · Bestätigung",
+     "zweck": "Folge für gepufferte Stimmen nennen.",
+     "inhalt": "Bogen „Jetzt auszählen?“, „3 Stimmberechtigte haben noch nicht abgestimmt. Platz 3 ist getrennt – eine dort gesicherte Stimme verfällt, wenn jetzt ausgezählt wird.“, „Der Vorgang steht im Protokoll.“ [Warten] [Auszählen].",
+     "bausteine": [
+      "Bogen"
+     ]
+    },
+    {
+     "name": "Abbrechen · Bestätigung",
+     "zweck": "Destruktiv, aber nicht rot.",
+     "inhalt": "Bogen „Abstimmung abbrechen?“, „7 abgegebene Stimmen verfallen. Es gibt kein Ergebnis.“, Grund Pflicht [K]. [Weiter abstimmen] [Abbrechen] Tinte.",
+     "bausteine": [
+      "Bogen"
+     ]
+    },
+    {
+     "name": "Ausgezählt · feststellen",
+     "zweck": "Eigener Schritt vor der Verbindlichkeit.",
+     "inhalt": "15:41:40. „Ja 8 · Nein 1 · Enthaltung 1 – angenommen“ Grotesk, „Erst die Feststellung ist verbindlich und geht ins Protokoll.“, große Handlung „Ergebnis feststellen“. Kein Abbrechen mehr. [g].",
+     "bausteine": [
+      "Leitungsfeld",
+      "Ergebnisblock"
+     ]
+    },
+    {
+     "name": "Festgestellt · weiter",
+     "zweck": "Nächster Schritt der Kette.",
+     "inhalt": "15:42:03. Ergebnisblock Serif, große Handlung „TOP 5 aufrufen“ (schließt TOP 4 ab), Textknopf „Zurück zum Platz“. [g].",
+     "bausteine": [
+      "Ergebnisblock",
+      "Leitungsleiste"
+     ]
+    },
+    {
+     "name": "Stimmzettel · gedimmt",
+     "zweck": "Dunkel mit Kontrastnachweis.",
+     "inhalt": "Wie 05a Stimmzettel; Band Tinte/Kreide ≥ 5,5:1.",
+     "bausteine": [
+      "Zustandsband",
+      "Wahlknopf"
+     ]
+    },
+    {
+     "name": "Bestätigung · gedimmt",
+     "zweck": "Gewählt im Dunkeln.",
+     "inhalt": "Wie 05a Ausgewählt.",
+     "bausteine": [
+      "Bestätigungsleiste"
+     ]
+    },
+    {
+     "name": "Gesichert · gedimmt",
+     "zweck": "Puffer im Dunkeln.",
+     "inhalt": "Wie 05a Gesichert.",
+     "bausteine": [
+      "Stimmkarte"
+     ]
+    },
+    {
+     "name": "Angenommen · gedimmt",
+     "zweck": "Ergebnis im Dunkeln.",
+     "inhalt": "Wie 05a Angenommen.",
+     "bausteine": [
+      "Ergebnisblock"
+     ]
+    },
+    {
+     "name": "Leitung · gedimmt",
+     "zweck": "Leitungsfeld im Dunkeln.",
+     "inhalt": "Wie Leitung nach eigener Abgabe.",
+     "bausteine": [
+      "Leitungsfeld"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "06 Namensschild",
+   "format": "874×402 quer, Modus Dunkel, schild/grund #000; iPad mini 1133×744 ×1,5",
+   "geraet": "iPhone 17 quer; über 4 m iPad mini quer",
+   "schirme": [
+    {
+     "name": "Ruhe · Platz 3",
+     "zweck": "Name aus der Ferne lesbar, sonst nichts.",
+     "inhalt": "Kopf „3“, Name „Jonas Öztürk“ 144, kein Fuß. [UI: Code zeigt „am Platz“].",
+     "bausteine": [
+      "Schild"
+     ]
+    },
+    {
+     "name": "Leitet die Sitzung · Platz 1",
+     "zweck": "Wer führt, sieht der Saal.",
+     "inhalt": "„Anke Bergmann“, „Vorsitz“ 44, Fuß staffelstab „leitet die Sitzung“ 32. Wechsel als Überblendung. [UI aus leitung_platz].",
+     "bausteine": [
+      "Schild"
+     ]
+    },
+    {
+     "name": "Gemeldet · Platz 7",
+     "zweck": "Saalzustand gemeldet.",
+     "inhalt": "„Timo Hofer“, Band hand 48 „Redeliste Nr. 1“ 40, neutral. [UI aus redeliste].",
+     "bausteine": [
+      "Schild"
+     ]
+    },
+    {
+     "name": "Hat das Wort · Platz 7",
+     "zweck": "Stand A′.",
+     "inhalt": "Rahmen #86AEEB, Band #2A62B0 „hat das Wort“. [g].",
+     "bausteine": [
+      "Schild"
+     ]
+    },
+    {
+     "name": "Spricht · Platz 5",
+     "zweck": "Vollfläche.",
+     "inhalt": "signal/mikro-voll, „Lars Krüger“, „Abschlussprüfer“ [K: Funktion], mic „spricht · 02:14“ [Z]. [g].",
+     "bausteine": [
+      "Schild"
+     ]
+    },
+    {
+     "name": "Nicht angemeldet · Platz 11",
+     "zweck": "Leiser Name.",
+     "inhalt": "„Paul Weber“ text/leise, „nicht angemeldet“. [UI: Code „frei“].",
+     "bausteine": [
+      "Schild"
+     ]
+    },
+    {
+     "name": "Platz ohne Teilnahme",
+     "zweck": "Nur die Nummer.",
+     "inhalt": "Variante: „Platz 12“. [g].",
+     "bausteine": [
+      "Schild"
+     ]
+    },
+    {
+     "name": "Verbindung weg",
+     "zweck": "Keine Unruhe im Saal.",
+     "inhalt": "Bis 10 s unverändert, danach Ruhe mit wifi-off statt Nummer. [UI: heute sofort „getrennt“].",
+     "bausteine": [
+      "Schild",
+      "Ikone"
+     ]
+    },
+    {
+     "name": "Belastungstest langer Name",
+     "zweck": "Einpassung prüfen.",
+     "inhalt": "„Dr. Maria / Keller-Hohenstein“ zweizeilig je 96; „Prof. Dr. Friederike / von Hohenstein- / Schwarzenberg“ dreizeilig, Umbruch an Leerzeichen und Bindestrich, nie unter 96.",
+     "bausteine": [
+      "Schild"
+     ]
+    },
+    {
+     "name": "Während geheimer Wahl",
+     "zweck": "Beleg, dass nichts durchsickert.",
+     "inhalt": "Drei gleiche Schilder Platz 3 um 15:39:00, 15:40:16, 15:42:00, Notiz „liest keinen Abstimmungszustand – TestNamensschildKenntDieAbstimmungNicht“. [g].",
+     "bausteine": [
+      "Schild",
+      "Anmerkung"
+     ]
+    },
+    {
+     "name": "Einrichtung · Platz unbekannt",
+     "zweck": "Nur beim Aufbau.",
+     "inhalt": "„Platz 99 gibt es nicht“, Fuß „nicht im Saalplan – Adresse /namensschild?platz= prüfen“, leise. [g].",
+     "bausteine": [
+      "Schild"
+     ]
+    },
+    {
+     "name": "iPad mini · Zustandssatz",
+     "zweck": "Größeres Schild ×1,5 und Betrieb.",
+     "inhalt": "Ruhe, Leitet, Gemeldet, Hat das Wort, Spricht, Nicht angemeldet. Notiz: Helligkeit 50 %, Auto-Helligkeit aus, Pixelverschiebung ±2 px alle 10 min, Überblendung 150 ms.",
+     "bausteine": [
+      "Schild",
+      "Gerätrahmen"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "07a Begleiter · Anmeldung (Zielbild)",
+   "format": "402×874 hoch, Hell",
+   "geraet": "privates iPhone, Safari",
+   "schirme": [
+    {
+     "name": "(A) Hinweis",
+     "zweck": "Weg beginnt am Tag, ohne Knopf.",
+     "inhalt": "Plakette „Zielbild“. Tischdraufsicht 362×240 mit Zeichen am Platz, iPad, iPhone-Oberkante. „Halten Sie die Oberkante Ihres iPhones an das Zeichen am Platz.“ „Ohne App.“",
+     "bausteine": [
+      "Tischdraufsicht",
+      "Plakette"
+     ]
+    },
+    {
+     "name": "(B) iOS-Mitteilung",
+     "zweck": "Systemzustand nachstellen.",
+     "inhalt": "Attrappe Mitteilung „NFC-Tag · In Safari öffnen“.",
+     "bausteine": [
+      "Systemattrappe"
+     ]
+    },
+    {
+     "name": "(C) Platz 3 erkannt",
+     "zweck": "Was der Begleiter darf und nie darf.",
+     "inhalt": "„Platz 3 erkannt“, „Aufsichtsrat · 3. ordentliche Sitzung · 25.09.2026“, Primär 56 „Als Begleiter verbinden“. check Unterlagen lesen · check Sich zu Wort melden · check Untertitel mitlesen · x „Mikrofon – am iPad des Platzes“ · x „Stimmabgabe – am iPad des Platzes“.",
+     "bausteine": [
+      "Primärknopf",
+      "Liste"
+     ]
+    },
+    {
+     "name": "(D) Wartet auf Zustimmung",
+     "zweck": "Erst das iPad verbindet.",
+     "inhalt": "Aktivität, „Bitte am iPad von Platz 3 bestätigen.“, „Abbrechen“.",
+     "bausteine": [
+      "Statuskarte"
+     ]
+    },
+    {
+     "name": "Abgelehnt",
+     "zweck": "Ablehnung am Platz.",
+     "inhalt": "„Am iPad von Platz 3 abgelehnt. Der Begleiter ist nicht verbunden.“ „Erneut versuchen“.",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "QR-Ausweichweg",
+     "zweck": "Ohne NFC.",
+     "inhalt": "„Kein NFC? Scannen Sie den Code am Platz.“ Kamera-Attrappe mit QR.",
+     "bausteine": [
+      "QR-Karte"
+     ]
+    },
+    {
+     "name": "Fehler · Tag nicht erkannt",
+     "zweck": "Lesefehler.",
+     "inhalt": "„Das Zeichen wurde nicht erkannt. Halten Sie die Oberkante noch einmal ruhig an das Zeichen.“",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Fehler · keine Sitzung",
+     "zweck": "Falsche Sitzung.",
+     "inhalt": "„Dieses Zeichen gehört zu keiner laufenden Sitzung.“",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Fehler · Platz nicht angemeldet",
+     "zweck": "Erst am iPad.",
+     "inhalt": "„An Platz 3 ist niemand angemeldet. Melden Sie sich zuerst am iPad des Platzes mit Ihrer PIN an.“",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Fehler · Saalserver nicht erreichbar",
+     "zweck": "Falsches Netz.",
+     "inhalt": "„Der Saalserver ist nicht erreichbar. Wählen Sie das Saal-WLAN „Musterwerk-Saal“ [R6] und halten Sie das iPhone erneut an das Zeichen.“",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Home-Bildschirm-Karte",
+     "zweck": "Optionaler Modus.",
+     "inhalt": "„Für die Sitzung zum Home-Bildschirm hinzufügen“: 1 Teilen-Symbol, 2 „Zum Home-Bildschirm“, 3 „Danach neu mit dem Zeichen verbinden.“ [R7].",
+     "bausteine": [
+      "Karte"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "07b Begleiter · Hauptschirm & Wortmeldung (Zielbild)",
+   "format": "402×874 hoch, Hell",
+   "geraet": "privates iPhone, Safari",
+   "schirme": [
+    {
+     "name": "Hauptschirm · nicht gemeldet",
+     "zweck": "Lage in einem Blick, Safari-Leiste unten frei.",
+     "inhalt": "14:30:40. Kopf „PLATZ 3 · TOP 4 VON 5“, Hand/TOP „Feststellung des Jahresabschlusses 2025“, Avatar „JÖ“, „verbunden · Stand 14:30“. Statuskarte 362×112 „Nicht gemeldet · Es spricht: Lars Krüger“. Segmente sticky 44 „Unterlagen · Redeliste · Untertitel“. Primär 56 „Wort melden“ 16 über der Safari-Leiste.",
+     "bausteine": [
+      "Begleiter-Kopf",
+      "Statuskarte",
+      "Segmentsteuerung",
+      "Primärknopf"
+     ]
+    },
+    {
+     "name": "Wort melden · wartet",
+     "zweck": "Übertragung sichtbar.",
+     "inhalt": "Knopf „Wird übertragen …“, Statuskarte „Ihre Wortmeldung liegt auf dem Telefon“.",
+     "bausteine": [
+      "Primärknopf",
+      "Statuskarte"
+     ]
+    },
+    {
+     "name": "Gemeldet · Nr. 2",
+     "zweck": "Stand A.",
+     "inhalt": "„Sie sind Nr. 2 · Vor Ihnen: Timo Hofer“, Primär Umriss „Meldung zurückziehen“, Segment Redeliste: Es spricht Lars Krüger 02:14; 1 Timo Hofer; 2 SIE.",
+     "bausteine": [
+      "Statuskarte",
+      "Redeliste-Block"
+     ]
+    },
+    {
+     "name": "Hat das Wort",
+     "zweck": "Nie Mikrofon am Telefon.",
+     "inhalt": "wort-toenung, 4-px-Rand: „Sie haben das Wort – schalten Sie am iPad ein“, Tischskizze Platz 3. Kein Knopf.",
+     "bausteine": [
+      "Statuskarte",
+      "Tischskizze"
+     ]
+    },
+    {
+     "name": "Mikrofon am Platz offen",
+     "zweck": "Zustand ohne Steuerung.",
+     "inhalt": "Rote Kante, „Ihr Mikrofon am Platz ist offen · 01:26“, „Ausschalten am iPad.“",
+     "bausteine": [
+      "Statuskarte"
+     ]
+    },
+    {
+     "name": "Einblendungen Wortende",
+     "zweck": "Beendet, entzogen, zurückgezogen.",
+     "inhalt": "Je 4 s: „Ihr Beitrag ist beendet.“ · „Die Leitung hat Ihnen das Wort entzogen.“ [K Grund] · „Meldung zurückgezogen.“",
+     "bausteine": [
+      "Toast"
+     ]
+    },
+    {
+     "name": "Offline · Meldung gepuffert",
+     "zweck": "Offline-First am Telefon.",
+     "inhalt": "Band „Keine Verbindung – Unterlagen bleiben lesbar, Wortmeldung wird nachgereicht“, „Neuer Versuch in 3 s“; Statuskarte „Ihre Wortmeldung liegt auf dem Telefon“.",
+     "bausteine": [
+      "Hinweisband",
+      "Statuskarte"
+     ]
+    },
+    {
+     "name": "Meldung verfallen",
+     "zweck": "TOP gewechselt.",
+     "inhalt": "„Ihre gemerkte Wortmeldung ist verfallen – der Tagesordnungspunkt hat gewechselt. Melden Sie sich bitte erneut.“ + „Wort melden“.",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Profil-Blatt",
+     "zweck": "Wer bin ich, trennen.",
+     "inhalt": "„Jonas Öztürk“, „Platz 3 · Delegierte/r“, „Aufsichtsrat · 3. ordentliche Sitzung · 25.09.2026“, „verbunden seit 14:02“, Umriss log-out „Vom Platz trennen“. Bestätigung: „Geöffnete Unterlagen werden auf diesem Telefon geschlossen. Ihre Wortmeldung bleibt am Platz.“",
+     "bausteine": [
+      "Blatt",
+      "Bogen"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "07c Begleiter · Unterlagen & Untertitel (Zielbild)",
+   "format": "402×874 hoch, Hell",
+   "geraet": "privates iPhone, Safari",
+   "schirme": [
+    {
+     "name": "Unterlagen · TOP 4",
+     "zweck": "Mappe am Telefon.",
+     "inhalt": "Chips 36 „1 · 2 · 3 lock · 4 · 5“, Zeilen 76: „Jahresabschluss 2025 · intern · 12 S.“, „Prüfbericht des Abschlussprüfers · vertraulich · 38 S.“; Fuß „Jeder Abruf steht mit Person, Platz und Zeit im Protokoll.“",
+     "bausteine": [
+      "TOP-Chips",
+      "Unterlage-Zeile"
+     ]
+    },
+    {
+     "name": "TOP 3 · nicht öffentlich",
+     "zweck": "Kein Inhalt am Privatgerät.",
+     "inhalt": "„TOP 3 ist nicht öffentlich. Unterlagen dazu gibt es nur am iPad des Platzes.“ [R4].",
+     "bausteine": [
+      "Leerzustand"
+     ]
+    },
+    {
+     "name": "TOP 5 · keine Unterlagen",
+     "zweck": "Leerzustand.",
+     "inhalt": "„Zu TOP 5 liegen keine Unterlagen vor. Stand 14:32.“",
+     "bausteine": [
+      "Leerzustand"
+     ]
+    },
+    {
+     "name": "Tagesordnung",
+     "zweck": "Übersicht aus dem Kopf.",
+     "inhalt": "Blatt: 1 erledigt, 2 erledigt, 3 lock erledigt, 4 laufend seit 14:12, 5 folgt.",
+     "bausteine": [
+      "Tagesordnung-Zeitleiste"
+     ]
+    },
+    {
+     "name": "Leser · vertraulich",
+     "zweck": "Hauptzweck: lesen mit Wasserzeichen.",
+     "inhalt": "Vollbild-Sheet, „Fertig“ oben links, Stufe „VERTRAULICH“, Wasserzeichen 8 % „Jonas Öztürk · Platz 3 · Aufsichtsrat · 3. ordentliche Sitzung · 25.09.2026 14:35“, „14 / 38“ Mono, Miniaturleiste, Suche. Zurück-Geste schließt nur das Dokument. Kein Teilen.",
+     "bausteine": [
+      "Dokumentleser"
+     ]
+    },
+    {
+     "name": "Leser · lädt und nicht mehr verfügbar",
+     "zweck": "Laden und Sperre.",
+     "inhalt": "Skeleton „Freigabe wird geholt …“; „Diese Unterlage ist auf diesem Telefon nicht mehr verfügbar. Der Begleiter wurde vom Platz getrennt.“ [K Löschung].",
+     "bausteine": [
+      "Skeleton",
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Untertitel · live",
+     "zweck": "Mitlesen.",
+     "inhalt": "Unten verankert, Plakette „LIVE“ als Umriss, „Aa“. Beispieltext „Lars Krüger: Die Prüfung hat zu keinen Einwendungen geführt.“ [K: Transkript].",
+     "bausteine": [
+      "Untertitelzeilen",
+      "Plakette"
+     ]
+    },
+    {
+     "name": "Untertitel · zurückgescrollt",
+     "zweck": "Rückweg.",
+     "inhalt": "Pille „Zum Live-Ende ↓“.",
+     "bausteine": [
+      "Pille"
+     ]
+    },
+    {
+     "name": "Untertitel · Größe",
+     "zweck": "Drei Stufen.",
+     "inhalt": "Blatt „Aa“: Normal · Groß · Sehr groß.",
+     "bausteine": [
+      "Blatt"
+     ]
+    },
+    {
+     "name": "Untertitel · pausiert",
+     "zweck": "Nicht öffentlicher Punkt.",
+     "inhalt": "lock „Untertitel pausieren bei nicht öffentlichen Punkten.“, Kopf-Plakette „nicht öffentlich“.",
+     "bausteine": [
+      "Leerzustand",
+      "Plakette"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "07d Begleiter · Abstimmung & Randzustände (Zielbild)",
+   "format": "402×874 hoch, Hell",
+   "geraet": "privates iPhone, Safari",
+   "schirme": [
+    {
+     "name": "Abstimmung läuft",
+     "zweck": "Nie Stimmzettel am Telefon.",
+     "inhalt": "Band 56 Tinte auf allen Segmenten: lock „Abstimmung läuft · am iPad Ihres Platzes“, Tischskizze 120×72. Unterlagen darunter bedienbar.",
+     "bausteine": [
+      "Abstimmungsband",
+      "Tischskizze"
+     ]
+    },
+    {
+     "name": "Ergebnis festgestellt",
+     "zweck": "Stand C.",
+     "inhalt": "„Beschluss zu TOP 4 · festgestellt 15:42“, Beschluss Serif, Mono Ja 8 / Nein 1 / Enthaltung 1, „angenommen“. Geheim: keine Angaben zu Plätzen.",
+     "bausteine": [
+      "Ergebnisblock"
+     ]
+    },
+    {
+     "name": "Abgebrochen",
+     "zweck": "Variante.",
+     "inhalt": "„Abstimmung abgebrochen · 15:41 – kein Ergebnis.“",
+     "bausteine": [
+      "Statuskarte"
+     ]
+    },
+    {
+     "name": "Verbindung weg",
+     "zweck": "Telefon verliert das Saal-WLAN.",
+     "inhalt": "Band „Keine Verbindung – Unterlagen bleiben lesbar, Wortmeldung wird nachgereicht“, Kopf „getrennt · Stand 15:40“.",
+     "bausteine": [
+      "Hinweisband"
+     ]
+    },
+    {
+     "name": "Vorbereitet, unterbrochen, geschlossen",
+     "zweck": "Sitzungszustände.",
+     "inhalt": "„Die Sitzung hat noch nicht begonnen.“ · „Die Sitzung ist unterbrochen · seit 15:10“ [K] · „Die Sitzung ist geschlossen · 16:12. Vertrauliche Unterlagen wurden auf diesem Telefon gelöscht.“ [K, R3].",
+     "bausteine": [
+      "Statuskarte"
+     ]
+    },
+    {
+     "name": "Platz abgemeldet",
+     "zweck": "Bindung an den Platz.",
+     "inhalt": "„Platz 3 wurde abgemeldet – der Begleiter ist getrennt.“ „Neu verbinden“.",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Große Schrift",
+     "zweck": "Dynamic Type AX3.",
+     "inhalt": "Hauptschirm Stand A, Statuskarte bricht um, Zeilen wachsen.",
+     "bausteine": [
+      "Statuskarte"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "07e Begleiter · Dunkel (Zielbild)",
+   "format": "402×874 hoch, Modus Dunkel (Systemeinstellung)",
+   "geraet": "privates iPhone",
+   "schirme": [
+    {
+     "name": "Hauptschirm · dunkel",
+     "zweck": "Zweite Fassung, Text ≥ 7:1.",
+     "inhalt": "Wie 07b Hauptschirm.",
+     "bausteine": [
+      "Statuskarte"
+     ]
+    },
+    {
+     "name": "Gemeldet · dunkel",
+     "zweck": "Dunkel.",
+     "inhalt": "Wie 07b Gemeldet.",
+     "bausteine": [
+      "Statuskarte"
+     ]
+    },
+    {
+     "name": "Hat das Wort · dunkel",
+     "zweck": "Blau auf Dunkel.",
+     "inhalt": "Wie 07b, Rand #86AEEB.",
+     "bausteine": [
+      "Statuskarte"
+     ]
+    },
+    {
+     "name": "Leser · dunkel",
+     "zweck": "Papier bleibt hell.",
+     "inhalt": "Seite hell auf dunklem Rahmen.",
+     "bausteine": [
+      "Dokumentleser"
+     ]
+    },
+    {
+     "name": "Untertitel · dunkel",
+     "zweck": "Dunkel.",
+     "inhalt": "Wie 07c live.",
+     "bausteine": [
+      "Untertitelzeilen"
+     ]
+    },
+    {
+     "name": "Abstimmung läuft · dunkel",
+     "zweck": "Band dunkel.",
+     "inhalt": "Wie 07d.",
+     "bausteine": [
+      "Abstimmungsband"
+     ]
+    },
+    {
+     "name": "Verbindung weg · dunkel",
+     "zweck": "Band dunkel.",
+     "inhalt": "Wie 07d.",
+     "bausteine": [
+      "Hinweisband"
+     ]
+    },
+    {
+     "name": "Platz erkannt · dunkel",
+     "zweck": "Anmeldung dunkel.",
+     "inhalt": "Wie 07a (C).",
+     "bausteine": [
+      "Primärknopf"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "08a Zuschaltung · Vorraum (Zielbild)",
+   "format": "1440×800, Modus Dunkel (Pult)",
+   "geraet": "Browser am Laptop",
+   "schirme": [
+    {
+     "name": "Einladung und PIN",
+     "zweck": "Eintritt über Link.",
+     "inhalt": "Karte 560: Wappen, „Aufsichtsrat · 3. ordentliche Sitzung · 25.09.2026 · 14:00“, „Zuschaltplatz Z1 · Karin Wolf“, PIN-Feld, „Weiter“.",
+     "bausteine": [
+      "Vorraum-Karte",
+      "PIN-Block"
+     ]
+    },
+    {
+     "name": "(1) Ton einschalten",
+     "zweck": "Nutzergeste für die Wiedergabe.",
+     "inhalt": "Schritt 1 von 3, Knopf volume-2 „Ton einschalten“.",
+     "bausteine": [
+      "Vorraum-Karte"
+     ]
+    },
+    {
+     "name": "(2) Geräteprüfung",
+     "zweck": "Mikrofon, Lautsprecher, Kamera.",
+     "inhalt": "Eigenbild 16:9, Pegelmesser, Auswahl Mikrofon/Kamera/Lautsprecher, „Testton“, headphones „Kopfhörer empfohlen“, einmal: „Sie hören den Saal ohne Ihre eigene Stimme.“ [g Regel mixminus.go].",
+     "bausteine": [
+      "Pegelmesser",
+      "Gerätemenü",
+      "Eigenbild"
+     ]
+    },
+    {
+     "name": "(3) Erklärung vor dem Browserdialog",
+     "zweck": "Berechtigung vorbereiten.",
+     "inhalt": "„Ihr Browser fragt gleich nach Mikrofon und Kamera. Bitte „Erlauben“ wählen.“ Danach Browserdialog-Attrappe.",
+     "bausteine": [
+      "Vorraum-Karte",
+      "Systemattrappe"
+     ]
+    },
+    {
+     "name": "Zugriff verweigert",
+     "zweck": "Anleitung je Browser.",
+     "inhalt": "„Kein Zugriff auf Mikrofon und Kamera.“ Reiter Safari · Chrome · Edge · Firefox mit je drei Schritten, „Erneut prüfen“.",
+     "bausteine": [
+      "Meldung",
+      "Segmentsteuerung"
+     ]
+    },
+    {
+     "name": "Kein Mikrofon · Echo",
+     "zweck": "Gerätefehler.",
+     "inhalt": "„Kein Mikrofon gefunden.“ · „Echo erkannt – bitte Kopfhörer verwenden.“",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Bereit",
+     "zweck": "Eintritt.",
+     "inhalt": "Zusammenfassung Geräte, Primär „Sitzung betreten“.",
+     "bausteine": [
+      "Vorraum-Karte"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "08b Zuschaltung · Hauptschirm & Wortmeldung (Zielbild)",
+   "format": "1440×800, Dunkel",
+   "geraet": "Browser am Laptop",
+   "schirme": [
+    {
+     "name": "Stand A",
+     "zweck": "Bild im Mittelpunkt.",
+     "inhalt": "Signalkante 6. Kopf 56: Wappen, Sitzung 13, Pult/TOP „TOP 4 · Feststellung des Jahresabschlusses 2025“, Pille „Aufzeichnung läuft“, signal-Ikone, Uhr „14:32:10“. Programmbild 912×513, eine Kachel Lars Krüger, Bauchbinde „Lars Krüger · Abschlussprüfer · Platz 5“, Plakette „spricht“. Steuerleiste 64: Kamera, Lautsprecher, Untertitel, Vollbild, rechts Umriss log-out „Verlassen“. Untertitel 20/28. Rechts 448: Statuskarte „Nicht gemeldet“, „Wort melden“, Segmente „Redeliste · Tagesordnung · Unterlagen“.",
+     "bausteine": [
+      "Pult-Kopf",
+      "Programmbild",
+      "Steuerleiste",
+      "Statuskarte"
+     ]
+    },
+    {
+     "name": "Gemeldet",
+     "zweck": "Gleiche Kette wie im Saal.",
+     "inhalt": "„Sie sind Nr. 3“, „Zurückziehen“.",
+     "bausteine": [
+      "Statuskarte"
+     ]
+    },
+    {
+     "name": "Hat das Wort",
+     "zweck": "Mikrofon nicht ungefragt öffnen.",
+     "inhalt": "„Die Leitung hat Ihnen das Wort erteilt“, Kreide-Primär „Mikrofon an“, „Leertaste: Sprechtaste“, Eigenbild 448×252 erscheint.",
+     "bausteine": [
+      "Statuskarte",
+      "Eigenbild"
+     ]
+    },
+    {
+     "name": "Spricht",
+     "zweck": "Mikrofon offen.",
+     "inhalt": "signal/mikro-voll „Mikrofon aus“, Eigenbild mit Plakette „spricht“, Programmbild zeigt Z1, Pegel, „Sie hören den Saal ohne Ihre eigene Stimme.“",
+     "bausteine": [
+      "Steuerleiste",
+      "Eigenbild"
+     ]
+    },
+    {
+     "name": "Wort entzogen",
+     "zweck": "Band.",
+     "inhalt": "„Die Leitung hat Ihnen das Wort entzogen. Ihr Mikrofon ist aus.“",
+     "bausteine": [
+      "Hinweisband"
+     ]
+    },
+    {
+     "name": "Unterlagen",
+     "zweck": "Papier auf dem Pult.",
+     "inhalt": "Segment Unterlagen als Papierblatt (Hell), Wasserzeichen „Karin Wolf · Platz Z1 · …“; außerhalb von Redebeiträgen die Vorlage in Serif 18/26 unter dem Bild.",
+     "bausteine": [
+      "Dokumentleser"
+     ]
+    },
+    {
+     "name": "Geräte und Verbindung",
+     "zweck": "Popover.",
+     "inhalt": "Gerätemenü (Mikrofon, Kamera, Lautsprecher), Verbindungs-Popover „Verzögerung 84 ms · Verlust 0,4 %“ (Beispielwerte).",
+     "bausteine": [
+      "Gerätemenü",
+      "Popover"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "08c Zuschaltung · Programmbild-Varianten (Zielbild)",
+   "format": "Programmbild 912×513 je Variante",
+   "geraet": "Browser",
+   "schirme": [
+    {
+     "name": "1 Sprecher",
+     "zweck": "Kachelregel 1→1.",
+     "inhalt": "Lars Krüger 912×513.",
+     "bausteine": [
+      "Programmbild"
+     ]
+    },
+    {
+     "name": "2 Sprecher",
+     "zweck": "2→2.",
+     "inhalt": "Lars Krüger, Timo Hofer je 456×256, y 128, schwarze Balken gewollt.",
+     "bausteine": [
+      "Programmbild"
+     ]
+    },
+    {
+     "name": "3 Sprecher",
+     "zweck": "2 Spalten, untere Reihe zentriert.",
+     "inhalt": "Anke Bergmann, Lars Krüger oben, Timo Hofer unten bei x 228; je 456×256.",
+     "bausteine": [
+      "Programmbild"
+     ]
+    },
+    {
+     "name": "4 Sprecher",
+     "zweck": "2×2.",
+     "inhalt": "Anke Bergmann, Mark Voss, Ida Peters, Timo Hofer.",
+     "bausteine": [
+      "Programmbild"
+     ]
+    },
+    {
+     "name": "6 Sprecher",
+     "zweck": "5–6→3.",
+     "inhalt": "Je 304×171, zwei Reihen, y 85.",
+     "bausteine": [
+      "Programmbild"
+     ]
+    },
+    {
+     "name": "Totale",
+     "zweck": "Über der Grenze.",
+     "inhalt": "saal.jpg vollflächig, Bauchbinde „Aussprache · 7 Wortbeiträge“.",
+     "bausteine": [
+      "Programmbild"
+     ]
+    },
+    {
+     "name": "Widerspruch",
+     "zweck": "Übersprungen.",
+     "inhalt": "Bernd Ritter spricht: keine Kachel, Bauchbinde ohne Bild [R1]; Bernstein-Hinweis nur im Leitstand.",
+     "bausteine": [
+      "Programmbild"
+     ]
+    },
+    {
+     "name": "Hysterese",
+     "zweck": "Spezifikation.",
+     "inhalt": "Mindeststandzeit 2–3 s, Einwürfe unter 1,5 s ignoriert, Zeitstrahl mit Beispiel.",
+     "bausteine": [
+      "Anmerkung"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "08d Zuschaltung · Abstimmung, Lagen & schmale Fenster (Zielbild)",
+   "format": "1440×800, 1024×768, 768×1024; Dunkel",
+   "geraet": "Browser, Laptop und Tablet",
+   "schirme": [
+    {
+     "name": "Stimmzettel",
+     "zweck": "Aufbau des Abstimmungsschirms als Blatt.",
+     "inhalt": "Stand B: „Platz Z1 · Karin Wolf · 1 Stimme“, Beschluss, Ja/Nein/Enthaltung, Bestätigungsleiste.",
+     "bausteine": [
+      "Wahlknopf",
+      "Blatt"
+     ]
+    },
+    {
+     "name": "Stimme eingegangen",
+     "zweck": "Bestätigung.",
+     "inhalt": "„Ihre Stimme ist eingegangen.“",
+     "bausteine": [
+      "Stimmkarte"
+     ]
+    },
+    {
+     "name": "Ohne Stimmrecht",
+     "zweck": "Variante.",
+     "inhalt": "Band „Abstimmung läuft – Sie haben in dieser Sitzung kein Stimmrecht“.",
+     "bausteine": [
+      "Hinweisband"
+     ]
+    },
+    {
+     "name": "Nicht öffentlich",
+     "zweck": "Teilnahmerecht bleibt.",
+     "inhalt": "Band Umriss lock „Nicht öffentlich · wird nicht aufgezeichnet und nicht übertragen“, sonst unverändert.",
+     "bausteine": [
+      "Hinweisband"
+     ]
+    },
+    {
+     "name": "Verbindung instabil / neu verbinden",
+     "zweck": "Schwächstes Netz.",
+     "inhalt": "„Verbindung instabil – Bild reduziert, Ton hat Vorrang“; Standbild grau „Verbinde neu … 3“.",
+     "bausteine": [
+      "Hinweisband"
+     ]
+    },
+    {
+     "name": "Unterbrochen / beendet",
+     "zweck": "Sitzungszustände.",
+     "inhalt": "„Die Sitzung ist unterbrochen · seit 15:10“; „Die Sitzung ist geschlossen · 16:12“ + „Fenster schließen“.",
+     "bausteine": [
+      "Statuskarte"
+     ]
+    },
+    {
+     "name": "1024 px",
+     "zweck": "Laptop klein.",
+     "inhalt": "Seitenleiste als ausklappbares Blatt.",
+     "bausteine": [
+      "Blatt"
+     ]
+    },
+    {
+     "name": "768 px",
+     "zweck": "Tablet hoch.",
+     "inhalt": "Programmbild oben, Reiter darunter, Steuerleiste unten fixiert.",
+     "bausteine": [
+      "Steuerleiste"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "08e Übertragung · Stream-Tafeln (Zielbild)",
+   "format": "1920×1080 mit Sicherheitsrand",
+   "geraet": "Stream-Ausgang, öffentliche Zuschauerseite",
+   "schirme": [
+    {
+     "name": "Beginn-Tafel",
+     "zweck": "Vor der Sitzung.",
+     "inhalt": "Papierton, Wappen, „Aufsichtsrat der Musterwerk AG · 3. ordentliche Sitzung“, „Die Übertragung beginnt um 14:00“. Kein Rot.",
+     "bausteine": [
+      "Stream-Tafel"
+     ]
+    },
+    {
+     "name": "Programm mit Bauchbinde",
+     "zweck": "Name auf marke/haus.",
+     "inhalt": "„Lars Krüger · Abschlussprüfer · Platz 5“.",
+     "bausteine": [
+      "Bauchbinde"
+     ]
+    },
+    {
+     "name": "Pausentafel",
+     "zweck": "Nicht öffentlicher Punkt.",
+     "inhalt": "Serif „TOP 3 · Personalangelegenheit Geschäftsführung“, „Die Übertragung ist für diesen Punkt unterbrochen … bis wieder ein öffentlicher Punkt aufgerufen wird.“",
+     "bausteine": [
+      "Stream-Tafel"
+     ]
+    },
+    {
+     "name": "Ende-Tafel",
+     "zweck": "Nach der Sitzung.",
+     "inhalt": "„Die Sitzung ist geschlossen · 16:12“.",
+     "bausteine": [
+      "Stream-Tafel"
+     ]
+    },
+    {
+     "name": "Öffentliche Zuschauerseite",
+     "zweck": "Ohne Redeliste, ohne Wort melden.",
+     "inhalt": "Browser 1440×800 mit Pausentafel.",
+     "bausteine": [
+      "Programmbild"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "09a Leitstand · Rahmen",
+   "format": "1440×800, Mindestmaß 1280×720, Dunkel (Pult)",
+   "geraet": "installierte Web-App am Desktop",
+   "schirme": [
+    {
+     "name": "Anmeldung",
+     "zweck": "Gerät plus Person.",
+     "inhalt": "„Leitstand · Vorstandszimmer“, „Gerät LS-01 · Zertifikat der Saal-CA gültig“, Name, Rolle Technik/Schriftführung, „Anmelden“; Fehler „Dieses Gerät hat kein gültiges Zertifikat der Saal-CA.“ [K].",
+     "bausteine": [
+      "Pult-Fensterchrome",
+      "Formular"
+     ]
+    },
+    {
+     "name": "Sitzungswahl",
+     "zweck": "Kommende Sitzungen.",
+     "inhalt": "„Aufsichtsrat · 3. ordentliche Sitzung · Do 25.09.2026 · 14:00 · vorbereitet“ [Öffnen]; „Aufsichtsrat · 2. ordentliche Sitzung · 26.06.2026 · archiviert“. Leer: „Keine Sitzung vorbereitet.“",
+     "bausteine": [
+      "Tabelle",
+      "Leerzustand"
+     ]
+    },
+    {
+     "name": "Kopf, Navigation, Sperrband",
+     "zweck": "Globale Teile.",
+     "inhalt": "Kopfleiste: Signet+Wortmarke, „Aufsichtsrat · 3. ordentliche Sitzung · laufend“, „Kette Nr. 88 · wächst“, Uhr, „Technik · LS-01“. Navigation Vorher: Saal, Sitzung, PIN-Ausgabe, Vorabcheck · Während: Betrieb, Ton · Nachher: Protokoll, Siegel, Ausgabe. Brotkrume 13, Lage 24.",
+     "bausteine": [
+      "Pult-Fensterchrome",
+      "Sperrband"
+     ]
+    },
+    {
+     "name": "Befehlspalette ⌘K",
+     "zweck": "Tastatur zuerst.",
+     "inhalt": "„Befehl oder Platz …“: „Platz 7 · Timo Hofer“, „Kamera PTZ links“, „Protokoll öffnen“, „Siegel prüfen“. Gesperrtes erscheint nicht.",
+     "bausteine": [
+      "Befehlspalette"
+     ]
+    },
+    {
+     "name": "Kürzel „?“",
+     "zweck": "Übersicht.",
+     "inhalt": "⌘K, G B Betrieb, G S Saal, Esc schließt, Enter wählt die sichere Wahl; Browserkürzel bleiben.",
+     "bausteine": [
+      "Kürzeltafel"
+     ]
+    },
+    {
+     "name": "Hintergrund-Hinweis",
+     "zweck": "Gedrosselter Tab.",
+     "inhalt": "Tab-Titel „(1) Leitstand“, Systemmitteilung, lokaler Ton bei ausstehender Bestätigung [gp].",
+     "bausteine": [
+      "Systemattrappe"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "09b Leitstand · Vorher · Saal & Geräte",
+   "format": "1440×800, Dunkel",
+   "geraet": "Desktop",
+   "schirme": [
+    {
+     "name": "Saal · Plan",
+     "zweck": "Maßstäblich mit Kameras.",
+     "inhalt": "„Vorher / Saal“, „Vorstandszimmer · 12 Plätze · 2 Kameras“. Plan ≥ 560 hoch, ovaler Tisch, K1/K2 mit Blickkegeln; Hover Platz 7: Linie K2 → Platz 7 „Preset 1“. Saalfoto 240×135 „Symbolbild“. [K: Einrichtung; heute saal.json].",
+     "bausteine": [
+      "Saalplan maßstäblich"
+     ]
+    },
+    {
+     "name": "Seitenblatt Platz 7",
+     "zweck": "Platz trägt Identität.",
+     "inhalt": "Blatt 420: „Platz 7“, Sitzordnung „oben · Spalte 5“, Kamera „PTZ rechts“, Preset 1, heute „Timo Hofer · Delegierte/r“, „Preset lernen“.",
+     "bausteine": [
+      "Seitenblatt"
+     ]
+    },
+    {
+     "name": "Preset lernen",
+     "zweck": "Mit Bild.",
+     "inhalt": "Live-Vorschau 384×216 (kamera.jpg) [K Videopfad], Steuerkreuz, Zoom, „Preset 1 in PTZ rechts speichern“; Bogen „Preset 1 überschreiben? Die Position liegt in der Kamera.“ [K: nur Abruf gebaut].",
+     "bausteine": [
+      "Kamerakachel",
+      "Steuerkreuz",
+      "Bogen"
+     ]
+    },
+    {
+     "name": "Kameraliste",
+     "zweck": "Adressen.",
+     "inhalt": "„K1 · PTZ links · 127.0.0.1:52381 · Kanal 1 · VISCA · antwortet“, „K2 · PTZ rechts · 127.0.0.1:52382 · Kanal 1 · VISCA · antwortet“, Hinweis „Vorführbetrieb: Attrappe“. [g].",
+     "bausteine": [
+      "Tabelle"
+     ]
+    },
+    {
+     "name": "Geräte",
+     "zweck": "Akku und Ladegrenze.",
+     "inhalt": "„Platz 1 · iPad 7F3A · verbunden · Akku 78 % · Ladegrenze 80 % · Geführter Zugriff an“ usw.; Quelle „über MDM – Safari liefert keinen Akkustand“ [K].",
+     "bausteine": [
+      "Gerätezeile"
+     ]
+    },
+    {
+     "name": "Gerät tauschen",
+     "zweck": "Leitprinzip 1 als Ablauf.",
+     "inhalt": "1 „Platz 1 · iPad 7F3A getrennt seit 0:38“ → 2 „Ersatz-iPad an den Platz legen“ → 3 „Kiosk zeigt den Saalplan, Anke Bergmann meldet sich mit PIN an“ → 4 „Platz 1 wieder angemeldet · 15:24“. Nichts einzurichten [g].",
+     "bausteine": [
+      "Schrittfolge"
+     ]
+    },
+    {
+     "name": "Saal · gesperrt",
+     "zweck": "Sperre auch hier.",
+     "inhalt": "Sperrband „Eingriffe gesperrt bis zum Auszählen“; Steuerkreuz nicht da.",
+     "bausteine": [
+      "Sperrband"
+     ]
+    },
+    {
+     "name": "Ohne Sitzordnung",
+     "zweck": "Hinweis nur hier.",
+     "inhalt": "„Keine Sitzordnung hinterlegt – die Sprechstellen zeigen eine Kachelreihe.“",
+     "bausteine": [
+      "Meldung"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "09c Leitstand · Vorher · Sitzung & PIN-Ausgabe",
+   "format": "1440×800, Dunkel; Papier explizit Hell",
+   "geraet": "Desktop",
+   "schirme": [
+    {
+     "name": "Sitzung · Teilnahmen",
+     "zweck": "Nur Ausnahmen markiert.",
+     "inhalt": "Reiter „Teilnahmen · 13 · Tagesordnung · 5 · Sitzungsmappe · 6“, „11 Stimmberechtigte · Quorum 6“. Zeilen 48: Platz · Person · Rolle · Zustand · Gerät; 5 „ohne Stimmrecht“, 9 video-off „Widerspruch“ Bernstein, 11 „frei“ Grün, 12 „ohne Stimmrecht“, Z1 „zugeschaltet“; Gerät „iPad 7F3A · 78 % · verbunden“.",
+     "bausteine": [
+      "Tabelle"
+     ]
+    },
+    {
+     "name": "Seitenblatt Teilnahme",
+     "zweck": "Platz 9.",
+     "inhalt": "„Bernd Ritter · Platz 9 · Delegierte/r“, „Widerspruch gegen die Aufzeichnung: ja – die Nachführung überspringt, das Mikrofon geht trotzdem auf.“, „PIN gedruckt 24.09.“, „angemeldet 13:55“.",
+     "bausteine": [
+      "Seitenblatt"
+     ]
+    },
+    {
+     "name": "Teilnahme anlegen",
+     "zweck": "Person zuordnen.",
+     "inhalt": "Dialog: Person, Platz, Rolle, Widerspruch; „Die PIN wird beim Speichern erzeugt und nur gedruckt.“ [K].",
+     "bausteine": [
+      "Bogen"
+     ]
+    },
+    {
+     "name": "Tagesordnung",
+     "zweck": "Reiter.",
+     "inhalt": "Zeilen Serif 1–5, TOP 3 lock „nicht öffentlich – Stream und Aufzeichnung pausieren automatisch“, Ziehen zum Umordnen.",
+     "bausteine": [
+      "TOP-Zeile"
+     ]
+    },
+    {
+     "name": "Sitzungsmappe",
+     "zweck": "Stufen mit Wirkung.",
+     "inhalt": "TOP · Titel · Datei · Größe · Stufe · „wer sieht es“ (öffentlich: alle, auch Gäste · intern: ohne Gäste · vertraulich: nur Stimmberechtigte · geheim: nur Sitzungsleitung) · Prüfsumme gekürzt (Beispielwerte). Upload mit Fortschritt „2,4 MB · 64 %“ [K]; leer „Diese Sitzung hat noch keine Unterlagen.“",
+     "bausteine": [
+      "Tabelle",
+      "Stufe"
+     ]
+    },
+    {
+     "name": "PIN-Ausgabe",
+     "zweck": "PIN nur auf Papier.",
+     "inhalt": "Chips „gedruckt 24.09. 16:10“, „angemeldet 13:58“, Platz 6 „neu ausgegeben 13:40“; Drucker-Chip „Drucker Vorzimmer · bereit“; „Fehlende drucken (2)“; A7-Vorschau 296×420 Papier, PIN als ●●●●. [K].",
+     "bausteine": [
+      "Tabelle",
+      "Drucker-Chip",
+      "A7-Zettel"
+     ]
+    },
+    {
+     "name": "PIN neu ausgeben",
+     "zweck": "Mit Grund.",
+     "inhalt": "Bogen „PIN für Platz 6 · Nadja Simon neu ausgeben?“, Grund „Zettel verloren“, „Die alte PIN gilt sofort nicht mehr.“ [Abbrechen] [Neu ausgeben und drucken].",
+     "bausteine": [
+      "Bogen"
+     ]
+    },
+    {
+     "name": "Druckvorschau A4",
+     "zweck": "Print-CSS.",
+     "inhalt": "8 A7-Abschnitte je Platz, Schnittlinien, ohne Browser-Kopf; „Nach dem Druck nicht erneut anzeigbar.“",
+     "bausteine": [
+      "A7-Zettel"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "09d Leitstand · Vorher · Vorabcheck",
+   "format": "1440×800, Dunkel",
+   "geraet": "Desktop",
+   "schirme": [
+    {
+     "name": "Bereit zu starten",
+     "zweck": "Selbsttest.",
+     "inhalt": "„Prüft Kette, Besetzung und jede Kamera – vor der Sitzung, nicht währenddessen.“ „Vorabcheck starten“. Rechts Spalte 320 Mini-Saalplan. [g].",
+     "bausteine": [
+      "Prüfzeile",
+      "Mini-Synoptik"
+     ]
+    },
+    {
+     "name": "Läuft",
+     "zweck": "Kamerafahrten sichtbar.",
+     "inhalt": "„läuft … die Kameras fahren jetzt jeden Platz an“, Standbilder 128×72 füllen sich [K Bild].",
+     "bausteine": [
+      "Kamerakachel"
+     ]
+    },
+    {
+     "name": "Der Saal ist bereit",
+     "zweck": "Fazit.",
+     "inhalt": "„29 in Ordnung · 1 Hinweis · 0 Fehler“. Zeilen: „„Aufsichtsrat · 3. ordentliche Sitzung“ ist vorbereitet und kann eröffnet werden.“ · „Platz 1 führt, 2 Personen sind zur Leitung berechtigt.“ · „Höchstens 3 von 12 Mikrofonen gleichzeitig offen.“ · „Reserve 9,0 dB trägt 8 offene Mikrofone; bei 3 offenen senkt der Automixer die Summe um 4,8 dB.“ · „11 Einträge, lückenlos und nachgerechnet.“ · Hinweis Siegel „noch nie abgeschlossen“ · je Platz „Anke Bergmann, Sitzungsleitung.“ und „PTZ links ist auf Preset 1 gefahren. Bild am Platz prüfen.“ Zusätze [K]: „11 Stimmberechtigte, Quorum 6, 9 angemeldet“, „Platz 9: Widerspruch – Kamera überspringt“, „Ladegrenze 80 %“. „Eröffnen kann die Sitzungsleitung an Platz 1.“",
+     "bausteine": [
+      "Prüfzeile"
+     ]
+    },
+    {
+     "name": "Noch nicht bereit",
+     "zweck": "K2 stumm.",
+     "inhalt": "„23 in Ordnung · 1 Hinweis · 6 Fehler“: „Platz 7 · Kamera: PTZ rechts unter 127.0.0.1:52382 antwortet nicht. Kabel, Adresse und Stromversorgung prüfen.“ Plätze 7–12 schraffiert.",
+     "bausteine": [
+      "Prüfzeile",
+      "Mini-Synoptik"
+     ]
+    },
+    {
+     "name": "Server antwortet nicht",
+     "zweck": "Netzfehler.",
+     "inhalt": "„Der Server antwortet nicht“ – „Keine Antwort vom Saalserver. Netzwerk des Leitstands prüfen.“ [g].",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Gesperrt · Sitzung läuft",
+     "zweck": "Keine Kamerafahrt während der Sitzung.",
+     "inhalt": "„Die Sitzung läuft. Der Vorabcheck fährt Kameras und ist deshalb gesperrt.“ [g].",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Sitzung geschlossen",
+     "zweck": "Nicht wieder eröffnbar.",
+     "inhalt": "Fehler „„Aufsichtsrat · 3. ordentliche Sitzung“ ist geschlossen und lässt sich nicht wieder eröffnen. Für die nächste Sitzung eine neue Sitzung anlegen.“",
+     "bausteine": [
+      "Prüfzeile"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "09e Leitstand · Während · Betrieb",
+   "format": "1440×800, Dunkel",
+   "geraet": "Desktop neben Vorschaumonitoren",
+   "schirme": [
+    {
+     "name": "Normalbetrieb · Stand A",
+     "zweck": "Das ruhigste Fenster im Haus.",
+     "inhalt": "„Während / Betrieb“, „TOP 4 · Feststellung des Jahresabschlusses 2025 · seit 14:12“. Links: Synoptik mit K1/K2 und Blickkegeln, Pegel je Platz [K], 5 spricht, 3/7 gemeldet, 9 Eckmarke, 11 „frei“, Z1. Tonzeile „1 von 3 offen · Summe 0,0 dB · Reserve 9,0 dB gemessen“. K1 320×180 „PTZ links · Preset 5 · steht“ + PGM, K2 „PTZ rechts · Preset 1 · steht“. Rechts 376: Redeliste „Lars Krüger · Platz 5“ Mono 24 „02:14“, „1 Timo Hofer“, „2 Jonas Öztürk“; Eskalationsleiter „keine Störung“ [gp]; Kette „Nr. 88 · 14:31:07 · Jonas Öztürk meldet sich zu Wort.“ · „Nr. 87 · Kamera PTZ links auf Preset 5.“ · „Nr. 86 · Lars Krüger spricht.“ · „Nr. 85 · Timo Hofer meldet sich zu Wort.“ „Kette wächst“.",
+     "bausteine": [
+      "Saalplan maßstäblich",
+      "Kamerakachel",
+      "Redeliste-Block",
+      "Kettenzeile",
+      "Eskalationsleiter"
+     ]
+    },
+    {
+     "name": "Stand A′",
+     "zweck": "Wort erteilt.",
+     "inhalt": "14:33:02. Platz 7 blau, Kette „Nr. 90 · Timo Hofer erhält das Wort.“ „Nr. 89 · Mikrofon Platz 5 aus.“",
+     "bausteine": [
+      "Saalplan maßstäblich",
+      "Kettenzeile"
+     ]
+    },
+    {
+     "name": "Platz-Kontextmenü",
+     "zweck": "Eingriff teuer gemacht.",
+     "inhalt": "Rechtsklick Platz 5: „Mikrofon schließen …“, „Kamera auf Preset 5 fahren …“, „Teilnahme ansehen“; Bogen „Mikrofon an Platz 5 schließen? Ein Eingriff der Technik, er steht im Protokoll.“ [K Eingriffe vom Leitstand].",
+     "bausteine": [
+      "Kontextmenü",
+      "Bogen"
+     ]
+    },
+    {
+     "name": "Nicht öffentlich",
+     "zweck": "Pause sofort sichtbar.",
+     "inhalt": "14:07:30. Band lock „Aufzeichnung und Stream pausiert – TOP 3 nicht öffentlich · seit 14:05“, „Keine Aufzeichnung“, Vorschauen mit Plakette „nicht übertragen“.",
+     "bausteine": [
+      "Hinweisband",
+      "Kamerakachel"
+     ]
+    },
+    {
+     "name": "Abstimmung läuft · Stand B",
+     "zweck": "Sperre und Zähler.",
+     "inhalt": "15:41. Abstimmungsfeld 1160×140: Serif 22 Beschluss, Plakette „geheim“, Mono 40 „7 von 10“ ohne Animation, Segmentbalken, Laufzeit „2:02“ [Z], „1 Platz getrennt: Platz 3“, „Auszählen: Sitzungsleitung, Platz 1“. Sperrband „Automatische Technikeingriffe gesperrt: Abstimmung läuft“. Kette nur Sammelzeile „Stimme abgegeben (7.)“ ohne Platz. Kameras „steht · gesperrt“.",
+     "bausteine": [
+      "Abstimmungsfeld",
+      "Sperrband",
+      "Kettenzeile"
+     ]
+    },
+    {
+     "name": "Stand C",
+     "zweck": "Aus der Sperre.",
+     "inhalt": "15:42:03. „festgestellt · angenommen · Ja 8 · Nein 1 · Enthaltung 1“, Band „Eingriffe wieder frei · 15:41:40“, „Kamerafahrten während der Abstimmung wurden nicht ausgeführt und nicht nachgeholt.“ Kette „Nr. 209 · Ergebnis festgestellt: … ist angenommen.“",
+     "bausteine": [
+      "Abstimmungsfeld",
+      "Kettenzeile"
+     ]
+    },
+    {
+     "name": "Kamera stumm",
+     "zweck": "Regie-Sprache.",
+     "inhalt": "K2 „antwortet nicht seit 14:51 · Ton läuft weiter · Plätze 7–12 werden nicht angefahren“; Kette „Kamera PTZ rechts nicht erreichbar“. [g].",
+     "bausteine": [
+      "Kamerakachel"
+     ]
+    },
+    {
+     "name": "Widerspruch spricht",
+     "zweck": "Übersprungen.",
+     "inhalt": "15:02. Platz 9 rot + Bernstein „kein Bild“, Kette „Bernd Ritter wird von der Kameranachführung übersprungen (Widerspruch gegen die Aufzeichnung).“",
+     "bausteine": [
+      "Saalplan maßstäblich",
+      "Kettenzeile"
+     ]
+    },
+    {
+     "name": "Grenze · Leitung verwaist",
+     "zweck": "Zwei Lagen.",
+     "inhalt": "15:10 „3 von 3 offen · Summe −4,8 dB“ Bernstein; 15:20:40 Band „Platz 1 · Sitzungsleitung getrennt seit 0:38 – übernehmen kann Platz 2 (Mark Voss)“.",
+     "bausteine": [
+      "Hinweisband"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "09f Leitstand · Störungen & Ton",
+   "format": "1440×800, Dunkel",
+   "geraet": "Desktop",
+   "schirme": [
+    {
+     "name": "Eskalationsleiter",
+     "zweck": "Sechs Stufen, ab 4 mit Bestätigung.",
+     "inhalt": "Leiter 1–6, 1–3 „automatisch · Protokolleintrag“, 4–6 „nur mit Bestätigung“; Inhalte „offen“ [R2]; Störung „K2 stumm seit 0:42“. [gp].",
+     "bausteine": [
+      "Eskalationsleiter"
+     ]
+    },
+    {
+     "name": "Stufe 4 · Bestätigung",
+     "zweck": "Mensch entscheidet.",
+     "inhalt": "Dialog „Stufe 4 ausführen?“ [Nicht jetzt] [Bestätigen]; Toast und Kettenzeile. Bei Abstimmung: „wartet bis nach der Auszählung“.",
+     "bausteine": [
+      "Bogen",
+      "Toast"
+     ]
+    },
+    {
+     "name": "Gerät getrennt · Neustart",
+     "zweck": "Ausfälle ehrlich.",
+     "inhalt": "„Platz 3 getrennt seit 0:42 – eine gesicherte Stimme kann auf dem Gerät liegen. Wiederanmeldung läuft selbsttätig.“ · „Server neu gestartet 15:12 – 10 Geräte wieder angemeldet“ (Zustand bleibt nur mit Datenbank).",
+     "bausteine": [
+      "Hinweisband"
+     ]
+    },
+    {
+     "name": "Ton · Einmessung und Regelwerk",
+     "zweck": "Echte Regelwerte.",
+     "inhalt": "„Reserve 9,0 dB → höchstens 8 offene Mikrofone · eingestellt 3“. NOM: 1 → 0,0 · 2 → −3,0 · 3 → −4,8 · 4 → −6,0 · 8 → −9,0 dB. Filterhaushalt Grenze 8 (6–8), kurzlebig 90 s, feste Filter Beispielwerte. Hochpass 110 Hz (100–120). Latenz Mikrofon → Saal < 10 ms, Dolmetsch → Kopfhörer < 60 ms. Mix-Minus Saal/Z1/Dolmetsch, Aufzeichnung bekommt alles. [g intern/ton].",
+     "bausteine": [
+      "NOM-Leiste",
+      "Filterhaushalt",
+      "Mix-Minus-Matrix",
+      "Latenzzeile"
+     ]
+    },
+    {
+     "name": "Ton · live",
+     "zweck": "Zielbild.",
+     "inhalt": "Kanalzüge je Platz mit Pegel und Dämpfung, Filter live mit Restzeit, gemessene Latenz; Fehlertext „Mikrofon → Saal: 14 ms, Budget 10 ms – Kammfiltereffekte mit der echten Stimme im Raum.“ [K].",
+     "bausteine": [
+      "Kanalzug"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "09g Leitstand · Nachher",
+   "format": "1440×800, Dunkel; Papierblatt Hell",
+   "geraet": "Desktop",
+   "schirme": [
+    {
+     "name": "Protokoll",
+     "zweck": "Papier auf dem Pult.",
+     "inhalt": "Blatt 680, links mitlaufendes Inhaltsverzeichnis. „Protokoll – Aufsichtsrat · 3. ordentliche Sitzung“, „Saal: Vorstandszimmer · Beginn 25.09.2026, 14:00 Uhr · Einträge 231, Kette nachgerechnet: ja“, Tabelle Zeit | Vorgang. Fuß „Der Wortlaut der Redebeiträge ist nicht enthalten – dafür fehlt das Transkript.“ [g /protokoll.md; PDF K].",
+     "bausteine": [
+      "Papierblatt",
+      "Inhaltsverzeichnis"
+     ]
+    },
+    {
+     "name": "Protokoll · Anmerkung",
+     "zweck": "Schriftführung ergänzt.",
+     "inhalt": "Rita Falk: Kettenzeile links, Anmerkung rechts [K, R8].",
+     "bausteine": [
+      "Papierblatt"
+     ]
+    },
+    {
+     "name": "Protokoll · nicht beweiskräftig",
+     "zweck": "Kettenfehler.",
+     "inhalt": "„Achtung: Die Ereigniskette ist nicht in Ordnung (Eintrag 119 passt nicht an Eintrag 118). Dieses Protokoll ist nicht beweiskräftig.“ [g].",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Siegel · Vorbedingungen",
+     "zweck": "Checkliste.",
+     "inhalt": "„Sitzung geschlossen · 16:12“, „231 Einträge, lückenlos“, „Schlüssel f00e b3d2 833f 9380“, „letzter Abschluss: noch nie“, Knopf „Abschließen …“.",
+     "bausteine": [
+      "Prüfzeile"
+     ]
+    },
+    {
+     "name": "Siegel · Bogen mit Halteknopf",
+     "zweck": "Unumkehrbar.",
+     "inhalt": "„Kette abschließen? Einträge 1 bis 231 · Fingerabdruck f00e b3d2 833f 9380. Der Abschluss wird Eintrag 232.“ Halteknopf 2 s, Zustand 60 %.",
+     "bausteine": [
+      "Bogen",
+      "Halteknopf"
+     ]
+    },
+    {
+     "name": "Siegel · Erfolg",
+     "zweck": "Beleg.",
+     "inhalt": "stamp 64 „Kette abgeschlossen · Einträge 1 bis 231 · Schlüssel f00eb3d2833f9380 · 16:14“, „Prüfdatei speichern“. [g].",
+     "bausteine": [
+      "Ikone",
+      "Knopf"
+     ]
+    },
+    {
+     "name": "Siegel · nichts Neues / fehlgeschlagen",
+     "zweck": "Randfälle.",
+     "inhalt": "„Seit dem letzten Abschluss ist nichts dazugekommen.“ · „Ein Abschluss geht nicht auf: Siegel 232 – der gesiegelte Kopf passt nicht zu Eintrag 231, die Kette wurde ausgetauscht. Das Protokoll ist nicht beweiskräftig.“ „gedeckt bis 231 von 240 · 9 ungedeckt“. [g].",
+     "bausteine": [
+      "Meldung"
+     ]
+    },
+    {
+     "name": "Ausgabe",
+     "zweck": "Zielbild.",
+     "inhalt": "Ziele: Protokoll (Datei) „gespeichert 16:20“, PDF/A [K], Beschlüsse, Anwesenheit, Prüfdatei, Aufzeichnung [K], OParl „nicht verbunden“ [gp].",
+     "bausteine": [
+      "Tabelle"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "10 Papier",
+   "format": "A4 595×842 pt, A7 210×298 pt, Hell",
+   "geraet": "Druck",
+   "schirme": [
+    {
+     "name": "Protokoll · Seite 1",
+     "zweck": "Kopf und Anwesenheit.",
+     "inhalt": "Wappen farbig, „Aufsichtsrat der Musterwerk AG“, „Protokoll der 3. ordentlichen Sitzung“, „Donnerstag, 25. September 2026, 14:00 bis 16:12 Uhr · Vorstandszimmer“. Anwesend: Anke Bergmann (Vorsitz), Rita Falk (Schriftführung), Timo Hofer, Lars Krüger (Abschlussprüfer, Gast), Sara Lindner, Jonas Öztürk, Ida Peters, Bernd Ritter, Nadja Simon, Mark Voss, Karin Wolf (zugeschaltet), Elif Yilmaz; nicht anwesend Paul Weber. Leitung: Anke Bergmann; 15:20–15:24 Mark Voss. Marginalspalte 22 mm, Zeitmarke Mono 8 pt.",
+     "bausteine": [
+      "A4-Satzspiegel"
+     ]
+    },
+    {
+     "name": "Protokoll · Seite 2",
+     "zweck": "TOP 3/4 mit Beschlussblock.",
+     "inhalt": "„TOP 3 – Personalangelegenheit Geschäftsführung (nicht öffentlich – Stream und Aufzeichnung pausierten)“. TOP 4 Zeilen „0:29:02 Timo Hofer meldet sich zu Wort.“ … Beschluss Serif mit 1-pt-Randstrich, „Ja 8 · Nein 1 · Enthaltung 1 – angenommen“. Zeit h:mm:ss [UI Befund 13].",
+     "bausteine": [
+      "Protokollzeile",
+      "Beschlussblock"
+     ]
+    },
+    {
+     "name": "Protokoll · Beschlüsse und Fuß",
+     "zweck": "Abschluss.",
+     "inhalt": "Beschlüsse 1–3; Fuß „Kette Nr. 1–231 · Abschluss Nr. 232 · Fingerabdruck f00e b3d2 833f 9380“ Mono 7,5, „Seite 3 von 3“, Mitmarke 7 pt.",
+     "bausteine": [
+      "Kettenfuß"
+     ]
+    },
+    {
+     "name": "Beschlussauszug",
+     "zweck": "Einzelblatt.",
+     "inhalt": "„Auszug aus dem Protokoll … TOP 4“, Beschluss, geheim, 10 von 11, Quorum 6, Ergebnis, „festgestellt 15:42 durch Anke Bergmann“, „Ereignis Nr. 209“. [K].",
+     "bausteine": [
+      "Beschlussblock"
+     ]
+    },
+    {
+     "name": "PIN-Zettel A7",
+     "zweck": "PIN nur auf Papier.",
+     "inhalt": "Schnittmarken, Wappen, „Platz 3 · Jonas Öztürk“ 11 pt SemiBold, PIN vier Kästchen 9×11 mm Mono 20 (Beispiel „5 8 2 6“), Piktogramme Platz antippen → Hier sitzen → PIN, „Bis zum Sitzungsende aufbewahren“. Rückseite ohne Namen.",
+     "bausteine": [
+      "A7-Zettel"
+     ]
+    },
+    {
+     "name": "Siegelbericht",
+     "zweck": "Nur Felder von siegel.Bericht.",
+     "inhalt": "Siegel 1 · Gedeckt 231 · Länge 232 · Ungedeckt 1 (der Abschluss selbst) · Fingerabdrücke f00eb3d2833f9380 · Fehler keine. Zeilen 40.",
+     "bausteine": [
+      "Prüfzeile"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "11 Webseite",
+   "format": "1440 breit, 402 mobil, Dunkel (Pult)",
+   "geraet": "Browser",
+   "schirme": [
+    {
+     "name": "Start · Held",
+     "zweck": "Rot nur als Bedeutung.",
+     "inhalt": "Kopf Signet+Wortmarke Kreide, Navigation System · Einsatz · Sicherheit · Stand · Kontakt. „Sitzungssystem für Gremien“, Web/Held „Die Sitzung führen, nicht die Technik.“, „Vorführung anfragen“, „Wie es arbeitet“. platz.jpg mit eingesetzter Sprechstelle „spricht“, Plakette „Symbolbild“.",
+     "bausteine": [
+      "Web-Kopf",
+      "Held"
+     ]
+    },
+    {
+     "name": "Start · Abschnitte",
+     "zweck": "Farbe bedeutet etwas u. a.",
+     "inhalt": "„Farbe bedeutet etwas“: vier Signale mit Ikone und Wort. „Person ist nicht Platz ist nicht Gerät“. „In Entwicklung – Pilotpartner gesucht“.",
+     "bausteine": [
+      "Signalblock",
+      "Karte"
+     ]
+    },
+    {
+     "name": "System",
+     "zweck": "Schaubilder.",
+     "inhalt": "„Ein Platz, eine Identität, alles verknüpft.“, Schaubilder currentColor.",
+     "bausteine": [
+      "Schaubild"
+     ]
+    },
+    {
+     "name": "Einsatz",
+     "zweck": "Saaltotale.",
+     "inhalt": "„Sechs Räume, ein System.“ mit echten Schirmen.",
+     "bausteine": [
+      "Montagerahmen"
+     ]
+    },
+    {
+     "name": "Sicherheit",
+     "zweck": "Kette und Siegel.",
+     "inhalt": "„Der Saal hängt von nichts ab.“ Kettenschaubild mit Siegel in Kreide; „Gezählt wird nur die Summe.“",
+     "bausteine": [
+      "Kettenschaubild"
+     ]
+    },
+    {
+     "name": "Stand",
+     "zweck": "Ikone und Wort statt Grün.",
+     "inhalt": "„Was läuft, und was nicht.“ gebaut/nicht gebaut.",
+     "bausteine": [
+      "Stand-Zeile"
+     ]
+    },
+    {
+     "name": "Kontakt · mobil",
+     "zweck": "Kontakt und 402-Fassung.",
+     "inhalt": "„Zwanzig Minuten reichen für die Vorführung.“; Start mobil.",
+     "bausteine": [
+      "Web-Kopf"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "12 Abläufe & Montagen",
+   "format": "Tafeln 3840×1600 (Abläufe), 1920×1080 (Montagen)",
+   "geraet": "keins",
+   "schirme": [
+    {
+     "name": "Ablauf · Anmeldung",
+     "zweck": "Leerlauf bis am Platz.",
+     "inhalt": "Leerlauf → Platz angetippt → PIN → prüft → (falsch) → Willkommen → Vor Beginn; Auslöser an den Pfeilen.",
+     "bausteine": [
+      "Ablaufstrecke"
+     ]
+    },
+    {
+     "name": "Ablauf · Wortmeldung",
+     "zweck": "Vom Melden bis zum Beitrag, drei Oberflächen parallel.",
+     "inhalt": "Sprechstelle Platz 3 (Wort melden → gemeldet → hat das Wort → spricht → beendet), Leitung (Wort erteilen), Namensschild Platz 3 (gemeldet → hat das Wort → spricht → Ruhe), Zeiten 14:31–14:41.",
+     "bausteine": [
+      "Ablaufstrecke"
+     ]
+    },
+    {
+     "name": "Ablauf · Geheime Abstimmung",
+     "zweck": "Delegierte und Leitung.",
+     "inhalt": "Vorbereiten → starten → Stimmzettel/Leitungsfeld → ausgewählt → eingegangen → auszählen → feststellen → Ergebnis.",
+     "bausteine": [
+      "Ablaufstrecke"
+     ]
+    },
+    {
+     "name": "Ablauf · Ausfall und Nachreichen",
+     "zweck": "Leitprinzip 3.",
+     "inhalt": "Abgabe 15:40:16 → gesichert/getrennt → Leitung 7/10 → Wiederanmeldung 15:41:05 → eingegangen; Zweig: Auszählen vorher → verfallen.",
+     "bausteine": [
+      "Ablaufstrecke"
+     ]
+    },
+    {
+     "name": "Ablauf · Ausfall der Sitzungsleitung",
+     "zweck": "Staffelstab.",
+     "inhalt": "Platz 1 getrennt → Mark Voss übernimmt → Gerät tauschen → Übergabe zurück, mit Kettenzeilen.",
+     "bausteine": [
+      "Ablaufstrecke"
+     ]
+    },
+    {
+     "name": "Montagen",
+     "zweck": "Schirme im Raum.",
+     "inhalt": "Saaltotale mit echten Schirmen; Namensschild maßstäblich aus 3, 4, 5 m (Freigabe der Schriftgröße); Sprechstelle auf platz.jpg; Stimmzettel auf stimme.jpg; Leitstand am Pult; Begleiter in der Hand am Zeichen; Zuschaltung am Laptop.",
+     "bausteine": [
+      "Montagerahmen",
+      "Gerätrahmen"
+     ]
+    }
+   ]
+  },
+  {
+   "seite": "13 Werkzeuge · Dolmetschen & Prüfstand",
+   "format": "402×874 hoch; 1440×900",
+   "geraet": "iPhone im Browser; Desktop",
+   "schirme": [
+    {
+     "name": "Dolmetscherplatz",
+     "zweck": "Gebaut, ohne Ton.",
+     "inhalt": "„Dolmetscherplatz · verbunden“, Original „Lars Krüger · Platz 5“ bzw. „niemand spricht“, „Saal und Redeliste“ (1 · Anke Bergmann · am Platz …), gesperrter Ausgabekanal DE/EN/Relais: „Ohne Funktion: das System führt noch keinen Ton. Kanäle, Hustentaste und Relais kommen mit dem Audioteil.“ Zustände getrennt und spricht. [g].",
+     "bausteine": [
+      "Karte",
+      "Kanalwahl"
+     ]
+    },
+    {
+     "name": "Prüfstelle",
+     "zweck": "Nie im Saal.",
+     "inhalt": "Warnband „gibt die PINs preis – nie im Saal“; Kacheln Sitzung, Plätze besetzt, Mikrofone offen, Leitung, TOP, Aufzeichnung, Preset; 11 Abläufe mit „abspielen“; Geräte mit PIN, Marken LEITUNG, MIKRO, KEIN BILD; „Was geschieht“; Kameras mit VISCA-Bytes; Kette mit „Kette abschließen“. [g].",
+     "bausteine": [
+      "Warnband",
+      "Ablaufkarte",
+      "Gerätezeile Prüfstelle"
+     ]
+    },
+    {
+     "name": "Testumgebung",
+     "zweck": "Drei Geräte nebeneinander.",
+     "inhalt": "Namensschild quer, Sprechstelle, Dolmetscher hoch; Kopf „verbunden · Namensschild zeigt [1 · Vorsitz] · Stand 46 · Alle neu laden“. [g].",
+     "bausteine": [
+      "Gerätrahmen"
+     ]
+    }
+   ]
+  }
+ ],
+ "neue_bausteine": [
+  {
+   "name": "Ikone",
+   "varianten": "Lucide-Satz + staffelstab, platzkachel, tisch-zeichen; 16/20/24/32/48/64",
+   "zweck": "Zustand nie nur an Farbe"
+  },
+  {
+   "name": "Gerätrahmen",
+   "varianten": "iPad Air quer/hoch, iPad mini, iPhone 17 quer/hoch, Desktop-Fenster, Monitor",
+   "zweck": "Schirme im Gerät und in Montagen"
+  },
+  {
+   "name": "Signalkante",
+   "varianten": "keine, blau, rot",
+   "zweck": "eigener Zustand am Bildrand"
+  },
+  {
+   "name": "Statusband (neu)",
+   "varianten": "nur Uhr, vorbereitet, laufend, nicht öffentlich, unterbrochen, geschlossen, Sie leiten, getrennt",
+   "zweck": "Lage ohne Technikwerte"
+  },
+  {
+   "name": "Pille und Plakette",
+   "varianten": "Aufzeichnung läuft, Keine Aufzeichnung · nicht öffentlich, Sie leiten, Leitung · berechtigt, Bild: Totale, LIVE, Zielbild, Symbolbild, geheim, Stand",
+   "zweck": "kurze Zustände"
+  },
+  {
+   "name": "TOP-Kopf",
+   "varianten": "Delegierte 748×132, kompakt 88, Begleiter, Pult",
+   "zweck": "worüber geredet wird"
+  },
+  {
+   "name": "Heldkarte",
+   "varianten": "alle Zustände aus 04a–04d",
+   "zweck": "eine große Handlung"
+  },
+  {
+   "name": "Leitungsleiste und Mikrofonschalter",
+   "varianten": "Verfahrenshandlungen, 88 an/aus",
+   "zweck": "Leitung führt"
+  },
+  {
+   "name": "Synoptik Leitung / Mini-Synoptik / Saalplan Kiosk",
+   "varianten": "Chips 72/40/72, oval, Kachelreihe",
+   "zweck": "Saal als Plan"
+  },
+  {
+   "name": "Popover, Blatt, Seitenblatt, Bogen",
+   "varianten": "280, 364, 420, 520, 560, Pflichtgrund, Halteknopf",
+   "zweck": "Handlungen und Bestätigungen"
+  },
+  {
+   "name": "Hinweisband, Sperrband, Toast, Meldung",
+   "varianten": "getrennt, nicht öffentlich, gesperrt, Erfolg, Kernfehler",
+   "zweck": "Rückmeldung ohne Signalmissbrauch"
+  },
+  {
+   "name": "Redeliste-Block",
+   "varianten": "Es spricht/Hat das Wort/Wartet, leer, lang, Leitungszeilen",
+   "zweck": "Reihenfolge"
+  },
+  {
+   "name": "PIN-Block",
+   "varianten": "leer, 2 Ziffern, prüft, falsch, gesperrt",
+   "zweck": "Anmeldung"
+  },
+  {
+   "name": "Abstimmungsbausteine",
+   "varianten": "Zustandsband, Beschlusszone, Fußzone, Bestätigungsleiste, Leitungsfeld, Abstimmungsfeld Leitstand, Ergebnisblock, Namentlich-Tabelle, Beschlussfähigkeitsbalken",
+   "zweck": "Rechtsrahmen als Gestalt"
+  },
+  {
+   "name": "Dokumentleser",
+   "varianten": "iPad Vollbild, Blatt, Begleiter-Sheet, Papier im Pult",
+   "zweck": "lesen mit Wasserzeichen und Stufe"
+  },
+  {
+   "name": "Leerzustand und Skeleton",
+   "varianten": "Redeliste, Mappe, TOP, Abstimmung",
+   "zweck": "Listen leer und ladend"
+  },
+  {
+   "name": "Personenkennung und Rollenplakette",
+   "varianten": "Initialen 32/40, vier Anzeigerollen",
+   "zweck": "wer ist wer"
+  },
+  {
+   "name": "Begleiter-Teile",
+   "varianten": "Kopf, Statuskarte, Primärknopf 56, TOP-Chips, Untertitelzeilen, Abstimmungsband, Tischdraufsicht, QR-Karte, Systemattrappe",
+   "zweck": "Telefon-Zielbild"
+  },
+  {
+   "name": "Zuschaltungs-Teile",
+   "varianten": "Programmbild-Raster, Kachel mit Bauchbinde, Steuerleiste, Gerätemenü, Pegelmesser, Eigenbild, Vorraum-Karte",
+   "zweck": "Browser-Zielbild"
+  },
+  {
+   "name": "Stream-Tafel und Bauchbinde",
+   "varianten": "Beginn, Pause, Ende",
+   "zweck": "öffentliche Ausgabe"
+  },
+  {
+   "name": "Leitstand-Teile",
+   "varianten": "Fensterchrome, Tabelle 48, Kamerakachel 320×180, Saalplan maßstäblich, Steuerkreuz, Kettenzeile, Eskalationsleiter, Kanalzug, NOM-Leiste, Filterhaushalt, Mix-Minus-Matrix, Latenzzeile, Gerätezeile, Prüfzeile, Halteknopf, Befehlspalette, Kürzeltafel, Drucker-Chip, Inhaltsverzeichnis",
+   "zweck": "Pult"
+  },
+  {
+   "name": "Papier-Teile",
+   "varianten": "A4-Satzspiegel, Protokollzeile, Beschlussblock, Kettenfuß, A7-Zettel, Schnittmarken",
+   "zweck": "Niederschrift"
+  },
+  {
+   "name": "Marke",
+   "varianten": "Signet, Wortmarke, Mitmarke, App-Icon",
+   "zweck": "Marke und Kundenzeichen"
+  },
+  {
+   "name": "Web-Teile",
+   "varianten": "Kopf, Held, Signalblock, Schaubild, Kettenschaubild, Stand-Zeile, Karte",
+   "zweck": "Webseite im System"
+  },
+  {
+   "name": "Ablaufstrecke und Anmerkung",
+   "varianten": "Pfeil mit Auslöser, Kennzeichen [g]/[UI]/[K]/[gp]/[Z]/[R]",
+   "zweck": "Abläufe und Stand je Frame"
+  }
+ ]
+}

@@ -1,0 +1,17 @@
+{
+ "00 Titel & Drehbuch": "0:1", "01 Fundament": "4:2", "01b Marke & Sprache": "46:2", "02 Ikonen": "46:3", "02b Geräte": "46:4",
+ "03a Bausteine · Grundlagen": "46:6", "03b Bausteine · Saal": "46:7", "03c Bausteine · Abstimmung & Dokumente": "46:8",
+ "03d Bausteine · Pult": "46:9", "03e Bausteine · Bild & Hand": "47:2",
+ "04a Sprechstelle · Anmeldung": "46:11", "04b Sprechstelle · Wortmeldung": "46:12", "04c Sprechstelle · Lagen & Störungen": "46:13",
+ "04d Sprechstelle · Rollen & Formate": "46:14", "04e Sprechstelle · Leitung · Führen": "46:15",
+ "04f Sprechstelle · Leitung · Abstimmung, Staffelstab, Sitzung": "46:16", "04g Sprechstelle · Sitzungsmappe": "46:17",
+ "04h Sprechstelle · Gedimmt & große Schrift": "46:18",
+ "05a Abstimmung · geheim": "46:20", "05b Abstimmung · Arten & Sonderfälle": "46:21", "05c Abstimmung · Leitung & gedimmt": "46:22",
+ "06 Namensschild": "46:24", "07a Begleiter · Anmeldung": "46:25", "07b Begleiter · Hauptschirm & Wortmeldung": "46:26",
+ "07c Begleiter · Unterlagen & Untertitel": "46:27", "07d Begleiter · Abstimmung & Randzustände": "46:28", "07e Begleiter · Dunkel": "46:29",
+ "08a Zuschaltung · Vorraum": "46:31", "08b Zuschaltung · Hauptschirm": "46:32", "08c Zuschaltung · Programmbild": "46:33",
+ "08d Zuschaltung · Abstimmung & Lagen": "46:34", "08e Übertragung · Stream-Tafeln": "46:35",
+ "09a Leitstand · Rahmen": "46:37", "09b Leitstand · Saal & Geräte": "46:38", "09c Leitstand · Sitzung & PIN-Ausgabe": "46:39",
+ "09d Leitstand · Vorabcheck": "46:40", "09e Leitstand · Betrieb": "46:41", "09f Leitstand · Störungen & Ton": "46:42", "09g Leitstand · Nachher": "46:43",
+ "10 Papier": "46:45", "12 Abläufe & Montagen": "46:46", "13 Werkzeuge · Dolmetschen & Prüfstand": "46:47"
+}
