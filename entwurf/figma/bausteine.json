@@ -668,5 +668,594 @@
   "Radius": "2:48",
   "Abstand": "2:38"
  },
- "bausteine": {}
+ "bausteine": {
+  "Knopf": {
+   "id": "83:2453",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Art=Primär × Größe=Held 692×88 / Groß 268×64 / Normal 212×56 / iPhone 362×44 / Kompakt 196×44 / Pult 164×36 × Zustand=Normal/Gedrückt/Fokus/Wartet/Bestätigt (30)",
+    "Art=Sekundär × Größe=Held/Groß/Normal/iPhone/Kompakt/Pult × Zustand=Normal/Gedrückt/Fokus/Wartet/Bestätigt (30)",
+    "Art=Mikrofon an × Größe=Held/Groß/Normal/Pult × Zustand=Normal/Gedrückt/Fokus/Wartet (16), kein iPhone, kein Kompakt, kein Bestätigt",
+    "Art=Mikrofon aus × Größe=Held/Groß/Normal/Pult × Zustand=Normal/Gedrückt/Fokus/Wartet (16), Gedrückt vertieft",
+    "Art=Destruktiv leise × Größe=Normal 176×56 / iPhone 176×44 / Kompakt 172×44 / Pult 144×36 × Zustand=Normal/Gedrückt/Fokus (12)",
+    "Art=Text × Größe=Groß 212×64 / Normal 212×56 / iPhone 212×44 / Kompakt 212×44 / Pult 176×36 × Zustand=Normal/Gedrückt/Fokus (15)"
+   ],
+   "eigenschaften": [
+    "Art (VARIANT: Primär/Sekundär/Mikrofon an/Mikrofon aus/Destruktiv leise/Text)",
+    "Größe (VARIANT: Held/Groß/Normal/iPhone/Kompakt/Pult)",
+    "Zustand (VARIANT: Normal/Gedrückt/Fokus/Wartet/Bestätigt)",
+    "Beschriftung#83:136 (TEXT „Wort melden“)",
+    "Ikone anzeigen#83:137 (BOOLEAN true)",
+    "Ikone#83:138 (INSTANCE_SWAP)",
+    "Beschriftung wartet#83:139 (TEXT „Wird gemeldet …“)",
+    "Beschriftung bestätigt#122:0 (TEXT „Gemeldet“)",
+    "Beschriftung destruktiv#122:105 (TEXT „Wort entziehen“)",
+    "Verweis#122:210 (TEXT „Vorlage 2026/14 öffnen“)",
+    "Hinweis nach 3 s#122:315 (BOOLEAN false)",
+    "Hinweis#122:420 (TEXT „Server antwortet nicht – Ihre Meldung liegt auf dem Gerät“)"
+   ],
+   "einsatz": "Jede Handlung. Held 88 für die Heldkarte der Sprechstelle (692), Groß 64 für die Leitung, Normal 56 für Sprechstelle und Bogen, iPhone 44 für den Begleiter (362, Hand/Knopf, nie Mikrofon), Kompakt 44 nur im Verbindungsband und im TOP-Kopf, Pult 36 für den Leitstand (Pult/Knopf, radius sm). Jede Variante hat eine feste Breite, der Inhalt steht mittig, die Kontur liegt innen ohne Layoutanteil. Wartet sperrt den Doppeltipp. Bei Primär Held/Groß/Normal/iPhone steht der Hinweis nach 3 s absolut 8 px unter der Fläche. Rot trägt nur Mikrofon aus. Destruktiv leise öffnet nur den Bogen.",
+   "seite": "03a"
+  },
+  "Segment": {
+   "id": "85:1778",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Größe=Saal, Gewählt=ja 73×40",
+    "Größe=Saal, Gewählt=nein 73×40",
+    "Größe=iPhone, Gewählt=ja 63×36",
+    "Größe=iPhone, Gewählt=nein 63×36",
+    "Größe=Pult, Gewählt=ja 71×26",
+    "Größe=Pult, Gewählt=nein 71×26"
+   ],
+   "eigenschaften": [
+    "Größe (VARIANT: Saal/iPhone/Pult)",
+    "Gewählt (VARIANT: ja/nein)",
+    "Beschriftung#85:40 (TEXT „Redeliste“)",
+    "Ikone anzeigen#85:41 (BOOLEAN false)",
+    "Ikone#85:42 (INSTANCE_SWAP)",
+    "Plakette anzeigen#85:43 (BOOLEAN false)",
+    "Plakette#85:44 (TEXT „Nr. 2“)"
+   ],
+   "einsatz": "Einzelnes Segment in der Segmentsteuerung. Gewählt steht auf flaeche/erhoben mit Ebene/1. Die Plakette steht inline nach dem Wort (marke/haus, 20 hoch) und trägt eine Rangmarke oder eine Anzahl.",
+   "seite": "03a"
+  },
+  "Segmentsteuerung": {
+   "id": "85:2286",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Größe=Saal, Segmente=2 364×48",
+    "Größe=Saal, Segmente=3 364×48",
+    "Größe=Saal hoch, Segmente=4 772×48 (130:5094)",
+    "Größe=iPhone, Segmente=2 362×44",
+    "Größe=iPhone, Segmente=3 362×44",
+    "Größe=iPhone, Segmente=4 362×44",
+    "Größe=Pult, Segmente=2 376×32",
+    "Größe=Pult, Segmente=3 376×32",
+    "Größe=Pult, Segmente=4 376×32"
+   ],
+   "eigenschaften": [
+    "Größe (VARIANT: Saal/iPhone/Pult/Saal hoch)",
+    "Segmente (VARIANT: 2/3/4)",
+    "Segmente als Instanzen von Segment 85:1778, Beschriftung und Plakette je Instanz überschreibbar"
+   ],
+   "einsatz": "Umschalten zwischen Ansichten derselben Ebene: Redeliste, Tagesordnung und Mappe in der rechten Spalte der Sprechstelle (364), auf dem Begleiter (362) und in der Leitstand-Spalte (376). Die Spur ist flaeche/vertieft. Vier Segmente gibt es auf dem iPad nur im Notlayout „Saal hoch“ mit 772.",
+   "seite": "03a"
+  },
+  "Signalkante": {
+   "id": "88:2491",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Zustand=keine, Verbindung=verbunden 1180×6",
+    "Zustand=keine, Verbindung=getrennt 1180×6",
+    "Zustand=wort, Verbindung=verbunden 1180×6",
+    "Zustand=wort, Verbindung=getrennt 1180×6",
+    "Zustand=mikro, Verbindung=verbunden 1180×6",
+    "Zustand=mikro, Verbindung=getrennt 1180×6"
+   ],
+   "eigenschaften": [
+    "Zustand (VARIANT: keine/wort/mikro)",
+    "Verbindung (VARIANT: verbunden/getrennt)"
+   ],
+   "einsatz": "6 px über die volle Schirmbreite der Sprechstelle, bei y 24–30 zwischen Systemleiste und Statusband. Rot heißt „das eigene Mikrofon ist offen“, Blau heißt „Wort erteilt“. Ohne Verbindung bleibt eine 2-px-Linie in der letzten Farbe. Sie erscheint nicht am Namensschild und nicht im Leitstand.",
+   "seite": "03a"
+  },
+  "Pille": {
+   "id": "89:2601",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Art=Aufzeichnung, Größe=Saal 336×32",
+    "Art=Aufzeichnung, Größe=Pult 304×28",
+    "Art=Keine Aufzeichnung, Größe=Saal 336×32",
+    "Art=Keine Aufzeichnung, Größe=Pult 304×28",
+    "Art=Aufzeichnung getrennt, Größe=Saal 336×32",
+    "Art=Aufzeichnung getrennt, Größe=Pult 304×28",
+    "Art=Sie leiten, Größe=Saal 336×32",
+    "Art=Sie leiten, Größe=Pult 304×28",
+    "Art=Leitung berechtigt, Größe=Saal 336×32",
+    "Art=Leitung berechtigt, Größe=Pult 304×28",
+    "Art=Bild Totale, Größe=Saal 336×32",
+    "Art=Bild Totale, Größe=Pult 304×28"
+   ],
+   "eigenschaften": [
+    "Art (VARIANT: Aufzeichnung/Keine Aufzeichnung/Aufzeichnung getrennt/Sie leiten/Leitung berechtigt/Bild Totale)",
+    "Größe (VARIANT: Saal/Pult)",
+    "Worte fest je Art"
+   ],
+   "einsatz": "Kurzer Zustand im Statusband. Die Komponente ist der feste Slot (Saal 336, Pult 304), die Pille darin umschließt ihren Inhalt und steht links bündig. Tinte heißt „läuft“ oder „Sie“, Umriss heißt „ruht“ oder „nicht Sie“. Nie rot, nie bernsteinfarben, nie blinkend.",
+   "seite": "03a"
+  },
+  "Plakette": {
+   "id": "89:2622",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Art=Stand, Größe=Saal 259×28",
+    "Art=Geheim, Größe=Saal 96×28",
+    "Art=Live, Größe=Saal 52×28",
+    "Art=Zielbild, Größe=Saal 85×28",
+    "Art=Symbolbild, Größe=Saal 111×28",
+    "Art=Montage, Größe=Saal 88×28",
+    "Art=Platzhalter, Größe=Saal 117×28",
+    "Art=Stand, Größe=Pult 230×24",
+    "Art=Geheim, Größe=Pult 83×24",
+    "Art=Live, Größe=Pult 45×24",
+    "Art=Zielbild, Größe=Pult 75×24",
+    "Art=Symbolbild, Größe=Pult 98×24",
+    "Art=Montage, Größe=Pult 77×24",
+    "Art=Platzhalter, Größe=Pult 103×24"
+   ],
+   "eigenschaften": [
+    "Art (VARIANT: Stand/Geheim/Live/Zielbild/Symbolbild/Montage/Platzhalter)",
+    "Größe (VARIANT: Saal 28 Kennzeile 13 / Pult 24 Pult/Kennzeile 12)",
+    "Stand#89:1 (TEXT „Stand 14:32:07 · nicht aktuell“)"
+   ],
+   "einsatz": "Kennzeichnung in Versalien. Stand markiert Live-Bereiche ohne Verbindung (oben rechts). Geheim steht bei der Abstimmung. Live ist ein Umriss ohne Ikone. Zielbild, Symbolbild, Montage und Platzhalter kennzeichnen Figma-Frames.",
+   "seite": "03a"
+  },
+  "Stufe": {
+   "id": "93:2747",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Stufe=öffentlich, Größe=Saal 109×28",
+    "Stufe=öffentlich, Größe=Pult 96×24",
+    "Stufe=intern, Größe=Saal 77×28",
+    "Stufe=intern, Größe=Pult 68×24",
+    "Stufe=vertraulich, Größe=Saal 139×28",
+    "Stufe=vertraulich, Größe=Pult 123×24",
+    "Stufe=geheim, Größe=Saal 96×28",
+    "Stufe=geheim, Größe=Pult 85×24"
+   ],
+   "eigenschaften": [
+    "Stufe (VARIANT: öffentlich/intern/vertraulich/geheim)",
+    "Größe (VARIANT: Saal/Pult)"
+   ],
+   "einsatz": "Vertraulichkeitsstufe einer Unterlage als Tintendichte: nichts, Umriss, Fläche mit lock, Fläche mit Kante. Keine Farbe, kein Rot für „geheim“. „öffentlich“ steht nur in der Leitstand-Tabelle.",
+   "seite": "03a"
+  },
+  "Unterlage-Zeile": {
+   "id": "138:5124",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Größe=Breit, Zustand=Normal 748×76",
+    "Größe=Breit, Zustand=Gedrückt 748×76",
+    "Größe=Breit, Zustand=Lädt 748×76",
+    "Größe=Blatt, Zustand=Normal 324×128",
+    "Größe=Blatt, Zustand=Gedrückt 324×128",
+    "Größe=Blatt, Zustand=Lädt 324×128"
+   ],
+   "eigenschaften": [
+    "Größe (VARIANT: Breit/Blatt)",
+    "Zustand (VARIANT: Normal/Gedrückt/Lädt)",
+    "Titel#138:0 (TEXT „Prüfbericht des Abschlussprüfers“, bis 2 Zeilen)",
+    "Meta#138:7 (TEXT „PDF · 38 Seiten · 1,1 MB · TOP 4“)",
+    "Stufe anzeigen#138:14 (BOOLEAN true, verschachtelte Stufe freigelegt)",
+    "Fassung 2#138:21 (BOOLEAN false)",
+    "Neu#138:28 (BOOLEAN false)",
+    "Kante geheim#138:35 (BOOLEAN false, 3-px-Tintenkante links ohne Layoutanteil)",
+    "Trennlinie#138:42 (BOOLEAN true)"
+   ],
+   "einsatz": "Eine Unterlage in der Sitzungsmappe. Breit (748, mindestens 76) für die Mappenansicht mit der Stufe rechts vor Punkt und chevron. Blatt (324) im Blatt der rechten Spalte, mit Stufe, Fassung und Neu in einer dritten Zeile. Die Miniatur 44×60 ist Papier im expliziten Modus Hell.",
+   "seite": "03a"
+  },
+  "Initialen": {
+   "id": "93:3118",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Größe=32 32×32",
+    "Größe=40 40×40"
+   ],
+   "eigenschaften": [
+    "Größe (VARIANT: 32/40)",
+    "Initialen#93:2 (TEXT „JÖ“)"
+   ],
+   "einsatz": "Kreis mit Initialen als Teil der Personenkennung. Nie mit Foto.",
+   "seite": "03a"
+  },
+  "Rollenplakette": {
+   "id": "93:3130",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Rolle=Sitzungsleitung · führt, Größe=Saal 174×28",
+    "Rolle=Sitzungsleitung · berechtigt, Größe=Saal 174×28",
+    "Rolle=Delegierte/r, Größe=Saal 124×28",
+    "Rolle=Schriftführung, Größe=Saal 151×28",
+    "Rolle=Gast, Größe=Saal 57×28",
+    "Rolle=Sitzungsleitung · führt, Größe=Pult 153×24",
+    "Rolle=Sitzungsleitung · berechtigt, Größe=Pult 153×24",
+    "Rolle=Delegierte/r, Größe=Pult 109×24",
+    "Rolle=Schriftführung, Größe=Pult 134×24",
+    "Rolle=Gast, Größe=Pult 49×24"
+   ],
+   "eigenschaften": [
+    "Rolle (VARIANT: Sitzungsleitung · führt/Sitzungsleitung · berechtigt/Delegierte/r/Schriftführung/Gast)",
+    "Größe (VARIANT: Saal 28/Pult 24)"
+   ],
+   "einsatz": "Rolle einer Teilnahme. Die führende Sitzungsleitung (Staffelstab) steht als Tintenfläche, die berechtigte als Umriss, die übrigen Rollen sind neutral.",
+   "seite": "03a"
+  },
+  "Personenkennung": {
+   "id": "93:3212",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Größe=Saal 32, Rolle=Sitzungsleitung · führt 404×40",
+    "Größe=Saal 32, Rolle=Sitzungsleitung · berechtigt 404×40",
+    "Größe=Saal 32, Rolle=Delegierte/r 354×40",
+    "Größe=Saal 32, Rolle=Schriftführung 381×40",
+    "Größe=Saal 32, Rolle=Gast 287×40",
+    "Größe=Saal 40, Rolle=Sitzungsleitung · führt 416×44",
+    "Größe=Saal 40, Rolle=Sitzungsleitung · berechtigt 416×44",
+    "Größe=Saal 40, Rolle=Delegierte/r 366×44",
+    "Größe=Saal 40, Rolle=Schriftführung 393×44",
+    "Größe=Saal 40, Rolle=Gast 299×44",
+    "Größe=Pult 32, Rolle=Sitzungsleitung · führt 367×40",
+    "Größe=Pult 32, Rolle=Sitzungsleitung · berechtigt 367×40",
+    "Größe=Pult 32, Rolle=Delegierte/r 323×40",
+    "Größe=Pult 32, Rolle=Schriftführung 348×40",
+    "Größe=Pult 32, Rolle=Gast 263×40"
+   ],
+   "eigenschaften": [
+    "Größe (VARIANT: Saal 32/Saal 40/Pult 32)",
+    "Rolle (VARIANT: Sitzungsleitung · führt/Sitzungsleitung · berechtigt/Delegierte/r/Schriftführung/Gast)",
+    "Name#93:27 (TEXT „Jonas Öztürk“)",
+    "Zusatz#93:28 (TEXT „Platz 3 · stimmberechtigt“, Saal/Beschriftung bzw. Pult/Text)",
+    "Rolle anzeigen#93:29 (BOOLEAN true)"
+   ],
+   "einsatz": "Person an Platz und Rolle in der Redeliste, im Platzdetail, im Popover „Platz“ und in Leitstand-Tabellen. Sie ist aus Initialen und Rollenplakette zusammengesetzt. Namen stammen aus dem Drehbuch.",
+   "seite": "03a"
+  },
+  "Hinweisband": {
+   "id": "95:3119",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Art=Verbindung weg, Größe=Saal 1132×50",
+    "Art=Verbindung weg, Größe=Pult 1160×48",
+    "Art=Leitung verwaist, Größe=Saal 1132×50",
+    "Art=Nicht öffentlich, Größe=Pult 1160×48",
+    "Art=Gesperrt, Größe=Pult 1160×48"
+   ],
+   "eigenschaften": [
+    "Art (VARIANT: Verbindung weg/Leitung verwaist/Nicht öffentlich/Gesperrt)",
+    "Größe (VARIANT: Saal/Pult)",
+    "Zusatz#95:7 (TEXT „neuer Versuch in 3 s“)",
+    "Mikrofon zuletzt offen#95:8 (BOOLEAN false)",
+    "Handlung anzeigen#95:9 (BOOLEAN true, „Jetzt versuchen“ ohne Ikone: auf Saal 40 hoch in einer Trefferfläche 50, auf Pult 160×36)",
+    "Kamera anzeigen#95:10 (BOOLEAN true)"
+   ],
+   "einsatz": "Sagt über die volle Breite, was gerade nicht geht. Auf der Sprechstelle ersetzt es das Statusband (1132), im Leitstand steht es unter der Kopfleiste (1160). Störungen sind Graphit mit 4-px-Kante, Ikone und Wort, nie eine Signalfarbe. „Leitung verwaist“ nutzt den Satz aus web/index.html. Gesperrt ist Papier und gilt während einer Abstimmung.",
+   "seite": "03a"
+  },
+  "Toast": {
+   "id": "97:6436",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Art=Erfolg, Größe=Saal 314×48",
+    "Art=Erfolg, Größe=Pult 280×40",
+    "Art=Meldung, Größe=Saal 314×48",
+    "Art=Meldung, Größe=Pult 280×40"
+   ],
+   "eigenschaften": [
+    "Art (VARIANT: Erfolg/Meldung)",
+    "Größe (VARIANT: Saal/Pult)",
+    "Text#97:6 (TEXT „Verbunden · Meldung nachgereicht“)",
+    "Ikone#97:7 (INSTANCE_SWAP)"
+   ],
+   "einsatz": "Kurze Rückmeldung ohne Farbe auf Ebene/3, oben mittig unter dem Statusband. Sie verschwindet selbst und hat keine Handlung.",
+   "seite": "03a"
+  },
+  "Meldung des Kerns": {
+   "id": "97:6469",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Art=Hinweis, Größe=Saal 560×56",
+    "Art=Hinweis, Größe=Pult 480×70",
+    "Art=Fehler, Größe=Saal 560×56",
+    "Art=Fehler, Größe=Pult 480×98"
+   ],
+   "eigenschaften": [
+    "Art (VARIANT: Hinweis/Fehler)",
+    "Größe (VARIANT: Saal/Pult)",
+    "Text#97:16 (TEXT „PIN stimmt nicht.“)",
+    "Code#97:17 (TEXT „pin_falsch“, nur Pult)"
+   ],
+   "einsatz": "Fehlercode des WebSocket-Protokolls in Klartext: 19 Codes und 24 Anlässe aus intern/kern/fehler.go. Die Sprechstelle zeigt die Meldung auf Ebene/3 und nie den Code. Der Leitstand zeigt sie auf Ebene/1 mit dem Code als Beleg.",
+   "seite": "03a"
+  },
+  "Leerzustand": {
+   "id": "98:3706",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Art=Redeliste leer 364×148",
+    "Art=Mappe leer 364×172",
+    "Art=Keine Abstimmung 364×148",
+    "Art=TOP ohne Unterlagen 364×148"
+   ],
+   "eigenschaften": [
+    "Art (VARIANT: Redeliste leer/Mappe leer/Keine Abstimmung/TOP ohne Unterlagen)",
+    "Satz Redeliste#98:8 (TEXT)",
+    "Satz Mappe#98:10 (TEXT)",
+    "Satz Abstimmung#98:11 (TEXT)",
+    "Satz TOP#98:12 (TEXT)",
+    "Handlung anzeigen#98:9 (BOOLEAN false, Knopf Sekundär Normal 56 in einer Trefferfläche 64)"
+   ],
+   "einsatz": "Leere Liste in der rechten Spalte (364): Ikone, Satz und höchstens eine Handlung. Alles steht links bündig am Raster.",
+   "seite": "03a"
+  },
+  "Skeleton": {
+   "id": "98:3770",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Art=Unterlagen 364×292",
+    "Art=Redeliste 364×244",
+    "Art=Tagesordnung 364×226"
+   ],
+   "eigenschaften": [
+    "Art (VARIANT: Unterlagen/Redeliste/Tagesordnung)"
+   ],
+   "einsatz": "Ladezustand ohne Schimmer in der Form der späteren Liste.",
+   "seite": "03a"
+  },
+  "Popover": {
+   "id": "100:4042",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Art=Menü 280×208",
+    "Art=Platz 280×188",
+    "Art=Hintergrund 280×148"
+   ],
+   "eigenschaften": [
+    "Art (VARIANT: Menü/Platz/Hintergrund)",
+    "Eintrag Abstimmung#100:8 (BOOLEAN true)",
+    "Eintrag Abschließen#100:9 (BOOLEAN true, Ikone check)",
+    "Eintrag Vertagen#100:10 (BOOLEAN true)",
+    "Platz#100:11 (TEXT „Platz 7“)",
+    "Name#100:12 (TEXT „Timo Hofer“)",
+    "Zustand#100:13 (TEXT „gemeldet · Nr. 1 · seit 14:29“)",
+    "Titel#100:14 (TEXT „Beschlussfähig“)",
+    "Hintergrund#100:15 (TEXT)"
+   ],
+   "einsatz": "Kurzmenü der Leitung mit Zeilen von 64. Platz mit Knopf Sekundär Groß 64. Hintergrund erklärt einen Wert, zum Beispiel das eingefrorene Quorum. Ebene/2.",
+   "seite": "03a"
+  },
+  "Blatt": {
+   "id": "100:4117",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Art=Seite 364×380",
+    "Art=Von unten 402×219"
+   ],
+   "eigenschaften": [
+    "Art (VARIANT: Seite/Von unten)",
+    "Inhalt#100:34 (SLOT)"
+   ],
+   "einsatz": "Fläche für Listen und Unterlagen. Seite liegt in der rechten iPad-Spalte auf Ebene/1, der Slot enthält Instanzen der Unterlage-Zeile in der Größe Blatt. Von unten ist das Begleiter-Blatt auf dem iPhone: Griff 36×5, x 44 oben rechts zum Schließen, „Lesen“ als einzige große Handlung.",
+   "seite": "03a"
+  },
+  "Seitenblatt": {
+   "id": "103:4456",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Größe=iPad 520×820",
+    "Größe=Pult 420×800"
+   ],
+   "eigenschaften": [
+    "Größe (VARIANT: iPad/Pult)",
+    "Kennzeile#103:6 (TEXT „Sitzungsleitung · 14:32“)",
+    "Titel#103:7 (TEXT „Tagesordnung“, Saal/Bogentitel)",
+    "Inhalt#103:8 (SLOT)",
+    "Kennzeile Pult#103:9 (TEXT „Saal“)",
+    "Titel Pult#103:10 (TEXT „Platz 9“)",
+    "Schließen freigelegt (Text Groß „Schließen“ auf dem iPad, Sekundär Pult im Leitstand)"
+   ],
+   "einsatz": "Zeigt am rechten Schirmrand Vollständiges, ohne den Schirm zu verlassen. Auf dem iPad die Tagesordnung der Sitzungsleitung: TOP-Titel in der Serife, „Abschließen“ als einzige Primärhandlung, „Vertagen“ und „Aufrufen“ sekundär, jeweils in einer Trefferfläche 64. Im Leitstand das Platzdetail (Sabine Roth, Platz 9), immer dunkel.",
+   "seite": "03a"
+  },
+  "Bogen": {
+   "id": "104:4779",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Art=Bestätigung, Größe=iPad 560×240",
+    "Art=Pflichtgrund, Größe=iPad 560×348",
+    "Art=Bestätigung, Größe=iPhone 402×301 (149:5227)",
+    "Art=Bestätigung, Größe=Pult 480×160",
+    "Art=Pflichtgrund, Größe=Pult 480×268",
+    "Art=Halteknopf, Größe=Pult 480×310",
+    "Art=Siegel gesetzt, Größe=Pult 480×346 (149:5174)"
+   ],
+   "eigenschaften": [
+    "Art (VARIANT: Bestätigung/Pflichtgrund/Halteknopf/Siegel gesetzt)",
+    "Größe (VARIANT: iPad/Pult/iPhone)",
+    "Frage#104:13 (TEXT „Trotzdem auszählen?“; Saal/Bogentitel, Pult/Dialogtitel oder Hand/Status)",
+    "Folge#104:14 (TEXT)",
+    "Grund#104:15 (TEXT „Beschlussvorlage wird überarbeitet“)",
+    "Knöpfe und Halteknopf als freigelegte Instanzen"
+   ],
+   "einsatz": "Für alles, was sich nicht zurücknehmen lässt. Die Folge steht im Titel, der Protokolleintrag wird genannt. Links bzw. oben steht die sichere Wahl, rechts bzw. unten die genaue Handlung. Destruktiv ist der Primärknopf mit triangle-alert, nie rot. Pflichtgrund gilt bei Abbruch, PIN-Neuausgabe und Leitungsübergabe. Wartet gibt es nur am Primärknopf im Bogen. Darunter liegt flaeche/abdunkeln.",
+   "seite": "03a"
+  },
+  "Halteknopf": {
+   "id": "149:5165",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Zustand=Bereit 252×44",
+    "Zustand=Gehalten 40 % 252×44",
+    "Zustand=Gehalten 100 % 252×44",
+    "Zustand=Abgebrochen 252×44"
+   ],
+   "eigenschaften": [
+    "Zustand (VARIANT: Bereit/Gehalten 40 %/Gehalten 100 %/Abgebrochen)",
+    "Fortschrittsring 32 mit arcData, stamp 20, Abstand 8"
+   ],
+   "einsatz": "Siegel der Ereigniskette im Leitstand: 2 s halten. Wer vorher loslässt, bricht ohne Folge ab. Der Halteknopf steckt im Bogen mit Art=Halteknopf.",
+   "seite": "03a"
+  },
+  "Ablaufpfeil": {
+   "id": "105:5428",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Art=Hauptweg, Richtung=rechts 240×64",
+    "Art=Zweig, Richtung=rechts 240×64",
+    "Art=Hauptweg, Richtung=unten 172×120",
+    "Art=Zweig, Richtung=unten 172×120"
+   ],
+   "eigenschaften": [
+    "Art (VARIANT: Hauptweg/Zweig)",
+    "Richtung (VARIANT: rechts/unten)",
+    "Auslöser#105:150 (TEXT „Tipp auf „Wort melden““)",
+    "Bedingung anzeigen#105:151 (BOOLEAN true)",
+    "Bedingung#105:152 (TEXT „Kern bestätigt · Nr. 2“)",
+    "Kennzeichen anzeigen#105:149 (BOOLEAN false)"
+   ],
+   "einsatz": "Verbindet Schirme auf den Ablaufseiten. Rechts ist fest 64 hoch, mit Slots von 24 und dem Schaft immer auf y 32. Der Hauptweg ist Tinte, ein Zweig ist gestrichelt.",
+   "seite": "03a"
+  },
+  "Kennzeichen": {
+   "id": "105:5332",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Kennzeichen=g 93×24",
+    "Kennzeichen=UI 151×24",
+    "Kennzeichen=K 108×24",
+    "Kennzeichen=gp 102×24",
+    "Kennzeichen=Z 131×24",
+    "Kennzeichen=R 110×24"
+   ],
+   "eigenschaften": [
+    "Kennzeichen (VARIANT: g/UI/K/gp/Z/R)"
+   ],
+   "einsatz": "Herkunftsmarke an Frames: [g] gebaut, [UI] nur Oberfläche, [K] Kern fehlt, [gp] geplant, [Z] Zielwert, [R] Rückfrage.",
+   "seite": "03a"
+  },
+  "Anmerkung": {
+   "id": "105:5381",
+   "typ": "COMPONENT_SET",
+   "varianten": [
+    "Kennzeichen=g 360×184",
+    "Kennzeichen=UI 360×156",
+    "Kennzeichen=K 360×144",
+    "Kennzeichen=gp 360×144",
+    "Kennzeichen=Z 360×144",
+    "Kennzeichen=R 360×164"
+   ],
+   "eigenschaften": [
+    "Kennzeichen (VARIANT: g/UI/K/gp/Z/R)",
+    "Bezug/Anmerkung/Quelle je Kennzeichen (TEXT, Schlüssel 105:24 bis 105:42)",
+    "Quelle anzeigen#105:26 (BOOLEAN true)"
+   ],
+   "einsatz": "Randnotiz neben einem Frame mit Kennzeichen, Bezug, Satz und Quelle im Repo, zum Beispiel web/index.html, intern/kern/fehler.go, Drehbuch-Befund oder Rückfrage R4.",
+   "seite": "03a"
+  },
+  "Tafel/Kopf": {
+   "id": "76:4",
+   "typ": "COMPONENT (Seite 01 Fundament, Ablage „Bausteine der Tafeln“ 76:2)",
+   "varianten": [],
+   "eigenschaften": [
+    "Kennung#76:0 (TEXT, Standard „FUNDAMENT · TAFEL 1 VON 13 · FARBE · TINTE UND PAPIER“)",
+    "Titel#76:1 (TEXT, Standard „Tinte und Papier“)",
+    "Vorspann#76:2 (TEXT, höchstens zwei Zeilen, etwa 75 Zeichen je Zeile)"
+   ],
+   "einsatz": "Kopf jeder Fundament-Tafel, 1728 breit auf Raster/Tafel. Oben die Kennzeile mit Kapitel und Tafelnummer, rechts „GESTALTUNGSRICHTUNG REINSCHRIFT“ über einer Linie in linie/normal. Darunter der Titel in Web/Held über die Spalten 1–7. Der Vorspann in Web/Lauftext beginnt jetzt genau auf Spalte 8 (x 1022, 706 breit, Titelzeile mit Gasse 24). Die Instanz steht als erstes Kind der Tafel und ist auf FILL gesetzt.",
+   "seite": "01 (nur Fundament-Tafeln, nicht für Schirme)"
+  },
+  "Tafel/Fuß": {
+   "id": "76:11",
+   "typ": "COMPONENT (76:2)",
+   "varianten": [],
+   "eigenschaften": [
+    "Quelle#76:3 (TEXT, FILL, eine Zeile)",
+    "Stand#110:0 (TEXT, NEU, Standard „Werte gelesen 26.09.2026 · Lauf F01-4“)",
+    "Seite#76:4 (TEXT, Standard „01 Fundament · Tafel 1 / 13“)"
+   ],
+   "einsatz": "Fuß jeder Fundament-Tafel über einer Linie in linie/normal, alles in Pult/Text text/leise: links die Quelle, rechts der Stand (Datum und Skriptlauf) und Seite mit Tafelnummer. Laut Beschreibung werden die Tafeln nach jeder Variablenänderung neu erzeugt und der Stand nachgezogen.",
+   "seite": "01 (nur Fundament-Tafeln, nicht für Schirme)"
+  },
+  "Tafel/Farbfeld": {
+   "id": "76:14",
+   "typ": "COMPONENT (76:2)",
+   "varianten": [],
+   "eigenschaften": [
+    "Token#76:5 (TEXT)",
+    "Werte#76:6 (TEXT, „#HELL · #DUNKEL“, Alpha als „ 40 %“)",
+    "Einsatz#76:7 (TEXT, höchstens zwei Zeilen)",
+    "Schraffur#110:1 (BOOLEAN, NEU, Standard aus; zeigt in beiden Hälften das Muster Schraffur 45°)"
+   ],
+   "einsatz": "Farbfeld 414 breit, in breiteren Spalten auf FILL. Das Muster ist 120×88 mit radius/md. Die Hälften stehen in den expliziten Modi Hell und Dunkel, jede mit 1-px-Innenkontur in linie/normal ihres Modus, damit auch flaeche/grund auf dem Tafelgrund sichtbar bleibt. Unter der Fläche liegt eine Unterlage in flaeche/erhoben für Alpha-Tokens. Die Farbe wird in der Instanz gebunden: jedes Rechteck „Fläche“ bekommt r.fills = await CC.farbe(token). Das Bauskript prüft danach, ob Tokentext und gebundene Variable übereinstimmen, und bricht sonst ab. Für zustand/schraffur wird Schraffur eingeschaltet und die Fläche ausgeblendet. Verbaut sind 31 Instanzen auf den Tafeln 1 und 2.",
+   "seite": "01 (nur Fundament-Tafeln, nicht für Schirme)"
+  },
+  "Tafel/Schraffur 45°": {
+   "id": "110:480",
+   "typ": "COMPONENT (76:2), NEU",
+   "varianten": [],
+   "eigenschaften": [],
+   "einsatz": "Muster „Schraffur 45°“ 240×240 mit clipsContent: 1-px-Linien an zustand/schraffur, Periode 6 px senkrecht zur Linie. Als Instanz in beliebiger Größe; die Linien bleiben stehen, der Rahmen schneidet. Eingesetzt im Farbfeld für zustand/schraffur. Sobald 03a ein eigenes Schraffur-Muster führt, wird dieses Muster dadurch ersetzt.",
+   "seite": "01 (nur Fundament-Tafeln, nicht für Schirme)"
+  },
+  "Tafel/Rasterplan iPad": {
+   "id": "111:548",
+   "typ": "COMPONENT (76:2), NEU",
+   "varianten": [],
+   "eigenschaften": [],
+   "einsatz": "Rasterplan der Sprechstelle in Originalgröße 1180×820 mit dem Rasterstil Raster/iPad 12 und gezeichneten Spaltenbändern (text/stark, node.opacity 0,05). Zonen nach richtung.raster: Statusband y 24–80 mit der Signalkante y 24–30 als oberer Zone; TOP-Kopf 748×132 als getönte Fläche ohne Kontur mit Marginalspalte 56; Heldkarte 748×516 (Ebene/2, radius/lg); Segment 48; Blatt 364×380 und Saal-Karte 364×212 (Ebene/1, radius/lg). Auf Tafel 11 als Instanz mit Skalierung 0,55; der Rasterstil bleibt an der Instanz.",
+   "seite": "01 (nur Fundament-Tafeln, nicht für Schirme)"
+  },
+  "Tafel/Heldkarte gemeldet": {
+   "id": "111:583",
+   "typ": "COMPONENT (76:2), NEU",
+   "varianten": [],
+   "eigenschaften": [],
+   "einsatz": "Ausschnitt 440×212 oben links aus der Heldkarte „gemeldet“ in Originalmaßen: flaeche/erhoben, Ebene/2, radius/lg, Kennzeile, „Sie sind Nr. 2“ in Saal/Held und Satz in Saal/Satz. Die Gruppe „Heldinhalt“ lässt sich überschreiben: opacity für die Überblendung, paddingTop für den Anstieg um 8 px (Position ist in Instanzen nicht überschreibbar). Auf Tafel 13 dreimal im Maßstab 40 %.",
+   "seite": "01 (nur Fundament-Tafeln, nicht für Schirme)"
+  },
+  "Tafel/Heldkarte hat das Wort": {
+   "id": "111:591",
+   "typ": "COMPONENT (76:2), NEU",
+   "varianten": [],
+   "eigenschaften": [],
+   "einsatz": "Ausschnitt der oberen 212 der Heldkarte „hat das Wort“ in Originalmaßen: Karte in signal/wort-toenung, Zustandsrand 4 px innen in signal/wort, Heldzeile in signal/wort, „stimmberechtigt“ rechts in der Kopfzeile. Auf Tafel 3 im Maßstab 50 %, einmal im Modus Hell und einmal in einer Fläche im expliziten Modus Dunkel.",
+   "seite": "01 (nur Fundament-Tafeln, nicht für Schirme)"
+  },
+  "Tafel/Heldkarte spricht": {
+   "id": "111:599",
+   "typ": "COMPONENT (76:2), NEU",
+   "varianten": [],
+   "eigenschaften": [],
+   "einsatz": "Ausschnitt 780×292 der Heldkarte „spricht“: On-Air-Kopf 200 in signal/mikro-flaeche mit 2-px-Innenkante signal/mikro (dunkel #3A1519 mit #FF5A6E). Darin Kennzeile, mic-offen 40, „Sie sprechen“ in Saal/Held und die Redezeit in Saal/Redezeit 40/44, alles in text/auf-signal. Darunter der Ansatz der signal/mikro-toenung mit rotem Zustandsrand 4 px und die Oberkante der Kameravorschau 256×144. Auf Tafel 3 im Maßstab 50 %, in Hell und Dunkel.",
+   "seite": "01 (nur Fundament-Tafeln, nicht für Schirme)"
+  },
+  "Tafel/Schild Ruhe": {
+   "id": "111:617",
+   "typ": "COMPONENT (76:2), NEU",
+   "varianten": [],
+   "eigenschaften": [],
+   "einsatz": "Namensschild „Ruhe“ in Originalgröße 874×402, expliziter Modus Dunkel auf schild/grund, Rasterstil Raster/iPhone quer. „Mark“ in Schild/Vorname text/leise, „Voss“ in Schild/Nachname text/stark, „Stellv. Vorsitz“ in Schild/Funktion, zentriert. „Platz 2“ steht oben rechts in Schild/Platz. Auf Tafel 9 im Maßstab 60 %, die Stilangaben stehen außerhalb der Schildfläche.",
+   "seite": "01 (nur Fundament-Tafeln, nicht für Schirme)"
+  },
+  "Tafel/Schild spricht": {
+   "id": "111:625",
+   "typ": "COMPONENT (76:2), NEU",
+   "varianten": [],
+   "eigenschaften": [],
+   "einsatz": "Namensschild „spricht“ in Originalgröße 874×402, expliziter Modus Dunkel: ganze Fläche signal/mikro-voll (#D92038). Kopfzeile mit mic-offen 48, „spricht“ in Schild/Zustand und rechts „02:14“ in Schild/Redezeit, darunter „Krüger“ in Schild/Nachname, alles in text/auf-signal (4,98 : 1). Keine Funktion. Auf Tafel 9 im Maßstab 60 %.",
+   "seite": "01 (nur Fundament-Tafeln, nicht für Schirme)"
+  }
+ }
 }
