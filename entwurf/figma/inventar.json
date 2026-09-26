@@ -73,56 +73,112 @@
   },
   {
    "seite": "01 Fundament",
-   "format": "Tafeln 1920×1080",
+   "format": "Tafeln 1920×1080 auf flaeche/grund, Rasterstil Raster/Tafel (Rand 96, 12 Spalten zu 122, Gasse 24); 13 Tafeln in Reihen zu vier",
    "geraet": "keins",
    "schirme": [
     {
-     "name": "Farbe · Variablen Hell und Dunkel",
-     "zweck": "Alle Farbvariablen mit Wert je Modus, Dunkel dient Saal gedimmt, Pult, Webseite.",
-     "inhalt": "Bestehend: flaeche/grund, flaeche/blatt, flaeche/vertieft, linie/normal, linie/stark, text/stark, text/leise, text/auf-marke, signal/mikro #C8102E, signal/wort #1D4E89, signal/frei #3F6B4A, signal/achtung #8A5A00, marke/haus #14453F. Neu: flaeche/erhoben; Dunkel-Rampe grund #0E0F11, blatt #1A1B1E, erhoben #25272B (Fehler behoben: vertieft ≠ grund); signal/mikro-voll (Fläche „spricht“), signal/mikro-kopf dunkel #3A1519 mit Kante #FF5A6E; signal/wort-toenung, signal/wort-rahmen dunkel #86AEEB, signal/wort-band dunkel #2A62B0; signal/achtung dunkel #D9A648; marke/haus dunkel #5FA79B; kreide / tinte (Knopffüllung und Schrift); schild/grund #000 (nur Namensschild, Modus Dunkel).",
+     "name": "Tafel 1 · Tinte und Papier",
+     "zweck": "20 der 31 Farbtokens: Flächen und Ebenen, Linie und Schrift, Marke, Zustand und Namensschild, je Wert Hell und Dunkel.",
+     "inhalt": "Farbfelder 560 breit in drei Spalten zu je vier Tafelspalten, Zeilentakt 100 über alle Spalten. Hausfarbe marke/haus ist Tinte #17181A bzw. Kreide #ECEBE7, keine Buntfarbe. zustand/schraffur als Muster Schraffur 45° statt Vollfläche. Hexwerte beim Bau aus der Sammlung Farbe gelesen.",
      "bausteine": [
-      "Farbfeld"
+      "Tafel/Farbfeld",
+      "Tafel/Schraffur 45°"
      ]
     },
     {
-     "name": "Kontrasttafel",
-     "zweck": "Belegt jede Paarung Text/Fläche in beiden Modi.",
-     "inhalt": "Gemessen: weiß auf #C8102E 5,9:1 · weiß auf #3A1519 16,1:1 · #FF5A6E auf #0E0F11 6,3:1, auf #1A1B1E 5,7:1 · weiß auf #FF5A6E nur 3,0:1 → verboten, Tinte #0E0F11 auf #FF5A6E 6,3:1 · #86AEEB auf #0E0F11 8,5:1, auf #1A1B1E 7,6:1 · weiß auf #2A62B0 6,1:1 · weiß auf #1D4E89 8,4:1 · #8A5A00 auf weiß 5,9:1 · #D9A648 auf #0E0F11 8,7:1 · #5FA79B auf #0E0F11 6,8:1 · #14453F auf weiß 10,8:1 · #3F6B4A auf weiß 6,2:1 · weiß auf #000 21:1. Mindestwerte: Text 4,5:1, Saalzustände und Begleiter 7:1 wo möglich. Hell-Werte der Papierflächen aus den Figma-Variablen nachtragen.",
+     "name": "Tafel 2 · Licht und Schatten",
+     "zweck": "Die übrigen 11 Farbtokens (vier Signalfamilien) und die 14 Schattenwerte ebene/*.",
+     "inhalt": "Rot signal/mikro #C8102E/#FF5A6E mit mikro-voll, mikro-flaeche, mikro-toenung; Blau signal/wort #1D4E89/#86AEEB mit wort-voll, wort-toenung und Signalkante 6 px; Grün signal/frei #0B7050/#45C69E; Bernstein signal/achtung #7A4E00/#E0A43E. Tabelle Ebene/1 bis Ebene/Papier mit Kante, Nah, Fern je Modus und Vorschau; ebene/kante-y und ebene/kante-spreizung.",
      "bausteine": [
-      "Kontrastzeile"
+      "Tafel/Farbfeld"
      ]
     },
     {
-     "name": "Schrift · Textstile",
-     "zweck": "Schriftzuordnung mit Aussage: Serif bindet, Plex Sans bedient, Plex Mono zählt.",
-     "inhalt": "Bestehende 13 Stile plus: Saal/Band SemiBold 20/24 · Saal/Beschluss 40/46 Serif · Saal/Beschluss kompakt 28/36 Serif · Saal/TOP 24/30 Serif · Saal/Urteil 56/60 · Hand/TOP 20/26 Serif · Pult/TOP 17/22 Serif · Web/Held 56/60 · Schild/Name 96–144 SemiBold · Schild/Funktion 44 · Schild/Zustand 40 · Zahl/Countdown Mono 40 · Zahl/Redezeit Mono 24 · Zahl/Band Mono 17 · Papier/Titel Serif 12/17 pt · Papier/Zeile Plex Sans 9,5/14 pt · Papier/Beschluss Serif 11/16 pt · Papier/Zeit Mono 8 pt · Papier/Kette Mono 7,5 pt. Alle Schriften lokal gebündelt, keine externe Quelle.",
+     "name": "Tafel 3 · Farbe bedeutet etwas",
+     "zweck": "Jedes der vier Signale mit seiner einen Bedeutung im Einsatz, Hell und Dunkel im selben Maßstab.",
+     "inhalt": "Heldkarte „spricht“ (On-Air-Kopf 200, dunkel #3A1519 mit Innenkante) und „hat das Wort“ als Ausschnitt 50 %, Platz-Chips 72 × 72 mit Nummer 22 (spricht, hat das Wort, frei mit „erwartet: J. Öztürk“, Eckmarke Widerspruch unten rechts), Widerspruch-Chip 28.",
      "bausteine": [
-      "Textstil-Muster"
+      "Tafel/Heldkarte spricht",
+      "Tafel/Heldkarte hat das Wort"
      ]
     },
     {
-     "name": "Raster, Ebenen, Radius, Trefferfläche",
-     "zweck": "Maße, die alle Seiten teilen.",
-     "inhalt": "Sprechstelle 1180×820: Statusband y 24–80, Inhalt y 104–776, linke Spalte x 24–772 (748), rechte x 792–1156 (364), Abstand 20. Hochformat 820×1180 einspaltig. Begleiter 402×874, Satzbreite 362. Zuschaltung und Leitstand 1440×800, 12 Spalten, Rand 24, Abstand 16, Mindestmaß 1280×720. Namensschild 874×402, seitlich 62, Inhalt 750×381. Radius sm 4 · md 8 · lg 12 · rund 999. Ebene/1 Blatt, Ebene/2 Karte, Ebene/3 Popover/Bogen mit Schatten je Modus. Trefferfläche mindestens 44, große Handlung am Platz 88–120 hoch.",
+     "name": "Tafel 4 · Was Farbe nie meldet",
+     "zweck": "Verbote je Signalfarbe mit Gegenüberstellung falsch/statt Farbe und die Hausfarbe Tinte.",
+     "inhalt": "NIE-Listen nach richtung.verboten (auch roter Rahmen um ein Kamerabild, Rot vor offenem Mikrofon, Grün in Synoptiken einer laufenden Sitzung). Paare: Abbrechen rot → Destruktiv leise; roter Kamerarahmen → Plakette „spricht“; vertraulich rot → Stufe; Fokus blau → Tintenring; Segment blau → erhoben; Link blau → Tinte; Ja grün → Wahlknopf neutral; „Angenommen.“ grün → Serife Tinte mit Randstrich; grüner Synoptik-Chip → nicht angemeldet; Pause/Keine Aufzeichnung bernstein → Pille neutral; Störung bernstein → Graphit. Leiste Mikrofon an | Wort melden | Stimme abgeben in Tinte.",
      "bausteine": [
-      "Raster"
+      "Knopf (03a)",
+      "Segment (03a)",
+      "Pille (03a)",
+      "Stufe (03a)"
      ]
     },
     {
-     "name": "Bewegung",
-     "zweck": "Dauer und Kurve jeder Bewegung, damit ausgearbeitet auch Timing heißt.",
-     "inhalt": "Gedrückt 80 ms · Auswahl Wahlknopf 150 ms · Bestätigungsleiste 250 ms ease-out · Häkchen 400 ms Strichzeichnung · Toast 200 ms rein, 4 s stehen, 200 ms raus · Bogen 250 ms · PIN falsch Schütteln 300 ms · Offline-Schleife wifi-off 1,2 s · Namensschild nur Überblendung 150 ms · Zähler, Ergebnis und Redezeit ohne Animation. „Bewegung reduzieren“: alles wird Überblendung 150 ms, kein Schütteln.",
+     "name": "Tafel 5 · Kontrast auf den Ebenen",
+     "zweck": "Text auf grund, blatt, erhoben und vertieft in beiden Modi, im Skript nach WCAG 2.x gerechnet.",
+     "inhalt": "Matrix text/stark, text/mittel, text/leise, vier Signale, zustand/stoerung und linie/stark (Kontur 3 : 1). Innerhalb von 0,05 um 3, 4,5 und 7 zwei Nachkommastellen (abgeschnitten): 4,45 · 6,95 · 7,02 · 6,99. ENTFÄLLT-Zellen neutral und durchgestrichen. Kleinster Textwert im System: signal/mikro auf mikro-toenung, hell, 4,8 : 1.",
+     "bausteine": []
+    },
+    {
+     "name": "Tafel 6 · Kontrast der Zustände",
+     "zweck": "Signal- und Tintenflächen, Tönungen, Namensschild, Bauchbinde, Papier und Nicht-Text.",
+     "inhalt": "Weiß auf mikro-voll 5,9/5,0, auf mikro-flaeche 5,9/16,1, auf wort-voll 6,0; Tinte, mittel, leise und Signal auf allen vier Tönungen je Modus; Schild auf #000: Kreide 17,6, leise 7,2, Rahmen signal/wort 9,3; Bauchbinde über Weiß: Name 9,3, Zeile 7,2; Papier auf dem Pult 15,9/9,3/5,9; Nicht-Text ≥ 3 : 1 (mikro-voll zu erhoben dunkel 3,00; Fokusring mindestens 12,5). Weiß auf signal/mikro dunkel 3,02 als verboten.",
+     "bausteine": []
+    },
+    {
+     "name": "Tafel 7 · Schrift am Platz",
+     "zweck": "Saal-Stile der Sprechstelle in Plex Sans und Mono mit Größe und Stufe Groß.",
+     "inhalt": "Saal/Held in drei Zuständen (Nicht gemeldet in text/stark, Sie haben das Wort in signal/wort auf wort-toenung, Sie sprechen in text/auf-signal auf mikro-flaeche) mit Kontrast; Saal/Satz, Knopf gross, Zeile, Beschriftung, Kennzeile, PIN; Saal/Redezeit und Saal/Uhr; Untergrenzen 15/13/12; Heldkarte Standard und Groß (Angaben außerhalb des Modusrahmens).",
+     "bausteine": []
+    },
+    {
+     "name": "Tafel 8 · Serife bindet",
+     "zweck": "Source Serif 4 für Bindendes mit Marginalspalte 56; vorläufig Grotesk, festgestellt Serife.",
+     "inhalt": "Saal/TOP, TOP kompakt, TOP-Liste mit Nummer rechtsbündig in 40; Saal/Beschluss und Beschluss kompakt mit Randstrich 3 px in der Marginalspalte (Raster/Marginal); Zahl vorläufig, Feststellung „Angenommen.“ mit Ergebniszahl, Saal/Wahl, Saal/Bestätigung, Saal/Band auf Tinte.",
+     "bausteine": []
+    },
+    {
+     "name": "Tafel 9 · Schild, Bild und Hand",
+     "zweck": "Namensschild, Bauchbinde, Begleiter, Untertitel und Marke.",
+     "inhalt": "Zwei Namensschilder 874 × 402 im Maßstab 60 % (Ruhe: Mark Voss, Stellv. Vorsitz; spricht: Krüger auf mikro-voll), Angaben außerhalb der Schildfläche; Eigenbild 448 × 252 mit Bauchbinde auf Sockel 72 %: Name Bild/Bauchbinde in Weiß, Zeile Bild/Bauchbinde-Zeile 13/16 in Weiß 85 %; Hand/*; Untertitel im Modus Dunkel; Marke/Wortmarke und Signet als Instanzen aus 01b.",
      "bausteine": [
-      "Bewegungstabelle"
+      "Tafel/Schild Ruhe",
+      "Tafel/Schild spricht",
+      "Marke/Wortmarke (01b)",
+      "Marke/Signet (01b)",
+      "Plakette (03a)"
      ]
     },
     {
-     "name": "Farbe bedeutet etwas",
-     "zweck": "Regel und Verbote der vier Signalfarben an Beispielen.",
-     "inhalt": "Rot = Mikrofon offen · Blau = hat das Wort · Grün = frei (nur Kiosk-Saalplan, Leitstand-Tabelle, Webseitenabschnitt) · Bernstein = Achtung, Widerspruch gegen die Aufzeichnung. Hausfarbe Tintengrün, nie Signal. Falsch/richtig-Paare: Ja-Knopf grün → neutral; „abgelehnt“ rot → Tinte; „vertraulich“ rot → Stufe-Baustein; Aufzeichnung pausiert Bernstein → neutral mit lock; Abbrechen rot → Tinte mit eindeutigem Verb. Jeder Zustand trägt Ikone und Wort.",
+     "name": "Tafel 10 · Web, Pult und Papier",
+     "zweck": "Web-, Pult- und Papierstile; Pult im Modus Dunkel, Papier mit Inhalt im Modus Hell.",
+     "inhalt": "Web/Kennzeile, Web/Held, Web/H2, Web/Lauftext; Pult/Lage, Kopf, Lesetext, Text, Kennzeile, Zahl, Uhr, Beleg, TOP; Papier/TOP, Papier/Beschluss, Papier/Text mit Zeitmarke; Schriften lokal gebündelt.",
+     "bausteine": []
+    },
+    {
+     "name": "Tafel 11 · Raster",
+     "zweck": "Rasterstile je Gerät und exakte 16:9-Maße.",
+     "inhalt": "Rasterplan Sprechstelle als Instanz 1180 × 820 mit Raster/iPad 12, skaliert 55 %: Statusband y 24–80 mit Signalkante y 24–30 als oberer Zone, TOP-Kopf ohne Karte, Heldkarte, Segment, Blatt, Saal-Karte. TOP-Kopf 748 × 132 in Originalgröße mit Raster/Marginal. Tabelle mit Leitung, Abstimmung, Gegenprobe iPad Pro 11″ 1210 × 834 und den Stilen Raster/iPad 12, iPhone quer, iPhone hoch, Zuschaltung 12, Leitstand 12, A4, Marginal, Tafel. 16:9 exakt im Maßstab 1 : 8.",
      "bausteine": [
-      "Signalblock",
-      "Ikone"
+      "Tafel/Rasterplan iPad"
+     ]
+    },
+    {
+     "name": "Tafel 12 · Ebene und Maß",
+     "zweck": "Ebenen, Abstand, Radius, Linie/Rand/Kante und Trefferflächen.",
+     "inhalt": "e0 bis e3 Hell und Dunkel (Blatt und Erhoben radius/lg, Bogen radius/xl auf abdunkeln, Papier nur auf dem Pult); abstand/2xs bis 5xl als gebundene Balken; Radius keiner 0, sm 6, md 12, lg 20, xl 28, rund 999 mit echtem Inhalt und Regel Innen = Außen − Abstand; Striche 1 / 1,5 / 3 / 4 / 2 px innen, Signalkante 6, Randstrich 3, Fokus 3 außen; Trefferflächen 32/44/56/64/88.",
+     "bausteine": [
+      "Knopf (03a)",
+      "Stufe (03a)",
+      "Pille (03a)"
+     ]
+    },
+    {
+     "name": "Tafel 13 · Bewegung",
+     "zweck": "Dauer und Kurve jeder Bewegung aus der Sammlung Bewegung.",
+     "inhalt": "bewegung/druck 90, reduziert 120, zaehler 150, schild 150, zustand 200, band 240, blatt 320, zeichnen 400, lader 900, puls 1200, linie-unbestimmt 1200; Kurve cubic-bezier(.2,.8,.2,1); Filmstreifen bewegung/zustand mit Zeitleiste 0–200 ms und Keyframes 30/80/200 ms an der Heldkarte im Maßstab 40 %; Wortring mit Nachbild.",
+     "bausteine": [
+      "Tafel/Heldkarte gemeldet"
      ]
     }
    ]
