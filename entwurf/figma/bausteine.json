@@ -1,0 +1,672 @@
+{
+ "ikonen": {
+  "mic": {
+   "id": "58:18",
+   "bedeutung": "Mikrofon an (Handlung) sowie Umriss bei „hat das Wort“ (dann signal/wort)"
+  },
+  "mic-off": {
+   "id": "58:31",
+   "bedeutung": "Mikrofon aus"
+  },
+  "hand": {
+   "id": "58:42",
+   "bedeutung": "Wort melden / gemeldet"
+  },
+  "undo-2": {
+   "id": "58:51",
+   "bedeutung": "Meldung zurückziehen"
+  },
+  "list-ordered": {
+   "id": "58:69",
+   "bedeutung": "Redeliste"
+  },
+  "list-checks": {
+   "id": "58:81",
+   "bedeutung": "Tagesordnung"
+  },
+  "files": {
+   "id": "58:91",
+   "bedeutung": "Mappe"
+  },
+  "file-text": {
+   "id": "58:103",
+   "bedeutung": "Unterlage / Vorlage"
+  },
+  "ellipsis": {
+   "id": "58:113",
+   "bedeutung": "weitere Handlungen"
+  },
+  "lock": {
+   "id": "58:127",
+   "bedeutung": "nicht öffentlich, geheim, vertraulich, gesperrt"
+  },
+  "check": {
+   "id": "58:135",
+   "bedeutung": "Ja / erledigt"
+  },
+  "circle-check": {
+   "id": "58:144",
+   "bedeutung": "eingegangen / in Ordnung"
+  },
+  "x": {
+   "id": "58:153",
+   "bedeutung": "Nein"
+  },
+  "minus": {
+   "id": "58:161",
+   "bedeutung": "Enthaltung"
+  },
+  "vote": {
+   "id": "58:171",
+   "bedeutung": "Abstimmung"
+  },
+  "circle-dot": {
+   "id": "58:185",
+   "bedeutung": "Aufzeichnung läuft"
+  },
+  "circle-pause": {
+   "id": "58:195",
+   "bedeutung": "keine Aufzeichnung / unterbrochen"
+  },
+  "wifi-off": {
+   "id": "58:214",
+   "bedeutung": "keine Verbindung"
+  },
+  "wifi": {
+   "id": "58:225",
+   "bedeutung": "Verbindung (nur im Leitstand als Zustand)"
+  },
+  "refresh-cw": {
+   "id": "58:236",
+   "bedeutung": "wird nachgereicht"
+  },
+  "loader-circle": {
+   "id": "58:244",
+   "bedeutung": "wartet"
+  },
+  "clock": {
+   "id": "58:253",
+   "bedeutung": "Meldezeit"
+  },
+  "calendar-clock": {
+   "id": "58:266",
+   "bedeutung": "vertagt"
+  },
+  "video-off": {
+   "id": "58:281",
+   "bedeutung": "Widerspruch gegen die Aufzeichnung (signal/achtung)"
+  },
+  "camera-off": {
+   "id": "58:292",
+   "bedeutung": "Kamera ohne Signal (zustand/stoerung)"
+  },
+  "cctv": {
+   "id": "58:304",
+   "bedeutung": "Kamera (Leitstand)"
+  },
+  "user-x": {
+   "id": "58:315",
+   "bedeutung": "nicht angemeldet / abwesend"
+  },
+  "armchair": {
+   "id": "58:326",
+   "bedeutung": "Platz frei (signal/frei)"
+  },
+  "captions": {
+   "id": "58:340",
+   "bedeutung": "Untertitel"
+  },
+  "delete": {
+   "id": "58:350",
+   "bedeutung": "Rücktaste"
+  },
+  "chevron-right": {
+   "id": "58:358",
+   "bedeutung": "öffnet"
+  },
+  "triangle-alert": {
+   "id": "58:368",
+   "bedeutung": "Hinweis / destruktive Bestätigung"
+  },
+  "octagon-x": {
+   "id": "58:378",
+   "bedeutung": "Fehler / verfallen"
+  },
+  "info": {
+   "id": "58:388",
+   "bedeutung": "Hintergrund im Popover"
+  },
+  "layout-grid": {
+   "id": "58:404",
+   "bedeutung": "Saal (Leitstand-Navigation)"
+  },
+  "users": {
+   "id": "58:415",
+   "bedeutung": "Sitzung (Leitstand-Navigation)"
+  },
+  "key-round": {
+   "id": "58:424",
+   "bedeutung": "PIN-Ausgabe (Leitstand-Navigation)"
+  },
+  "clipboard-check": {
+   "id": "58:434",
+   "bedeutung": "Vorabcheck (Leitstand-Navigation)"
+  },
+  "activity": {
+   "id": "58:442",
+   "bedeutung": "Betrieb (Leitstand-Navigation)"
+  },
+  "volume-2": {
+   "id": "58:452",
+   "bedeutung": "Ton (Leitstand-Navigation)"
+  },
+  "stamp": {
+   "id": "58:462",
+   "bedeutung": "Siegel (Leitstand-Navigation)"
+  },
+  "share": {
+   "id": "58:472",
+   "bedeutung": "Ausgabe (erst, wenn gebaut)"
+  },
+  "printer": {
+   "id": "58:487",
+   "bedeutung": "drucken"
+  },
+  "copy": {
+   "id": "58:496",
+   "bedeutung": "Fingerabdruck kopieren"
+  },
+  "grip-vertical": {
+   "id": "58:509",
+   "bedeutung": "umordnen"
+  },
+  "log-out": {
+   "id": "58:519",
+   "bedeutung": "Verlassen / Vom Platz trennen"
+  },
+  "headphones": {
+   "id": "58:527",
+   "bedeutung": "Kopfhörerhinweis"
+  },
+  "mic-offen": {
+   "id": "58:544",
+   "bedeutung": "Eigenes Zeichen: Mikrofon offen, spricht. Gefüllte Kapsel mit zwei Schallbögen, das einzige gefüllte Zeichen (Fläche und Strich an text/stark)"
+  },
+  "staffelstab": {
+   "id": "58:553",
+   "bedeutung": "Eigenes Zeichen: aktive Sitzungsleitung und Übergabe. Schräger Stab mit Ring"
+  },
+  "saal": {
+   "id": "58:567",
+   "bedeutung": "Eigenes Zeichen: Einstieg in den Saalplan. Oval mit sechs Sitzmarken, ersetzt „platz“"
+  },
+  "totale": {
+   "id": "58:578",
+   "bedeutung": "Eigenes Zeichen: Bild: Totale. Kamera mit 90°-Kegel"
+  },
+  "randstrich": {
+   "id": "58:590",
+   "bedeutung": "Eigenes Zeichen: Beschluss und Protokoll"
+  },
+  "vollmacht": {
+   "id": "58:601",
+   "bedeutung": "Eigenes Zeichen: vertritt. Blatt mit Unterschriftszug"
+  },
+  "nfc-tag": {
+   "id": "58:612",
+   "bedeutung": "Eigenes Zeichen: Begleiter-Anmeldung. Tag-Plakette mit Wellen"
+  }
+ },
+ "bilder": {
+  "saal": {
+   "nodeId": "53:2",
+   "imageHash": "c6cf4440c394da8f9c3999d144d8f31fe5cef3f1"
+  },
+  "platz": {
+   "nodeId": "53:593",
+   "imageHash": "f04a4ebf708a0ceeded5c98e66ea643044e4f4f3"
+  },
+  "kamera": {
+   "nodeId": "53:594",
+   "imageHash": "292c38227941f415996f83dbbbb5bc65493eef92"
+  },
+  "stimme": {
+   "nodeId": "53:595",
+   "imageHash": "f6388b469b6b2df16a6ce5fabec0b655913bea76"
+  },
+  "halle": {
+   "nodeId": "53:596",
+   "imageHash": "c319ef1047d3e2f7668f5852063f683d0bbc0465"
+  },
+  "server": {
+   "nodeId": "53:597",
+   "imageHash": "1f552d263539b135ce95d647d07efd274277b46d"
+  }
+ },
+ "geraete_und_marke": {
+  "Statusleiste/iPad": {
+   "id": "57:50",
+   "typ": "COMPONENT_SET (Seite 02b Geräte 46:4)",
+   "varianten": [
+    "Modus=Hell 57:13",
+    "Modus=Dunkel 57:28"
+   ],
+   "eigenschaften": [
+    "Modus (VARIANT: Hell|Dunkel, setzt den Farbmodus explizit)",
+    "Zeit#57:0 (TEXT, Standard 14:32; Stand B 15:41)",
+    "Datum#57:3 (TEXT, Standard Do. 25. Sep.)"
+   ],
+   "einsatz": "1180×24, ohne Hintergrund, oben bündig (y 0) in jeden flachen iPad-Schirm. Links Zeit und Datum, rechts WLAN, „80 %“ und Akku mit Ladegrenzen-Zeichen. Keine Buntfarbe, alle Farben an text/stark bzw. text/leise gebunden. Für 820 hoch und 1133 mini die Instanz in der Breite ziehen (Auto-Layout mit SPACE_BETWEEN). Schrift inline in Plex, nicht an Schriftstufe gebunden, damit Groß die Systemleiste nicht vergrößert."
+  },
+  "Home-Indikator/iPad": {
+   "id": "57:67",
+   "typ": "COMPONENT_SET (46:4)",
+   "varianten": [
+    "Modus=Hell 57:56",
+    "Modus=Dunkel 57:58"
+   ],
+   "eigenschaften": [
+    "Modus (VARIANT: Hell|Dunkel)"
+   ],
+   "einsatz": "1180×20 (Sicherheitsbereich unten), Indikator 320×5 mittig und 8 über der Unterkante, Farbe text/stark. Bündig an die Unterkante jedes flachen iPad-Schirms, in der Breite ziehbar."
+  },
+  "Statusleiste/iPhone": {
+   "id": "57:111",
+   "typ": "COMPONENT_SET (46:4)",
+   "varianten": [
+    "Modus=Hell 57:74",
+    "Modus=Dunkel 57:89"
+   ],
+   "eigenschaften": [
+    "Modus (VARIANT: Hell|Dunkel)",
+    "Zeit#57:6 (TEXT, Standard 14:32)",
+    "Dynamic Island#57:9 (BOOLEAN, Standard an)"
+   ],
+   "einsatz": "402×62 für iPhone 17 hoch (Begleiter). Zeit mittig im linken Ohr, Aussparung der Dynamic Island 126×37 bei y 11 als schwarze Pille (flaeche/bild), rechts WLAN, „80 %“ und Akku mit Ladegrenze. Ohne Hintergrund. Die Insel lässt sich abschalten, wenn der Gerätrahmen sie zeichnet."
+  },
+  "Home-Indikator/iPhone": {
+   "id": "57:128",
+   "typ": "COMPONENT_SET (46:4)",
+   "varianten": [
+    "Modus=Hell 57:117",
+    "Modus=Dunkel 57:119"
+   ],
+   "eigenschaften": [
+    "Modus (VARIANT: Hell|Dunkel)"
+   ],
+   "einsatz": "402×34 (Sicherheitsbereich unten), Indikator 134×5 mit Radius 2,5 in 8 Abstand zur Unterkante. Bündig an die Unterkante jedes flachen iPhone-Schirms."
+  },
+  "Safari-Leiste/iPhone": {
+   "id": "57:173",
+   "typ": "COMPONENT_SET (46:4)",
+   "varianten": [
+    "Modus=Hell 57:134",
+    "Modus=Dunkel 57:150"
+   ],
+   "eigenschaften": [
+    "Modus (VARIANT: Hell|Dunkel)",
+    "Adresse#57:12 (TEXT, Standard saal.musterwerk.de)"
+   ],
+   "einsatz": "Schwebende Leiste des Begleiters in Safari, 402×82 inklusive Sicherheitsbereich: Leiste 48 bei y 8 aus Zurück, Adressfeld mit Neu-laden und Mehr. Fläche erhoben mit Ebene/1, kein Glas und kein Blur. Bündig an die Schirm-Unterkante, der Home-Indikator liegt darunter. Der Primärknopf sitzt 16 darüber."
+  },
+  "Gerät/iPad Air 11 quer": {
+   "id": "60:10",
+   "typ": "COMPONENT (46:4)",
+   "varianten": [],
+   "eigenschaften": [
+    "Display#60:0 (SLOT „Display“, 1180×820, clipsContent, Radius 18, Auto-Layout senkrecht ohne Innenabstand)",
+    "Statusleiste#60:1 (BOOLEAN, Standard aus, verschachtelte Instanz freigelegt, Modus wählbar)",
+    "Home-Indikator#60:2 (BOOLEAN, Standard aus, freigelegt)"
+   ],
+   "einsatz": "Referenzgerät für Sprechstelle und Abstimmung. Glasrand 20, Außenradius 38, Displayradius 18, Aluminiumkante 2 pt (geraet/aluminium), Frontkamera, Schlagschatten 0 40 80 an geraet/schatten gebunden. Kein Logo. Einsetzen: Instanz anlegen, dann instance.findAllWithCriteria({types:['SLOT']}).find(n=>n.name==='Display').appendChild(schirm). Die Standardinhalte lassen sich in der Instanz entfernen. Die Auflagen stehen auf aus, weil flache Schirme ihre eigene Statusleiste tragen."
+  },
+  "Gerät/iPad Air 11 hoch": {
+   "id": "60:36",
+   "typ": "COMPONENT (46:4)",
+   "varianten": [],
+   "eigenschaften": [
+    "Display#60:3 (SLOT 820×1180)",
+    "Statusleiste#60:4 (BOOLEAN, aus)",
+    "Home-Indikator#60:5 (BOOLEAN, aus)"
+   ],
+   "einsatz": "Notlayout hoch, 820×1180, Aufbau wie quer, die Kamera an der langen Kante."
+  },
+  "Gerät/iPad Pro 11 quer": {
+   "id": "60:62",
+   "typ": "COMPONENT (46:4)",
+   "varianten": [],
+   "eigenschaften": [
+    "Display#60:6 (SLOT 1210×834)",
+    "Statusleiste#60:7 (BOOLEAN, aus)",
+    "Home-Indikator#60:8 (BOOLEAN, aus)"
+   ],
+   "einsatz": "Gegenprobe 1210×834 aus richtung.geraete. Stand nicht im Auftrag, ist aber dort verlangt."
+  },
+  "Gerät/iPad mini quer": {
+   "id": "60:88",
+   "typ": "COMPONENT (46:4)",
+   "varianten": [],
+   "eigenschaften": [
+    "Display#60:9 (SLOT 1133×744)",
+    "Statusleiste#60:10 (BOOLEAN, aus)",
+    "Home-Indikator#60:11 (BOOLEAN, aus)"
+   ],
+   "einsatz": "Namensschild in Sälen mit mehr als 4 m Leseabstand (Stile ×1,5, Rand 40 im Schirm). Kamera an der kurzen Kante."
+  },
+  "Gerät/iPhone 17 hoch": {
+   "id": "60:114",
+   "typ": "COMPONENT (46:4)",
+   "varianten": [],
+   "eigenschaften": [
+    "Display#60:12 (SLOT 402×874, Radius 55)",
+    "Statusleiste#60:13 (BOOLEAN, aus; Insel darin abgeschaltet)",
+    "Safari-Leiste#60:14 (BOOLEAN, aus)",
+    "Home-Indikator#60:15 (BOOLEAN, aus)"
+   ],
+   "einsatz": "Begleiter auf dem privaten iPhone in Safari. Glasrand 12, Außenradius 67. Die Dynamic Island 126×37 bei y 11 ist Hardware und liegt über dem Slot."
+  },
+  "Gerät/iPhone 17 quer im Halter": {
+   "id": "60:156",
+   "typ": "COMPONENT (46:4)",
+   "varianten": [],
+   "eigenschaften": [
+    "Display#60:16 (SLOT 874×402, Radius 55)"
+   ],
+   "einsatz": "Namensschild, Frontansicht im Acrylblock (30° geneigt): der Block hinter dem Telefon, die Lippe davor (geraet/acryl, Kante geraet/aluminium). Die Insel liegt links. Im Querformat gibt es keine Statusleiste. Der Namensschild-Schirm setzt selbst den Modus Dunkel auf schild/grund. Maße 1012×470."
+  },
+  "Gerät/Browserfenster": {
+   "id": "60:168",
+   "typ": "COMPONENT (46:4)",
+   "varianten": [],
+   "eigenschaften": [
+    "Display#60:17 (SLOT 1440×800)",
+    "Adresse#60:18 (TEXT, Standard zuschaltung.musterwerk.de)"
+   ],
+   "einsatz": "Neutrales Browserfenster für die Zuschaltung und die Webseite: Leiste 52 mit neutralen, grauen Fenstertasten (keine Ampelfarben), Navigation, Adressfeld mit Schloss, Teilen und Neuer Tab. Die ganze Komponente steht im expliziten Modus Dunkel (Pult). Radius md, Rand linie/normal, Schatten an geraet/schatten."
+  },
+  "Gerät/Leitstand-Fenster": {
+   "id": "60:198",
+   "typ": "COMPONENT (46:4)",
+   "varianten": [],
+   "eigenschaften": [
+    "Display#60:19 (SLOT 1440×800)",
+    "Titel#60:20 (TEXT, Standard „Leitstand · ConferenceCue“)"
+   ],
+   "einsatz": "Installierte Web-App mit Titelleiste 28, ohne Adressfeld. Immer im expliziten Modus Dunkel. Papierblätter im Schirm setzen selbst Hell."
+  },
+  "Marke/Signet": {
+   "id": "65:1885",
+   "typ": "COMPONENT_SET (Seite 01b Marke & Sprache 46:2)",
+   "varianten": [
+    "Fassung=Tinte 65:1874",
+    "Fassung=Kreide 65:1878",
+    "Fassung=Einfarbig 65:1882"
+   ],
+   "eigenschaften": [
+    "Fassung (VARIANT: Tinte = explizit Hell, Tinte mit Kante #FCFBF8 | Kreide = explizit Dunkel, Kreide mit Kante #0E0F11 | Einfarbig = Kante ausgespart per evenodd, folgt dem Modus)"
+   ],
+   "einsatz": "„Platzkachel“: Quadrat mit Radius 22 % in marke/haus, Papierkante 56 % × 10 % mit Oberkante bei 34 % (marke/signet-kante). Grundgröße 64. Vektoren mit Constraints SCALE, deshalb skaliert resize() proportional, der Radius eingeschlossen. Mindestgröße 16 px, Schutzraum eine Kantenhöhe. Nie Kreis, Punkt, Farbe oder Rot und nie eine Bedienikone. Favicon = Fassung Tinte."
+  },
+  "Marke/Wortmarke": {
+   "id": "65:1920",
+   "typ": "COMPONENT_SET (46:2)",
+   "varianten": [
+    "Fassung=Tinte, Größe=20 65:1892",
+    "Fassung=Kreide, Größe=20 65:1897",
+    "Fassung=Einfarbig, Größe=20 65:1902",
+    "Fassung=Tinte, Größe=48 65:1906",
+    "Fassung=Kreide, Größe=48 65:1911",
+    "Fassung=Einfarbig, Größe=48 65:1916"
+   ],
+   "eigenschaften": [
+    "Fassung (VARIANT: Tinte|Kreide|Einfarbig)",
+    "Größe (VARIANT: 20|48)",
+    "Signet#65:0 (BOOLEAN, Standard an; verschachtelte Signet-Instanz passend zur Fassung)"
+   ],
+   "einsatz": "„ConferenceCue“ in IBM Plex Sans SemiBold, ein Wort, Laufweite −1 %. Größe 20 nutzt den Textstil Marke/Wortmarke mit Signet 24 und Abstand 8, für die Leitstand-Navigation und den Webseitenkopf. Größe 48 hat Signet 56 und Abstand 18, für Startschirm und Titelblatt. Nie in Serife, nie in Versalien, nie ein Punkt davor, nie auf Saalgeräten und nie im Kamerabild."
+  },
+  "Marke/App-Icon": {
+   "id": "65:1938",
+   "typ": "COMPONENT_SET (46:2)",
+   "varianten": [
+    "Fassung=Tinte 65:1930",
+    "Fassung=Papier 65:1934"
+   ],
+   "eigenschaften": [
+    "Fassung (VARIANT: Tinte = marke/haus mit Papierkante | Papier = flaeche/blatt mit Tinte-Kante), beide explizit Hell"
+   ],
+   "einsatz": "Das Signet vollflächig und ohne eigene Rundung, die Maske setzt das Betriebssystem. Grundgröße 180 (apple-touch-icon), skaliert per SCALE auf 1024 (Master). Ein Icon für alle Rollen, keine Schrift, kein Rot. Zur Darstellung mit iOS-Maske in einen Rahmen mit Radius 22,4 % und clipsContent legen."
+  },
+  "Kunde/Wappen (Platzhalter)": {
+   "id": "65:1954",
+   "typ": "COMPONENT_SET (46:2)",
+   "varianten": [
+    "Fassung=Einfarbig 65:1944",
+    "Fassung=Farbig 65:1949"
+   ],
+   "eigenschaften": [
+    "Fassung (VARIANT: Einfarbig = text/stark, folgt dem Modus | Farbig = kunde/wappen mit flaeche/papier, explizit Hell)"
+   ],
+   "einsatz": "Platzhalterwappen „Musterwerk AG“ (Schild, Band, Sparren) in 64, skalierbar. Auf Saalgeräten im Betrieb einfarbig und höchstens 32 px (Statusband, PIN-Schirm, Kopf der Zuschaltung). Farbig nur im Kiosk-Leerlauf (64), im Protokollkopf und auf dem PIN-Zettel. Das echte Wappen kommt als SVG aus den Gestaltungsdaten."
+  },
+  "Marke/Mitmarke": {
+   "id": "65:1960",
+   "typ": "COMPONENT (46:2)",
+   "varianten": [],
+   "eigenschaften": [],
+   "einsatz": "„erstellt mit ConferenceCue“ in 7 pt (Plex Regular, „ConferenceCue“ SemiBold), text/mittel, explizit Hell. Nur im Fuß von PIN-Zettel und Protokoll."
+  }
+ },
+ "textstile": {
+  "Saal/Held": {
+   "id": "S:fd44826362369e175175bc4a709cf9b635e9850f,",
+   "schrift": "IBM Plex Sans SemiBold 44/48, −1 % (Groß 52/56)"
+  },
+  "Saal/TOP": {
+   "id": "S:83f0fa68e5a2a2e687d03780c9639710cd2c0f99,",
+   "schrift": "Source Serif 4 SemiBold 30/36 (Groß 36/42)"
+  },
+  "Saal/TOP kompakt": {
+   "id": "S:9a98bec2dbe94856690bde9d39980fb6f698279b,",
+   "schrift": "Source Serif 4 SemiBold 24/30 (Groß 28/34)"
+  },
+  "Saal/TOP-Liste": {
+   "id": "S:cdda5fa3feee64f8b10031a5d9dba5fd45e1b525,",
+   "schrift": "Source Serif 4 Regular 20/26 (Groß 24/32)"
+  },
+  "Saal/Satz": {
+   "id": "S:141af3bde84fb1becd5194bd6dd3f033c968a298,",
+   "schrift": "IBM Plex Sans Regular 20/28 (Groß 24/34)"
+  },
+  "Saal/Knopf gross": {
+   "id": "S:57a399359bdcf7d6f8629101abe014dc2225392b,",
+   "schrift": "IBM Plex Sans SemiBold 22/28 (Groß 26/32)"
+  },
+  "Saal/Zeile": {
+   "id": "S:e7619c538da8f58974940d5983e158ffc46d55cd,",
+   "schrift": "IBM Plex Sans Medium 17/24 (Groß 20/28), tnum von Hand"
+  },
+  "Saal/Beschriftung": {
+   "id": "S:946a0cd2a17de64463c3139df5650c7d9767b149,",
+   "schrift": "IBM Plex Sans Medium 15/20 (Groß 18/24)"
+  },
+  "Kennzeile": {
+   "id": "S:78ae072dd1dd00512c7646e9bc75a9f53cf10705,",
+   "schrift": "IBM Plex Sans SemiBold 13/16, versal, +8 % (Groß 15/20)"
+  },
+  "Saal/Redezeit": {
+   "id": "S:03acd7f530eb8f61036d78575aa29f031f6599c5,",
+   "schrift": "IBM Plex Mono Medium 40/44 (Groß 48/52)"
+  },
+  "Saal/Uhr": {
+   "id": "S:ed02a3913ad2e826b36fc1cf7a88338293b93dd7,",
+   "schrift": "IBM Plex Mono Medium 17/24 (Groß 20/28)"
+  },
+  "Saal/PIN": {
+   "id": "S:ee73ec316df74b612d4005bf3d65628ebfe100b2,",
+   "schrift": "IBM Plex Sans Medium 28/32 (Groß 34/38), tnum von Hand"
+  },
+  "Saal/Beschluss": {
+   "id": "S:e38c87722e7e99ca94d502d8405d346e0f314b6e,",
+   "schrift": "Source Serif 4 Regular 40/48 (Groß 48/56)"
+  },
+  "Saal/Beschluss kompakt": {
+   "id": "S:ce39c4cddf1e93fd3710485dfb4cc8a30691c33a,",
+   "schrift": "Source Serif 4 Regular 28/36 (Groß 34/44)"
+  },
+  "Saal/Band": {
+   "id": "S:fba742bc59c2f899f89912fcde545a27e34fa6bd,",
+   "schrift": "IBM Plex Sans SemiBold 20/24 (Groß 24/28)"
+  },
+  "Saal/Wahl": {
+   "id": "S:f553c0c2f4204899fc24f6fc8f3112b0889af112,",
+   "schrift": "IBM Plex Sans SemiBold 40/44 (Groß 48/52)"
+  },
+  "Saal/Bestätigung": {
+   "id": "S:4a1896fcb6751b0448c67bc6b1b7a2a43f841652,",
+   "schrift": "IBM Plex Sans SemiBold 36/40 (Groß 43/48)"
+  },
+  "Saal/Zahl vorläufig": {
+   "id": "S:a913edfc5de0e8f0739b040d9a4a99f12bfd3d72,",
+   "schrift": "IBM Plex Sans SemiBold 48/52 (Groß 58/62), tnum von Hand"
+  },
+  "Saal/Feststellung": {
+   "id": "S:40a93f553701953a46644b8ffe2b2ade1a96c781,",
+   "schrift": "Source Serif 4 SemiBold 64/68, −1 % (Groß 77/82)"
+  },
+  "Saal/Ergebniszahl": {
+   "id": "S:d9f3a05145fc4bd7e1b509d3d0a6aade84c0ee01,",
+   "schrift": "Source Serif 4 SemiBold 48/52 (Groß 58/62), lnum tnum von Hand"
+  },
+  "Schild/Nachname": {
+   "id": "S:4f31a795458a9e5ac9f54f8673ada7123fb3dd1b,",
+   "schrift": "IBM Plex Sans Bold 150/156, −2 %"
+  },
+  "Schild/Vorname": {
+   "id": "S:083bf034f3a3dc63f29142bae9fa647d14c1946f,",
+   "schrift": "IBM Plex Sans Medium 44/48"
+  },
+  "Schild/Funktion": {
+   "id": "S:54a4d16340500854f2f845c538a75cfd6a389492,",
+   "schrift": "IBM Plex Sans Regular 32/36"
+  },
+  "Schild/Zustand": {
+   "id": "S:93c1ec02bf80be34a8f1811f5530696d6775e8ad,",
+   "schrift": "IBM Plex Sans SemiBold 40/44"
+  },
+  "Schild/Redezeit": {
+   "id": "S:b4c9fa528a5cc1214e599af8db1e2ffdea569ac2,",
+   "schrift": "IBM Plex Mono Medium 48/52"
+  },
+  "Schild/Platz": {
+   "id": "S:2e55096bbdbd9feb76c1b998d0a41b49eb4afc5f,",
+   "schrift": "IBM Plex Sans SemiBold 28/32"
+  },
+  "Hand/TOP": {
+   "id": "S:5e4d344d2db2c7f6d525c4780784b9bee6d435b6,",
+   "schrift": "Source Serif 4 SemiBold 28/34"
+  },
+  "Hand/Status": {
+   "id": "S:98442c99ff4bbcb61d12e2737d4c50593d65aaea,",
+   "schrift": "IBM Plex Sans SemiBold 28/34"
+  },
+  "Hand/Text": {
+   "id": "S:4b99c93ad8b80d36c31777d91d365c752ed0c2af,",
+   "schrift": "IBM Plex Sans Regular 17/24"
+  },
+  "Hand/Meta": {
+   "id": "S:cc9b31bfed379b32ea6116855da20a544caa1d18,",
+   "schrift": "IBM Plex Sans Regular 13/18"
+  },
+  "Untertitel": {
+   "id": "S:cb9f2dedddd1198c877c9ca1ad5fa246c23084a9,",
+   "schrift": "IBM Plex Sans Regular 20/28"
+  },
+  "Pult/Lage": {
+   "id": "S:e70bd88f1e2431af4497309d54d37c600f9725c8,",
+   "schrift": "IBM Plex Sans SemiBold 24/32"
+  },
+  "Pult/Kopf": {
+   "id": "S:30665ae403d342fa6de25f39ffdabb00d2f0a8e9,",
+   "schrift": "IBM Plex Sans SemiBold 17/24"
+  },
+  "Pult/Text": {
+   "id": "S:774ae173418afaf7d920a7e7eee172647934f531,",
+   "schrift": "IBM Plex Sans Regular 14/20"
+  },
+  "Pult/Lesetext": {
+   "id": "S:c2411b4d3413a37ea6330ecb4f1a3d75aa0519cc,",
+   "schrift": "IBM Plex Sans Regular 16/24"
+  },
+  "Pult/Kennzeile": {
+   "id": "S:c691218b58de0953003709980a32cd2595f9c98d,",
+   "schrift": "IBM Plex Sans SemiBold 12/16, versal, +6 %"
+  },
+  "Pult/Zahl": {
+   "id": "S:654acf197803fcef996e50ab53e780b69830f83a,",
+   "schrift": "IBM Plex Sans SemiBold 40/44, tnum von Hand"
+  },
+  "Pult/Uhr": {
+   "id": "S:777d7d77da9de6d6ced728132d9902b828269b38,",
+   "schrift": "IBM Plex Mono Medium 20/24"
+  },
+  "Pult/Beleg": {
+   "id": "S:7d035d2d577062e1f26b3578fb7a05510ee595df,",
+   "schrift": "IBM Plex Mono Regular 13/20"
+  },
+  "Pult/TOP": {
+   "id": "S:e7abe59ee6f44f92163055a3facae7a68da00585,",
+   "schrift": "Source Serif 4 SemiBold 22/28"
+  },
+  "Bild/Bauchbinde": {
+   "id": "S:e80ce63c64f4914c63d6f08e6d092b7f849ccae2,",
+   "schrift": "IBM Plex Sans SemiBold 16/20"
+  },
+  "Papier/TOP": {
+   "id": "S:6563a0f2bda761e5ba014727e9d34a26e124c130,",
+   "schrift": "Source Serif 4 SemiBold 20/28"
+  },
+  "Papier/Beschluss": {
+   "id": "S:1626a0021b95f65201a3a1ee06a2d7c923490dc8,",
+   "schrift": "Source Serif 4 Regular 17/26"
+  },
+  "Papier/Text": {
+   "id": "S:8ceab2ab248b81924a2ff60a8306bdcf5721a00f,",
+   "schrift": "IBM Plex Sans Regular 14/22"
+  },
+  "Web/Held": {
+   "id": "S:2d3219cecd8959c1febede17db19d00fcc215ccd,",
+   "schrift": "IBM Plex Sans SemiBold 56/60, −2 %"
+  },
+  "Web/H2": {
+   "id": "S:c38d85012590fe9d91ab0dcc416f8d7e349743bb,",
+   "schrift": "IBM Plex Sans SemiBold 32/38"
+  },
+  "Web/Lauftext": {
+   "id": "S:2cab08d2bdf1c7bd91d6f6836d640c51bdcb5c99,",
+   "schrift": "IBM Plex Sans Regular 18/28"
+  },
+  "Web/Kennzeile": {
+   "id": "S:d5c115087a2f632dcc9f58d97f5c8f634e288677,",
+   "schrift": "IBM Plex Sans SemiBold 12/16, versal, +12 %"
+  },
+  "Marke/Wortmarke": {
+   "id": "S:e4059dc03a4aa1a12c769267197f15e5bf807a99,",
+   "schrift": "IBM Plex Sans SemiBold 20/24, −1 %"
+  }
+ },
+ "effektstile": {
+  "Ebene/1": "S:94f0b7393ef93af355928deaf1962fa9f13d6016,",
+  "Ebene/2": "S:ae456aa993309c7d96d7ce6464a608e5d9a104de,",
+  "Ebene/3": "S:77345adfeb11db052f17054cec6d7823a2fcd838,",
+  "Ebene/Papier": "S:09743b6496bc8fd54d737749049f4535bba4db4b,"
+ },
+ "sammlungen": {
+  "Farbe": "VariableCollectionId:2:24 (Hell 2:1, Dunkel 2:2)",
+  "Schriftstufe": "50:2 (Standard 50:0, Groß 50:1)",
+  "Bewegung": "50:92",
+  "Radius": "2:48",
+  "Abstand": "2:38"
+ },
+ "bausteine": {}
+}
